@@ -1,6 +1,6 @@
 #include "Page.h"
-#include "MiteOS.h"
 
+#include "../MiteOS.h"
 #include <GxEPD2_EPD.h>
 #include <Fonts/FreeMonoBold9pt7b.h>
 

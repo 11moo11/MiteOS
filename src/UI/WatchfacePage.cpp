@@ -1,11 +1,11 @@
 #include "WatchfacePage.h"
-#include "MiteOS.h"
-#include "DSEG7_Classic_Regular_15.h"
-#include "DSEG7_Classic_Bold_25.h"
-#include "DSEG7_Classic_Regular_39.h"
+#include "../MiteOS.h"
+#include "../Fonts/DSEG7_Classic_Regular_15.h"
+#include "../Fonts/DSEG7_Classic_Bold_25.h"
+#include "../Fonts/DSEG7_Classic_Regular_39.h"
 #include "DSEG7_Classic_Bold_53.h"
-#include "Seven_Segment10pt7b.h"
-#include "icons.h"
+#include "../Fonts/Seven_Segment10pt7b.h"
+#include "../Fonts/icons.h"
 
 const uint8_t BATTERY_SEGMENT_WIDTH = 7;
 const uint8_t BATTERY_SEGMENT_HEIGHT = 11;

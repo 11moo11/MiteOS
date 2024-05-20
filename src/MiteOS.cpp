@@ -58,14 +58,18 @@ void MiteOS::init() {
 			#ifdef DEBUG
 			Serial.println("Reset Boot");
 			#endif
+			// Initial configuration
 			_bmaConfig();
-			initDarkmode();
 			pageData.pageIndex = 0; // Set Page to Watchface
 			gmtTimeOffset = settings.gmtOffset;
 			updateTime();
+			initDarkmode();
+
 			RTC.read(osBootTime);
+			
 			refreshPage(false); // full update on reset
 			vibMotor(75, 4);
+			
 			// For some reason, seems to be enabled on first boot
 			esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
 			break;

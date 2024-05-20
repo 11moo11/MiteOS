@@ -1,4 +1,4 @@
-#include "MiteOS.h"
+#include "src/MiteOS.h"
 #include "settings.h"
 
 MiteOS miteOS(settings);

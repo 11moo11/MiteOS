@@ -1,7 +1,7 @@
 #ifndef MITEOS_H
 #define MITEOS_H
 
-#define DEBUG
+//#define DEBUG
 
 #include <Arduino.h>
 #include <bma.h>
@@ -12,8 +12,8 @@
 #include <Fonts/FreeMonoBold9pt7b.h>
 
 // Pages
-#include "Page.h"
-#include "WatchfacePage.h"
+#include "UI/Page.h"
+#include "UI/WatchfacePage.h"
 
 typedef struct MiteSettings {
 	// Weather Settings
