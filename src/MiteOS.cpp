@@ -311,3 +311,16 @@ float MiteOS::getBatteryVoltage() {
 		return analogReadMilliVolts(BATT_ADC_PIN) / 1000.0f * 2.0f;
 	}
 }
+
+float MiteOS::getBatteryPercentage() {
+    float voltage = getBatteryVoltage();
+
+    uint8_t percentage = 2808.3808 * pow(voltage, 4)
+                        - 43560.9157 * pow(voltage, 3)
+                        + 252848.5888 * pow(voltage, 2)
+                        - 650767.4615 * voltage
+                        + 626532.5703;
+    percentage = min((uint8_t) 100, percentage);
+    percentage = max((uint8_t) 0, percentage);
+    return percentage;
+}

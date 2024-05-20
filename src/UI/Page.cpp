@@ -8,7 +8,7 @@ void Page::showMenu(char *menuItems[], bool partialRefresh) {
 	MiteOS::display.setFullWindow();
 	MiteOS::display.fillScreen(GxEPD_BLACK);
 	MiteOS::display.setFont(&FreeMonoBold9pt7b);
-
+	
 	int16_t x1, y1;
 	uint16_t w, h;
 	int16_t yPos;

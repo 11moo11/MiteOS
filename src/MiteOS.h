@@ -1,7 +1,7 @@
 #ifndef MITEOS_H
 #define MITEOS_H
 
-//#define DEBUG
+#define DEBUG
 
 #include <Arduino.h>
 #include <bma.h>
@@ -65,6 +65,7 @@ class MiteOS {
 		void refreshPage(bool partialRefresh = true);
   		void vibMotor(uint8_t intervalMs = 100, uint8_t length = 20);
   		static float getBatteryVoltage();
+		static float getBatteryPercentage();
 	
 	private:
 		void updateTime();  
