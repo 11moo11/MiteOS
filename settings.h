@@ -22,7 +22,14 @@
 #define NTP_SERVER "pool.ntp.org"
 #define GMT_OFFSET_SEC 3600 * -5 //New York is UTC -5 EST, -4 EDT, will be overwritten by weather data
 
-MiteSettings settings{
+#define ENABLE_AUTO_DARKMODE true // Makes the clock automatically switch between dark and lightmode depending on the time
+#define INVERSE_DARKMODE false // Defines whether the timespan will make it darkmode or lightmode
+#define DARKMODE_START_H 20
+#define DARKMODE_START_M 0
+#define DARKMODE_END_H 7
+#define DARKMODE_END_M 0
+
+MiteSettings settings {
 	#ifdef CITY_ID
 		.cityID = CITY_ID,
 	#else
@@ -37,7 +44,15 @@ MiteSettings settings{
 	.weatherUpdateInterval = WEATHER_UPDATE_INTERVAL,
 	.ntpServer = NTP_SERVER,
 	.gmtOffset = GMT_OFFSET_SEC,
+	//
 	.vibrateOClock = true,
+	//
+	.enableAutoDarkMode = ENABLE_AUTO_DARKMODE,
+	.inverseDarkMode = INVERSE_DARKMODE,
+	.darkmodeStartH = DARKMODE_START_H,
+	.darkmodeStartM = DARKMODE_START_M,
+	.darkmodeEndH = DARKMODE_END_H,
+	.darkmodeEndM = DARKMODE_END_M
 };
 
 #endif
