@@ -22,11 +22,13 @@ RTC_DATA_ATTR AlarmData alarms[2];
 
 WatchfacePage watchfacePage;
 TimerPage timerPage;
+SettingsPage settingsPage;
 Page* pages[] = {
 	&watchfacePage,
-	&timerPage
+	&timerPage,
+	&settingsPage
 };
-#define PAGE_COUNT 2
+#define PAGE_COUNT 3
 
 tmElements_t MiteOS::currentTime;
 
@@ -36,6 +38,8 @@ void MiteOS::init() {
   	while(!Serial) delay(100);
 	Serial.println("Booting up");
 	#endif
+
+	osInstance = this;
 
 	esp_sleep_wakeup_cause_t wakeup_reason;
 	wakeup_reason = esp_sleep_get_wakeup_cause(); // get wake up reason
@@ -133,8 +137,11 @@ void MiteOS::handleButtonPress(uint8_t buttonIndex) {
 	}
 
 	if(buttonIndex == BTN_MENU) {
-		pageData.pageIndex += 1;
-		if(pageData.pageIndex >= PAGE_COUNT) pageData.pageIndex = 0;
+		do {
+			pageData.pageIndex += 1;
+			if(pageData.pageIndex >= PAGE_COUNT) pageData.pageIndex = 0;
+		} while(! pages[pageData.pageIndex]->isPageable());
+
 		refreshPage();
 		return;
 	}
@@ -159,6 +166,11 @@ void MiteOS::refreshPage(bool partialRefresh) {
 	}
 	
 	MiteOS::display.display(partialRefresh);
+}
+
+void MiteOS::showPage(uint8_t pageIndex) {
+	pageData.pageIndex = pageIndex;
+	//osInstance->refreshPage();
 }
 
 void MiteOS::checkTime() {

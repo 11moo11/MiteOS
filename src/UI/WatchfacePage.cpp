@@ -22,7 +22,7 @@ void WatchfacePage::drawPage() {
 }
 
 bool WatchfacePage::onButtonPressed(uint8_t buttonIndex) {
-  if(buttonIndex == BTN_BACK) {
+  if(buttonIndex == BTN_TOGGLE_BTN) {
     if(DARKMODE) {
       DARKMODE = false;
     }else{
@@ -33,6 +33,10 @@ bool WatchfacePage::onButtonPressed(uint8_t buttonIndex) {
     //DARKMODE = !DARKMODE;
     //MiteOS::refreshPage();
     return true;
+  }
+
+  if(buttonIndex == BTN_UP) {
+    MiteOS::showPage(PAGE_SETTINGS);
   }
 	return false;
 }

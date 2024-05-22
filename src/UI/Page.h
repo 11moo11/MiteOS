@@ -29,7 +29,9 @@ class Page {
     Page() {};
 		virtual void drawPage() {};
 		virtual bool onButtonPressed(uint8_t buttonIndex) { return false; };
-		void showMenu(char *menuItems[], bool partialRefresh);
+    virtual bool isPageable() { return true; };
+		void showMenu(const char *menuItems[], uint8_t itemCount, bool partialRefresh);
+    bool handleMenuButtons(uint8_t buttonIndex);
 };
 
 #endif

@@ -15,6 +15,10 @@
 #include "UI/Page.h"
 #include "UI/WatchfacePage.h"
 #include "UI/TimerPage.h"
+#include "UI/SettingsPage.h"
+
+
+#define PAGE_SETTINGS 2
 
 typedef struct MiteSettings {
 	// Weather Settings
@@ -70,7 +74,10 @@ class MiteOS {
 		void deepSleep();
   		void handleButtonPress();
   		void handleButtonPress(uint8_t buttonIndex);
+		
 		void refreshPage(bool partialRefresh = true);
+		static void showPage(uint8_t pageIndex);
+
   		void vibMotor(uint8_t intervalMs = 100, uint8_t length = 20);
   		static float getBatteryVoltage();
 		static float getBatteryPercentage();
@@ -98,5 +105,7 @@ extern RTC_DATA_ATTR AlarmData alarms[2];
 
 #define BACKGROUND_COLOR (DARKMODE ? GxEPD_BLACK : GxEPD_WHITE)
 #define FOREGROUND_COLOR (DARKMODE ? GxEPD_WHITE : GxEPD_BLACK)
+
+static MiteOS *osInstance;
 
 #endif

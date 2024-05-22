@@ -1,0 +1,11 @@
+#ifndef SETTINGS_PAGE_H
+#define SETTINGS_PAGE_H
+#include "Page.h"
+
+class SettingsPage : public Page {
+	public:
+		void drawPage() override;
+		bool onButtonPressed(uint8_t buttonIndex) override;
+		bool isPageable() override { return false; };
+};
+#endif
