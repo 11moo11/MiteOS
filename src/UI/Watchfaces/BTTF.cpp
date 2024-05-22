@@ -14,7 +14,7 @@
 #define YEAR_OFFSET 10
 
 void BTTF::draw(){
-    MiteOS::display.drawBitmap(0, 0, bttf, 200, 200, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+    MiteOS::display.drawBitmap(0, 0, bttf, 200, 200, FOREGROUND_COLOR);
     drawTime();
     drawDate();
     drawSteps();
@@ -34,7 +34,7 @@ void BTTF::printCentered(uint16_t x, uint16_t y, String text){
 
 void BTTF::drawTime(){
     MiteOS::display.setFont(&FONT_7_SEG_LARGE);
-    MiteOS::display.setTextColor(DARKMODE ? GxEPD_BLACK : GxEPD_WHITE);
+    MiteOS::display.setTextColor(BACKGROUND_COLOR);
 
     String hourStr = String(MiteOS::currentTime.Hour);
     hourStr = MiteOS::currentTime.Hour < 10 ? "0" + hourStr : hourStr;
@@ -48,7 +48,7 @@ void BTTF::drawTime(){
 
 void BTTF::drawDate(){
     MiteOS::display.setFont(&FONT_7_SEG_MEDIUM);
-    MiteOS::display.setTextColor(DARKMODE ? GxEPD_BLACK : GxEPD_WHITE);
+    MiteOS::display.setTextColor(BACKGROUND_COLOR);
 
     String month = monthShortStr(MiteOS::currentTime.Month);
     printCentered(35, 103, month);
@@ -69,7 +69,7 @@ void BTTF::drawDate(){
 
 void BTTF::drawBattery(){
     MiteOS::display.setFont(&FONT_7_SEG_MEDIUM);
-    MiteOS::display.setTextColor(DARKMODE ? GxEPD_BLACK : GxEPD_WHITE);
+    MiteOS::display.setTextColor(BACKGROUND_COLOR);
 
     
     int8_t bat = MiteOS::getBatteryPercentage();
@@ -82,7 +82,7 @@ void BTTF::drawBattery(){
 
 void BTTF::drawSteps(){
     MiteOS::display.setFont(&FONT_7_SEG_MEDIUM);
-    MiteOS::display.setTextColor(DARKMODE ? GxEPD_BLACK : GxEPD_WHITE);
+    MiteOS::display.setTextColor(BACKGROUND_COLOR);
 
     uint32_t steps = accSensor.getCounter();
     String stepStr = String(steps);

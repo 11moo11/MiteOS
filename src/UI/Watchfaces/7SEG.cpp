@@ -81,13 +81,13 @@ void SEG7::drawSteps(){
       accSensor.resetStepCounter();
     }
     uint32_t stepCount = accSensor.getCounter();
-    MiteOS::display.drawBitmap(10, 165, steps, 19, 23, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+    MiteOS::display.drawBitmap(10, 165, steps, 19, 23, FOREGROUND_COLOR);
     MiteOS::display.setCursor(35, 190);
     MiteOS::display.println(stepCount);
 }
 void SEG7::drawBattery(){
-    MiteOS::display.drawBitmap(154, 73, battery, 37, 21, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
-    MiteOS::display.fillRect(159, 78, 27, BATTERY_SEGMENT_HEIGHT, DARKMODE ? GxEPD_BLACK : GxEPD_WHITE);//clear battery segments
+    MiteOS::display.drawBitmap(154, 73, battery, 37, 21, FOREGROUND_COLOR);
+    MiteOS::display.fillRect(159, 78, 27, BATTERY_SEGMENT_HEIGHT, BACKGROUND_COLOR);//clear battery segments
     int8_t batteryLevel = 0;
     float VBAT = MiteOS::getBatteryVoltage();
     if(VBAT > 4.1){
@@ -104,7 +104,7 @@ void SEG7::drawBattery(){
     }
 
     for(int8_t batterySegments = 0; batterySegments < batteryLevel; batterySegments++){
-        MiteOS::display.fillRect(159 + (batterySegments * BATTERY_SEGMENT_SPACING), 78, BATTERY_SEGMENT_WIDTH, BATTERY_SEGMENT_HEIGHT, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+        MiteOS::display.fillRect(159 + (batterySegments * BATTERY_SEGMENT_SPACING), 78, BATTERY_SEGMENT_WIDTH, BATTERY_SEGMENT_HEIGHT, FOREGROUND_COLOR);
     }
 }
 

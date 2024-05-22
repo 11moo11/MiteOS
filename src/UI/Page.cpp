@@ -6,7 +6,7 @@
 
 void Page::showMenu(char *menuItems[], bool partialRefresh) {
 	MiteOS::display.setFullWindow();
-	MiteOS::display.fillScreen(GxEPD_BLACK);
+	MiteOS::display.fillScreen(BACKGROUND_COLOR);
 	MiteOS::display.setFont(&FreeMonoBold9pt7b);
 	
 	int16_t x1, y1;
@@ -18,11 +18,11 @@ void Page::showMenu(char *menuItems[], bool partialRefresh) {
 		MiteOS::display.setCursor(0, yPos);
 		if (i == pageData.menuIndex) {
 			MiteOS::display.getTextBounds(menuItems[i], 0, yPos, &x1, &y1, &w, &h);
-			MiteOS::display.fillRect(x1 - 1, y1 - 10, 200, h + 15, GxEPD_WHITE);
-			MiteOS::display.setTextColor(GxEPD_BLACK);
+			MiteOS::display.fillRect(x1 - 1, y1 - 10, 200, h + 15, FOREGROUND_COLOR);
+			MiteOS::display.setTextColor(BACKGROUND_COLOR);
 			MiteOS::display.println(menuItems[i]);
 		} else {
-			MiteOS::display.setTextColor(GxEPD_WHITE);
+			MiteOS::display.setTextColor(FOREGROUND_COLOR);
 			MiteOS::display.println(menuItems[i]);
 		}
 	}

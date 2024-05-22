@@ -11,8 +11,8 @@ void WatchfacePage::drawPage() {
 		Serial.println("Drawing Watchface");
 		#endif
 
-    MiteOS::display.fillScreen(DARKMODE ? GxEPD_BLACK : GxEPD_WHITE);
-    MiteOS::display.setTextColor(DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+    MiteOS::display.fillScreen(BACKGROUND_COLOR);
+    MiteOS::display.setTextColor(FOREGROUND_COLOR);
 
     if(watchFaceId == 0) {
       SEG7().draw();
@@ -22,21 +22,17 @@ void WatchfacePage::drawPage() {
 }
 
 bool WatchfacePage::onButtonPressed(uint8_t buttonIndex) {
-  if(accSensor.isDoubleClick()) {
-    
-  }else{
-    if(buttonIndex == BTN_BACK) {
-      if(DARKMODE) {
-        DARKMODE = false;
-      }else{
-        watchFaceId++;
-        DARKMODE = true;
-        if(watchFaceId > 1) watchFaceId = 0;
-      }
-      //DARKMODE = !DARKMODE;
-      //MiteOS::refreshPage();
-      return true;
+  if(buttonIndex == BTN_BACK) {
+    if(DARKMODE) {
+      DARKMODE = false;
+    }else{
+      watchFaceId++;
+      DARKMODE = true;
+      if(watchFaceId > 1) watchFaceId = 0;
     }
+    //DARKMODE = !DARKMODE;
+    //MiteOS::refreshPage();
+    return true;
   }
 	return false;
 }

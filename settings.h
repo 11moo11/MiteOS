@@ -18,16 +18,18 @@
 #define TEMP_UNIT "metric" //metric = Celsius , imperial = Fahrenheit
 #define TEMP_LANG "en"
 #define WEATHER_UPDATE_INTERVAL 30 //must be greater than 5, measured in minutes
+
 //NTP Settings
 #define NTP_SERVER "pool.ntp.org"
 #define GMT_OFFSET_SEC 3600 * -5 //New York is UTC -5 EST, -4 EDT, will be overwritten by weather data
 
+// Darkmode Settings
 #define ENABLE_AUTO_DARKMODE true // Makes the clock automatically switch between dark and lightmode depending on the time
 #define INVERSE_DARKMODE false // Defines whether the timespan will make it darkmode or lightmode
-#define DARKMODE_START_H 20
+#define DARKMODE_START_H 23
 #define DARKMODE_START_M 0
-#define DARKMODE_END_H 7
-#define DARKMODE_END_M 0
+#define DARKMODE_END_H 6	
+#define DARKMODE_END_M 30
 
 MiteSettings settings {
 	#ifdef CITY_ID

@@ -17,10 +17,16 @@ RTC_DATA_ATTR tmElements_t osBootTime;
 RTC_DATA_ATTR PageData pageData;
 RTC_DATA_ATTR bool DARKMODE;
 
+RTC_DATA_ATTR AlarmData timer;
+RTC_DATA_ATTR AlarmData alarms[2];
+
 WatchfacePage watchfacePage;
+TimerPage timerPage;
 Page* pages[] = {
-	&watchfacePage
+	&watchfacePage,
+	&timerPage
 };
+#define PAGE_COUNT 2
 
 tmElements_t MiteOS::currentTime;
 
@@ -38,12 +44,15 @@ void MiteOS::init() {
 
 	// Init the display since is almost sure we will use it
 	display.epd2.initWatchy();
+	RTC.read(currentTime);
 
 	switch (wakeup_reason) {
 		case ESP_SLEEP_WAKEUP_EXT0: // RTC Alarm
 			#ifdef DEBUG
 			Serial.println("RTC Alarm");
 			#endif
+			checkTime();
+
 			//vibMotor(75, 4);
 			refreshPage();
 			break;
@@ -62,7 +71,6 @@ void MiteOS::init() {
 			_bmaConfig();
 			pageData.pageIndex = 0; // Set Page to Watchface
 			gmtTimeOffset = settings.gmtOffset;
-			updateTime();
 			initDarkmode();
 
 			RTC.read(osBootTime);
@@ -80,7 +88,7 @@ void MiteOS::init() {
 void MiteOS::deepSleep() {
 	display.hibernate();
 	RTC.clearAlarm();        // resets the alarm flag in the RTC
-
+	
 	// Set GPIOs 0-39 to input to avoid power leaking out
 	const uint64_t ignore = 0b11110001000000110000100111000010; // Ignore some GPIOs due to resets
 	for (int i = 0; i < GPIO_NUM_MAX; i++) {
@@ -124,12 +132,15 @@ void MiteOS::handleButtonPress(uint8_t buttonIndex) {
 		}
 	}
 
-	// TODO: OS Level handling
+	if(buttonIndex == BTN_MENU) {
+		pageData.pageIndex += 1;
+		if(pageData.pageIndex >= PAGE_COUNT) pageData.pageIndex = 0;
+		refreshPage();
+		return;
+	}
 }
 
 void MiteOS::refreshPage(bool partialRefresh) {
-	updateTime();
-	
 	display.setFullWindow();
 	// At this point it is sure we are going to update
 	display.epd2.asyncPowerOn();
@@ -140,6 +151,9 @@ void MiteOS::refreshPage(bool partialRefresh) {
 		#ifdef DEBUG
 		Serial.println("Rendering Page " + String(pageData.pageIndex));
 		#endif
+		MiteOS::display.setFullWindow();
+		MiteOS::display.fillScreen(BACKGROUND_COLOR);
+		MiteOS::display.setTextColor(FOREGROUND_COLOR);
 		
 		pages[pageData.pageIndex]->drawPage();
 	}
@@ -147,9 +161,7 @@ void MiteOS::refreshPage(bool partialRefresh) {
 	MiteOS::display.display(partialRefresh);
 }
 
-void MiteOS::updateTime() {
-	RTC.read(currentTime);
-
+void MiteOS::checkTime() {
 	if (settings.vibrateOClock) {
 		if (currentTime.Minute == 0) {
 			// The RTC wakes us up once per minute
@@ -163,6 +175,13 @@ void MiteOS::updateTime() {
 		}else if(MiteOS::currentTime.Hour == settings.darkmodeEndH && MiteOS::currentTime.Minute == settings.darkmodeEndM) {
 			DARKMODE = settings.inverseDarkMode;
 		}
+	}
+
+	if(timer.triggered
+	|| (timer.enableAlarm && currentTime.Hour == timer.hour && currentTime.Minute == timer.minute)) {
+		timer.triggered = true;
+		pageData.pageIndex = 1;
+		vibMotor(100, 20);
 	}
 }
 
@@ -323,4 +342,32 @@ float MiteOS::getBatteryPercentage() {
     percentage = min((uint8_t) 100, percentage);
     percentage = max((uint8_t) 0, percentage);
     return percentage;
+}
+
+void MiteOS::drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]) {
+	switch(buttonIndex) {
+		case BTN_BACK:
+			MiteOS::display.drawBitmap(10, 10, bitmap, 20, 20, FOREGROUND_COLOR);
+			break;
+		
+		case BTN_MENU:
+			MiteOS::display.drawBitmap(10, 170, bitmap, 20, 20, FOREGROUND_COLOR);
+			break;
+
+		case BTN_UP:
+			MiteOS::display.drawBitmap(170, 10, bitmap, 20, 20, FOREGROUND_COLOR);
+			break;
+		
+		case BTN_DOWN:
+			MiteOS::display.drawBitmap(170, 170, bitmap, 20, 20, FOREGROUND_COLOR);
+			break;
+	}
+}
+
+void MiteOS::drawCentreString(const char *buf, int x, int y) {
+    int16_t x1, y1;
+    uint16_t w, h;
+    display.getTextBounds(buf, x, y, &x1, &y1, &w, &h); //calc width of new string
+    display.setCursor(x - w / 2, y);
+    display.print(buf);
 }

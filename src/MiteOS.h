@@ -1,7 +1,7 @@
 #ifndef MITEOS_H
 #define MITEOS_H
 
-#define DEBUG
+//#define DEBUG
 
 #include <Arduino.h>
 #include <bma.h>
@@ -14,6 +14,7 @@
 // Pages
 #include "UI/Page.h"
 #include "UI/WatchfacePage.h"
+#include "UI/TimerPage.h"
 
 typedef struct MiteSettings {
 	// Weather Settings
@@ -49,6 +50,13 @@ typedef struct WeatherData {
 	tmElements_t sunset;
 } WeatherData;
 
+typedef struct AlarmData {
+	bool enableAlarm;
+	bool triggered;
+	int8_t hour;
+	int8_t minute;
+} AlarmData;
+
 class MiteOS {
 	public:
 		MiteSettings settings;
@@ -66,9 +74,12 @@ class MiteOS {
   		void vibMotor(uint8_t intervalMs = 100, uint8_t length = 20);
   		static float getBatteryVoltage();
 		static float getBatteryPercentage();
+
+		static void drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]);
+		static void drawCentreString(const char *buf, int x, int y);
 	
 	private:
-		void updateTime();  
+		void checkTime();  
 		void _bmaConfig();
 		static uint16_t _readRegister(uint8_t address, uint8_t reg, uint8_t *data, uint16_t len);
 		static uint16_t _writeRegister(uint8_t address, uint8_t reg, uint8_t *data, uint16_t len);
@@ -81,5 +92,11 @@ extern RTC_DATA_ATTR BMA423 accSensor;
 extern RTC_DATA_ATTR PageData pageData;
 
 extern RTC_DATA_ATTR bool DARKMODE;
+
+extern RTC_DATA_ATTR AlarmData timer;
+extern RTC_DATA_ATTR AlarmData alarms[2];
+
+#define BACKGROUND_COLOR (DARKMODE ? GxEPD_BLACK : GxEPD_WHITE)
+#define FOREGROUND_COLOR (DARKMODE ? GxEPD_WHITE : GxEPD_BLACK)
 
 #endif

@@ -8,6 +8,9 @@
 #define BTN_UP 3
 #define BTN_DOWN 4
 
+#define BTN_TOGGLE_BTN BTN_BACK
+#define BTN_NEXT_PAGE BTN_MENU
+
 typedef struct PageData {
   uint8_t pageIndex;
   uint8_t menuIndex;
