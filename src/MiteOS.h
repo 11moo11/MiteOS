@@ -1,6 +1,8 @@
 #ifndef MITEOS_H
 #define MITEOS_H
 
+#define MITE_OS_VER "0.0.1"
+
 //#define DEBUG
 
 #include <Arduino.h>
@@ -16,9 +18,14 @@
 #include "UI/WatchfacePage.h"
 #include "UI/TimerPage.h"
 #include "UI/SettingsPage.h"
+#include "UI/AboutPage.h"
 
+#define GLOBAL_PAGE_WATCHFACE 0
+#define GLOBAL_PAGE_TIMER 1
+#define GLOBAL_PAGE_SETTINGS 2
+#define GLOBAL_PAGE_ABOUT 3
 
-#define PAGE_SETTINGS 2
+#define PAGE_COUNT 4
 
 #define ADDITONAL_BUTTON_CHECK_DURATION 3000
 #define BUTTON_PRESS_REPEAT_DELAY 150
@@ -87,7 +94,9 @@ class MiteOS {
 
 		static void drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]);
 		static void drawCentreString(const char *buf, int x, int y);
-	
+		
+		static uint8_t getBoardRevision();
+		
 	private:
 		void checkTime();  
 		void _bmaConfig();
@@ -102,6 +111,7 @@ extern RTC_DATA_ATTR BMA423 accSensor;
 //extern RTC_DATA_ATTR bool WIFI_CONFIGURED;
 //extern RTC_DATA_ATTR bool BLE_CONFIGURED;
 extern RTC_DATA_ATTR PageData pageData;
+extern RTC_DATA_ATTR tmElements_t osBootTime;
 
 extern RTC_DATA_ATTR bool DARKMODE;
 

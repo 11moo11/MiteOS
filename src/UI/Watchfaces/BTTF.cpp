@@ -14,81 +14,81 @@
 #define YEAR_OFFSET 10
 
 void BTTF::draw(){
-    MiteOS::display.drawBitmap(0, 0, bttf, 200, 200, FOREGROUND_COLOR);
-    drawTime();
-    drawDate();
-    drawSteps();
-    drawBattery();
+	mDisplay.drawBitmap(0, 0, bttf, 200, 200, FOREGROUND_COLOR);
+	drawTime();
+	drawDate();
+	drawSteps();
+	drawBattery();
 }
 
 
 void BTTF::printCentered(uint16_t x, uint16_t y, String text){
-    int16_t  x1, y1;
-    uint16_t w, h;
+	int16_t  x1, y1;
+	uint16_t w, h;
 
-    MiteOS::display.getTextBounds(text, 40, 100, &x1, &y1, &w, &h);
-    MiteOS::display.setCursor(x-w/2, y+h/2);
-    MiteOS::display.println(text);
+	mDisplay.getTextBounds(text, 40, 100, &x1, &y1, &w, &h);
+	mDisplay.setCursor(x-w/2, y+h/2);
+	mDisplay.println(text);
 }
 
 
 void BTTF::drawTime(){
-    MiteOS::display.setFont(&FONT_7_SEG_LARGE);
-    MiteOS::display.setTextColor(BACKGROUND_COLOR);
+	mDisplay.setFont(&FONT_7_SEG_LARGE);
+	mDisplay.setTextColor(BACKGROUND_COLOR);
 
-    String hourStr = String(MiteOS::currentTime.Hour);
-    hourStr = MiteOS::currentTime.Hour < 10 ? "0" + hourStr : hourStr;
-    printCentered(101, 42, hourStr);
+	String hourStr = String(MiteOS::currentTime.Hour);
+	hourStr = MiteOS::currentTime.Hour < 10 ? "0" + hourStr : hourStr;
+	printCentered(101, 42, hourStr);
 
-    String minStr = String(MiteOS::currentTime.Minute);
-    minStr = MiteOS::currentTime.Minute < 10 ? "0" + minStr : minStr;
-    printCentered(165, 42, minStr);
+	String minStr = String(MiteOS::currentTime.Minute);
+	minStr = MiteOS::currentTime.Minute < 10 ? "0" + minStr : minStr;
+	printCentered(165, 42, minStr);
 }
 
 
 void BTTF::drawDate(){
-    MiteOS::display.setFont(&FONT_7_SEG_MEDIUM);
-    MiteOS::display.setTextColor(BACKGROUND_COLOR);
+	mDisplay.setFont(&FONT_7_SEG_MEDIUM);
+	mDisplay.setTextColor(BACKGROUND_COLOR);
 
-    String month = monthShortStr(MiteOS::currentTime.Month);
-    printCentered(35, 103, month);
+	String month = monthShortStr(MiteOS::currentTime.Month);
+	printCentered(35, 103, month);
 
-    String dayStr = String(MiteOS::currentTime.Day);
-    dayStr = MiteOS::currentTime.Day < 10 ? "0" + dayStr : dayStr;
-    printCentered(94, 103, dayStr);
+	String dayStr = String(MiteOS::currentTime.Day);
+	dayStr = MiteOS::currentTime.Day < 10 ? "0" + dayStr : dayStr;
+	printCentered(94, 103, dayStr);
 
-    //if(alarm_timer < 0){
-        String yearStr = String(1970 + MiteOS::currentTime.Year + YEAR_OFFSET);
-        printCentered(157, 103, yearStr);
-    //} else {
-    //    String alarm_str = "T-" + String(alarm_timer);
-    //    printCentered(157, 103, alarm_str);
-    //}
+	//if(alarm_timer < 0){
+		String yearStr = String(1970 + MiteOS::currentTime.Year + YEAR_OFFSET);
+		printCentered(157, 103, yearStr);
+	//} else {
+	//    String alarm_str = "T-" + String(alarm_timer);
+	//    printCentered(157, 103, alarm_str);
+	//}
 }
 
 
 void BTTF::drawBattery(){
-    MiteOS::display.setFont(&FONT_7_SEG_MEDIUM);
-    MiteOS::display.setTextColor(BACKGROUND_COLOR);
+	mDisplay.setFont(&FONT_7_SEG_MEDIUM);
+	mDisplay.setTextColor(BACKGROUND_COLOR);
 
-    
-    int8_t bat = MiteOS::getBatteryPercentage();
-    String batStr = String(bat);
-    batStr = bat < 10 ? "0" + batStr : batStr;
-    batStr = bat < 100 ? "0" + batStr : batStr;
-    printCentered(151, 169, batStr);
+	
+	int8_t bat = MiteOS::getBatteryPercentage();
+	String batStr = String(bat);
+	batStr = bat < 10 ? "0" + batStr : batStr;
+	batStr = bat < 100 ? "0" + batStr : batStr;
+	printCentered(151, 169, batStr);
 }
 
 
 void BTTF::drawSteps(){
-    MiteOS::display.setFont(&FONT_7_SEG_MEDIUM);
-    MiteOS::display.setTextColor(BACKGROUND_COLOR);
+	mDisplay.setFont(&FONT_7_SEG_MEDIUM);
+	mDisplay.setTextColor(BACKGROUND_COLOR);
 
-    uint32_t steps = accSensor.getCounter();
-    String stepStr = String(steps);
-    for(int i=1; i<5; i++){
-        stepStr = steps < pow(10, i) ? "0" + stepStr : stepStr;
-    }
+	uint32_t steps = accSensor.getCounter();
+	String stepStr = String(steps);
+	for(int i=1; i<5; i++){
+		stepStr = steps < pow(10, i) ? "0" + stepStr : stepStr;
+	}
 
-    printCentered(62, 169, stepStr);
+	printCentered(62, 169, stepStr);
 }

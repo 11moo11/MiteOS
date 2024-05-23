@@ -21,59 +21,59 @@ void SEG7::draw() {
     drawWeather();
     drawBattery();
       
-    //MiteOS::display.drawBitmap(120, 77, WIFI_CONFIGURED ? wifi : wifioff, 26, 18, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+    //mDisplay.drawBitmap(120, 77, WIFI_CONFIGURED ? wifi : wifioff, 26, 18, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
     //if(BLE_CONFIGURED){
-    //    MiteOS::display.drawBitmap(100, 75, bluetooth, 13, 21, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+    //    mDisplay.drawBitmap(100, 75, bluetooth, 13, 21, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
     //}
 }
 
 void SEG7::drawTime() {
-    MiteOS::display.setFont(&DSEG7_Classic_Bold_53);
-    MiteOS::display.setCursor(5, 53+5);
-    int displayHour;
+    mDisplay.setFont(&DSEG7_Classic_Bold_53);
+    mDisplay.setCursor(5, 53+5);
+    int mDisplayHour;
     if(HOUR_12_24==12){
-      displayHour = ((MiteOS::currentTime.Hour+11)%12)+1;
+      mDisplayHour = ((MiteOS::currentTime.Hour+11)%12)+1;
     } else {
-      displayHour = MiteOS::currentTime.Hour;
+      mDisplayHour = MiteOS::currentTime.Hour;
     }
-    if(displayHour < 10){
-        MiteOS::display.print("0");
+    if(mDisplayHour < 10){
+        mDisplay.print("0");
     }
-    MiteOS::display.print(displayHour);
-    MiteOS::display.print(":");
+    mDisplay.print(mDisplayHour);
+    mDisplay.print(":");
     if(MiteOS::currentTime.Minute < 10){
-        MiteOS::display.print("0");
+        mDisplay.print("0");
     }
-    MiteOS::display.println(MiteOS::currentTime.Minute);
+    mDisplay.println(MiteOS::currentTime.Minute);
 }
 
 void SEG7::drawDate(){
-    MiteOS::display.setFont(&Seven_Segment10pt7b);
+    mDisplay.setFont(&Seven_Segment10pt7b);
 
     int16_t  x1, y1;
     uint16_t w, h;
 
     String dayOfWeek = dayStr(MiteOS::currentTime.Wday);
-    MiteOS::display.getTextBounds(dayOfWeek, 5, 85, &x1, &y1, &w, &h);
+    mDisplay.getTextBounds(dayOfWeek, 5, 85, &x1, &y1, &w, &h);
     if(MiteOS::currentTime.Wday == 4){
         w = w - 5;
     }
-    MiteOS::display.setCursor(85 - w, 85);
-    MiteOS::display.println(dayOfWeek);
+    mDisplay.setCursor(85 - w, 85);
+    mDisplay.println(dayOfWeek);
 
     String month = monthShortStr(MiteOS::currentTime.Month);
-    MiteOS::display.getTextBounds(month, 60, 110, &x1, &y1, &w, &h);
-    MiteOS::display.setCursor(85 - w, 110);
-    MiteOS::display.println(month);
+    mDisplay.getTextBounds(month, 60, 110, &x1, &y1, &w, &h);
+    mDisplay.setCursor(85 - w, 110);
+    mDisplay.println(month);
 
-    MiteOS::display.setFont(&DSEG7_Classic_Bold_25);
-    MiteOS::display.setCursor(5, 120);
+    mDisplay.setFont(&DSEG7_Classic_Bold_25);
+    mDisplay.setCursor(5, 120);
     if(MiteOS::currentTime.Day < 10){
-    	MiteOS::display.print("0");
+    	mDisplay.print("0");
     }
-    MiteOS::display.println(MiteOS::currentTime.Day);
-    MiteOS::display.setCursor(5, 150);
-    MiteOS::display.println(tmYearToCalendar(MiteOS::currentTime.Year));// offset from 1970, since year is stored in uint8_t
+    mDisplay.println(MiteOS::currentTime.Day);
+    mDisplay.setCursor(5, 150);
+    mDisplay.println(tmYearToCalendar(MiteOS::currentTime.Year));// offset from 1970, since year is stored in uint8_t
 }
 void SEG7::drawSteps(){
     // reset step counter at midnight
@@ -81,13 +81,13 @@ void SEG7::drawSteps(){
       accSensor.resetStepCounter();
     }
     uint32_t stepCount = accSensor.getCounter();
-    MiteOS::display.drawBitmap(10, 165, steps, 19, 23, FOREGROUND_COLOR);
-    MiteOS::display.setCursor(35, 190);
-    MiteOS::display.println(stepCount);
+    mDisplay.drawBitmap(10, 165, steps, 19, 23, FOREGROUND_COLOR);
+    mDisplay.setCursor(35, 190);
+    mDisplay.println(stepCount);
 }
 void SEG7::drawBattery(){
-    MiteOS::display.drawBitmap(154, 73, battery, 37, 21, FOREGROUND_COLOR);
-    MiteOS::display.fillRect(159, 78, 27, BATTERY_SEGMENT_HEIGHT, BACKGROUND_COLOR);//clear battery segments
+    mDisplay.drawBitmap(154, 73, battery, 37, 21, FOREGROUND_COLOR);
+    mDisplay.fillRect(159, 78, 27, BATTERY_SEGMENT_HEIGHT, BACKGROUND_COLOR);//clear battery segments
     int8_t batteryLevel = 0;
     float VBAT = MiteOS::getBatteryVoltage();
     if(VBAT > 4.1){
@@ -104,7 +104,7 @@ void SEG7::drawBattery(){
     }
 
     for(int8_t batterySegments = 0; batterySegments < batteryLevel; batterySegments++){
-        MiteOS::display.fillRect(159 + (batterySegments * BATTERY_SEGMENT_SPACING), 78, BATTERY_SEGMENT_WIDTH, BATTERY_SEGMENT_HEIGHT, FOREGROUND_COLOR);
+        mDisplay.fillRect(159 + (batterySegments * BATTERY_SEGMENT_SPACING), 78, BATTERY_SEGMENT_WIDTH, BATTERY_SEGMENT_HEIGHT, FOREGROUND_COLOR);
     }
 }
 
@@ -115,19 +115,19 @@ void SEG7::drawWeather(){
     int8_t temperature = currentWeather.temperature;
     int16_t weatherConditionCode = currentWeather.weatherConditionCode;
 
-    MiteOS::display.setFont(&DSEG7_Classic_Regular_39);
+    mDisplay.setFont(&DSEG7_Classic_Regular_39);
     int16_t  x1, y1;
     uint16_t w, h;
-    MiteOS::display.getTextBounds(String(temperature), 0, 0, &x1, &y1, &w, &h);
+    mDisplay.getTextBounds(String(temperature), 0, 0, &x1, &y1, &w, &h);
     if(159 - w - x1 > 87){
-        MiteOS::display.setCursor(159 - w - x1, 150);
+        mDisplay.setCursor(159 - w - x1, 150);
     }else{
-        MiteOS::display.setFont(&DSEG7_Classic_Bold_25);
-        MiteOS::display.getTextBounds(String(temperature), 0, 0, &x1, &y1, &w, &h);
-        MiteOS::display.setCursor(159 - w - x1, 136);
+        mDisplay.setFont(&DSEG7_Classic_Bold_25);
+        mDisplay.getTextBounds(String(temperature), 0, 0, &x1, &y1, &w, &h);
+        mDisplay.setCursor(159 - w - x1, 136);
     }
-    MiteOS::display.println(temperature);
-    MiteOS::display.drawBitmap(165, 110, currentWeather.isMetric ? celsius : fahrenheit, 26, 20, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+    mDisplay.println(temperature);
+    mDisplay.drawBitmap(165, 110, currentWeather.isMetric ? celsius : fahrenheit, 26, 20, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
     const unsigned char* weatherIcon;
 
     if(WIFI_CONFIGURED){
@@ -154,6 +154,6 @@ void SEG7::drawWeather(){
       weatherIcon = chip;
     }
     
-    MiteOS::display.drawBitmap(145, 158, weatherIcon, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+    mDisplay.drawBitmap(145, 158, weatherIcon, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
 		*/
 }

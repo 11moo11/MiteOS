@@ -90,8 +90,8 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 }
 
 void TimerPage::drawTime() {
-	MiteOS::display.setFont(&DSEG7_Classic_Regular_39);
-
+	mDisplay.setFont(&DSEG7_Classic_Regular_39);
+	
 	if(timer.triggered) {
 		MiteOS::drawCentreString("ALARM", 100, 110);
 	}else{
@@ -99,28 +99,28 @@ void TimerPage::drawTime() {
 		if(timer.enableAlarm) {
 			minutes = (timer.hour - MiteOS::currentTime.Hour) * 60 + (timer.minute - MiteOS::currentTime.Minute);
 		}
-
+		
 		int16_t  x1, y1;
 		uint16_t w, h;
 		String currentTime = String(minutes);
 		MiteOS::drawCentreString(currentTime.c_str(), 100, 110);
-
-		MiteOS::display.setFont(&Seven_Segment10pt7b);
+		
+		mDisplay.setFont(&Seven_Segment10pt7b);
 		if(timer.enableAlarm) {
 			MiteOS::drawCentreString("Alarm in:", 100, 60);
 		} else {
 			if(pageData.number1 <= PAGE_MINUTES) {
 				String right_border = (pageData.number1 == PAGE_5MINUTES ? "5" : "1");
-				MiteOS::display.setCursor(180, 100);
-				MiteOS::display.println(right_border);
+				mDisplay.setCursor(180, 100);
+				mDisplay.println(right_border);
 			}
 		}
-
+		
 		MiteOS::drawCentreString("MIN", 100, 140);
 		/*
-		MiteOS::display.setFont(&DSEG7_Classic_Bold_25);
-		MiteOS::display.setCursor(10, 30);
-		MiteOS::display.println(String(MiteOS::getBatteryVoltage()) + "V");
+		mDisplay.setFont(&DSEG7_Classic_Bold_25);
+		mDisplay.setCursor(10, 30);
+		mDisplay.println(String(MiteOS::getBatteryVoltage()) + "V");
 		*/
 	}
 }
@@ -142,14 +142,14 @@ void TimerPage::drawIcons() {
 
 void TimerPage::startTimer() {
 	int32_t hour = pageData.number3 / 60, minute = pageData.number3 % 60;
-
+	
 	timer.hour = MiteOS::currentTime.Hour + hour;
 	timer.minute = MiteOS::currentTime.Minute + minute;
 	while(timer.minute > 60) {
 		timer.hour += 1;
 		timer.minute -= 60;
 	}
-
+	
 	pageData.number1 = PAGE_START_MENU;
 	timer.enableAlarm = true;
 }

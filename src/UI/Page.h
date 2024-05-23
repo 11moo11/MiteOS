@@ -12,6 +12,9 @@
 #define BTN_NEXT_PAGE BTN_MENU
 #define BTN_CONFIRM BTN_MENU
 
+#define mDisplay MiteOS::display
+#define mRTC MiteOS::RTC
+
 typedef struct PageData {
   uint8_t pageIndex;
   uint8_t menuIndex;

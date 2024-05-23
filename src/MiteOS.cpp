@@ -20,15 +20,17 @@ RTC_DATA_ATTR bool DARKMODE;
 RTC_DATA_ATTR AlarmData timer;
 RTC_DATA_ATTR AlarmData alarms[2];
 
+
 WatchfacePage watchfacePage;
 TimerPage timerPage;
 SettingsPage settingsPage;
+AboutPage aboutPage;
 Page* pages[] = {
 	&watchfacePage,
 	&timerPage,
-	&settingsPage
+	&settingsPage,
+	&aboutPage
 };
-#define PAGE_COUNT 3
 
 tmElements_t MiteOS::currentTime;
 
@@ -232,14 +234,14 @@ void MiteOS::refreshPage(bool partialRefresh) {
 		#ifdef DEBUG
 		Serial.println("Rendering Page " + String(pageData.pageIndex));
 		#endif
-		MiteOS::display.setFullWindow();
-		MiteOS::display.fillScreen(BACKGROUND_COLOR);
-		MiteOS::display.setTextColor(FOREGROUND_COLOR);
+		display.setFullWindow();
+		display.fillScreen(BACKGROUND_COLOR);
+		display.setTextColor(FOREGROUND_COLOR);
 		
 		pages[pageData.pageIndex]->drawPage();
 	}
 	
-	MiteOS::display.display(partialRefresh);
+	display.display(partialRefresh);
 }
 
 void MiteOS::showPage(uint8_t pageIndex) {
@@ -438,19 +440,19 @@ float MiteOS::getBatteryPercentage() {
 void MiteOS::drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]) {
 	switch(buttonIndex) {
 		case BTN_BACK:
-			MiteOS::display.drawBitmap(10, 10, bitmap, 20, 20, FOREGROUND_COLOR);
+			display.drawBitmap(10, 10, bitmap, 20, 20, FOREGROUND_COLOR);
 			break;
 		
 		case BTN_MENU:
-			MiteOS::display.drawBitmap(10, 170, bitmap, 20, 20, FOREGROUND_COLOR);
+			display.drawBitmap(10, 170, bitmap, 20, 20, FOREGROUND_COLOR);
 			break;
 
 		case BTN_UP:
-			MiteOS::display.drawBitmap(170, 10, bitmap, 20, 20, FOREGROUND_COLOR);
+			display.drawBitmap(170, 10, bitmap, 20, 20, FOREGROUND_COLOR);
 			break;
 		
 		case BTN_DOWN:
-			MiteOS::display.drawBitmap(170, 170, bitmap, 20, 20, FOREGROUND_COLOR);
+			display.drawBitmap(170, 170, bitmap, 20, 20, FOREGROUND_COLOR);
 			break;
 	}
 }
@@ -461,4 +463,30 @@ void MiteOS::drawCentreString(const char *buf, int x, int y) {
     display.getTextBounds(buf, x, y, &x1, &y1, &w, &h); //calc width of new string
     display.setCursor(x - w / 2, y);
     display.print(buf);
+}
+
+uint8_t MiteOS::getBoardRevision() {
+	esp_chip_info_t chip_info;
+	esp_chip_info(&chip_info);
+	
+	if(chip_info.model == CHIP_ESP32){ //Revision 1.0 - 2.0
+		Wire.beginTransmission(0x68); //v1.0 has DS3231
+		if (Wire.endTransmission() == 0){
+			return 10;
+		}
+		delay(1);
+		Wire.beginTransmission(0x51); //v1.5 and v2.0 have PCF8563
+		if (Wire.endTransmission() == 0){
+			pinMode(35, INPUT);
+			if(digitalRead(35) == 0){
+				return 20; //in rev 2.0, pin 35 is BTN 3 and has a pulldown
+			}else{
+				return 15; //in rev 1.5, pin 35 is the battery ADC
+			}
+		}
+	}
+	if(chip_info.model == CHIP_ESP32S3){ //Revision 3.0
+		return 30;
+	}
+	return -1;
 }

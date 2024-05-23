@@ -13,8 +13,8 @@ void WatchfacePage::drawPage() {
 		Serial.println("Drawing Watchface");
 		#endif
 		
-		MiteOS::display.fillScreen(BACKGROUND_COLOR);
-		MiteOS::display.setTextColor(FOREGROUND_COLOR);
+		mDisplay.fillScreen(BACKGROUND_COLOR);
+		mDisplay.setTextColor(FOREGROUND_COLOR);
 		
 		if(watchFaceId == 0) {
 			SEG7().draw();
@@ -38,7 +38,7 @@ bool WatchfacePage::onButtonPressed(uint8_t buttonIndex) {
 	}
 	
 	if(buttonIndex == BTN_UP) {
-		MiteOS::showPage(PAGE_SETTINGS);
+		MiteOS::showPage(GLOBAL_PAGE_SETTINGS);
 		return true;
 	}
 	return false;
