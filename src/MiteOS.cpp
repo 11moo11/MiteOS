@@ -4,8 +4,8 @@ WatchyRTC MiteOS::RTC;
 GxEPD2_BW<WatchyDisplay, WatchyDisplay::HEIGHT> MiteOS::display(WatchyDisplay{});
 
 RTC_DATA_ATTR BMA423 accSensor;
-//RTC_DATA_ATTR bool WIFI_CONFIGURED;
-//RTC_DATA_ATTR bool BLE_CONFIGURED;
+RTC_DATA_ATTR bool WIFI_CONFIGURED;
+RTC_DATA_ATTR bool BLE_CONFIGURED;
 //RTC_DATA_ATTR WeatherData currentWeather;
 //RTC_DATA_ATTR int weatherIntervalCounter = -1;
 RTC_DATA_ATTR long gmtTimeOffset = 0;
@@ -440,19 +440,19 @@ float MiteOS::getBatteryPercentage() {
 void MiteOS::drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]) {
 	switch(buttonIndex) {
 		case BTN_BACK:
-			display.drawBitmap(10, 10, bitmap, 20, 20, FOREGROUND_COLOR);
+			display.drawBitmap(5, 5, bitmap, 20, 20, FOREGROUND_COLOR);
 			break;
 		
 		case BTN_MENU:
-			display.drawBitmap(10, 170, bitmap, 20, 20, FOREGROUND_COLOR);
+			display.drawBitmap(5, 175, bitmap, 20, 20, FOREGROUND_COLOR);
 			break;
 
 		case BTN_UP:
-			display.drawBitmap(170, 10, bitmap, 20, 20, FOREGROUND_COLOR);
+			display.drawBitmap(175, 5, bitmap, 20, 20, FOREGROUND_COLOR);
 			break;
 		
 		case BTN_DOWN:
-			display.drawBitmap(170, 170, bitmap, 20, 20, FOREGROUND_COLOR);
+			display.drawBitmap(175, 175, bitmap, 20, 20, FOREGROUND_COLOR);
 			break;
 	}
 }
@@ -489,4 +489,26 @@ uint8_t MiteOS::getBoardRevision() {
 		return 30;
 	}
 	return -1;
+}
+
+
+bool MiteOS::connectWiFi() {
+	if (WL_CONNECT_FAILED ==
+		WiFi.begin()) { // WiFi not setup, you can also use hard coded credentials
+						// with WiFi.begin(SSID,PASS);
+	WIFI_CONFIGURED = false;
+	} else {
+	if (WL_CONNECTED ==
+		WiFi.waitForConnectResult()) { // attempt to connect for 10s
+		//lastIPAddress = WiFi.localIP();
+		//WiFi.SSID().toCharArray(lastSSID, 30);
+		WIFI_CONFIGURED = true;
+	} else { // connection failed, time out
+		WIFI_CONFIGURED = false;
+		// turn off radios
+		WiFi.mode(WIFI_OFF);
+		btStop();
+	}
+	}
+	return WIFI_CONFIGURED;
 }

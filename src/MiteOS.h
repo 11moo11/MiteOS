@@ -88,12 +88,14 @@ class MiteOS {
 		void refreshPage(bool partialRefresh = true);
 		static void showPage(uint8_t pageIndex);
 
-  		void vibMotor(uint8_t intervalMs = 100, uint8_t length = 20);
+  		static void vibMotor(uint8_t intervalMs = 100, uint8_t length = 20);
   		static float getBatteryVoltage();
 		static float getBatteryPercentage();
 
 		static void drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]);
 		static void drawCentreString(const char *buf, int x, int y);
+		
+		static bool connectWiFi();
 		
 		static uint8_t getBoardRevision();
 		
@@ -108,8 +110,8 @@ class MiteOS {
 };
 
 extern RTC_DATA_ATTR BMA423 accSensor;
-//extern RTC_DATA_ATTR bool WIFI_CONFIGURED;
-//extern RTC_DATA_ATTR bool BLE_CONFIGURED;
+extern RTC_DATA_ATTR bool WIFI_CONFIGURED;
+extern RTC_DATA_ATTR bool BLE_CONFIGURED;
 extern RTC_DATA_ATTR PageData pageData;
 extern RTC_DATA_ATTR tmElements_t osBootTime;
 
