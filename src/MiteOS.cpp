@@ -66,6 +66,7 @@ void MiteOS::init() {
 			#endif
 			//vibMotor(75, 4);
 			handleButtonPress();
+			waitForAdditionalButtons();
 			break;
 		default: // reset
 			#ifdef DEBUG
@@ -107,6 +108,76 @@ void MiteOS::deepSleep() {
 	); // enable deep sleep wake on button press
 
 	esp_deep_sleep_start();
+}
+
+void MiteOS::waitForAdditionalButtons() {
+	bool timeout     = false;
+	long lastTimeout = millis();
+	pinMode(MENU_BTN_PIN, INPUT);
+	pinMode(BACK_BTN_PIN, INPUT);
+	pinMode(UP_BTN_PIN, INPUT);
+	pinMode(DOWN_BTN_PIN, INPUT);
+
+	// Initialize with one so they dont get registered again and need to wait the 500ms
+	unsigned long MenuBtnPressedSince = 1;
+	unsigned long BackBtnPressedFor = 1;
+	unsigned long UpBtnPressedFor = 1;
+	unsigned long DownBtnPressedFor = 1;
+
+	while (!timeout) {
+		if (millis() - lastTimeout > ADDITONAL_BUTTON_CHECK_DURATION) {
+      		timeout = true;
+    	} else {
+			if (digitalRead(MENU_BTN_PIN) == 1) {
+				lastTimeout = millis();
+				handleAdditionalButtonPress(BTN_MENU, &MenuBtnPressedSince);
+			} else {
+				MenuBtnPressedSince = 0;
+			}
+			
+			if (digitalRead(BACK_BTN_PIN) == 1) {
+				lastTimeout = millis();
+				handleAdditionalButtonPress(BTN_BACK, &BackBtnPressedFor);
+			} else {
+				BackBtnPressedFor = 0;
+			}
+			
+			if (digitalRead(UP_BTN_PIN) == 1) {
+				lastTimeout = millis();
+				handleAdditionalButtonPress(BTN_UP, &UpBtnPressedFor);
+			} else {
+				UpBtnPressedFor = 0;
+			}
+			
+			if (digitalRead(DOWN_BTN_PIN) == 1) {
+				lastTimeout = millis();
+				handleAdditionalButtonPress(BTN_DOWN, &DownBtnPressedFor);
+			} else {
+				DownBtnPressedFor = 0;
+			}
+		}
+		delay(100);
+	}
+}
+
+void MiteOS::handleAdditionalButtonPress(uint8_t buttonIndex, unsigned long *lastTime) {
+	unsigned long currentTime = millis();
+
+	unsigned long holdingTime = 0;
+	
+	if(*lastTime > 0)
+		holdingTime = currentTime - *lastTime;
+	else
+		holdingTime = BUTTON_PRESS_REPEAT_DELAY + 1;
+
+	// Only accept additional buttons once its been held for longer time or pressed again
+	if(*lastTime == 0 || holdingTime > BUTTON_PRESS_REPEAT_DELAY) {
+		while(holdingTime > (unsigned long) BUTTON_PRESS_REPEAT_DELAY) {
+			holdingTime -= (unsigned long) BUTTON_PRESS_REPEAT_DELAY;
+			handleButtonPress(buttonIndex);
+		}
+		*lastTime = currentTime;
+	}
 }
 
 void MiteOS::handleButtonPress() {

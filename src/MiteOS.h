@@ -20,6 +20,9 @@
 
 #define PAGE_SETTINGS 2
 
+#define ADDITONAL_BUTTON_CHECK_DURATION 3000
+#define BUTTON_PRESS_REPEAT_DELAY 150
+
 typedef struct MiteSettings {
 	// Weather Settings
 	String cityID;
@@ -91,6 +94,8 @@ class MiteOS {
 		static uint16_t _readRegister(uint8_t address, uint8_t reg, uint8_t *data, uint16_t len);
 		static uint16_t _writeRegister(uint8_t address, uint8_t reg, uint8_t *data, uint16_t len);
 		void initDarkmode();
+		void waitForAdditionalButtons();
+		void handleAdditionalButtonPress(uint8_t buttonIndex, unsigned long *holdingTime);
 };
 
 extern RTC_DATA_ATTR BMA423 accSensor;

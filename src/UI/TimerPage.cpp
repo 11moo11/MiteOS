@@ -4,6 +4,8 @@
 #include "../Fonts/Seven_Segment10pt7b.h"
 #include "../Fonts/icons.h"
 
+#define TIMER_SLIM_MODE true
+
 void TimerPage::drawPage() {
 	drawTime();
 	drawIcons();
@@ -24,6 +26,18 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 			}
 		}
 	}else{
+		#if TIMER_SLIM_MODE
+		if(buttonIndex == BTN_UP) {
+			pageData.number3 += 1;
+			return true;
+		}else if(buttonIndex == BTN_DOWN) {
+			pageData.number3 -= 1;
+			return true;
+		}else if(buttonIndex == BTN_TOGGLE_BTN) {
+			startTimer();
+			return true;
+		}
+		#else
 		if(pageData.number1 < 2) {
 			if(buttonIndex == BTN_UP) {
 				pageData.number3 += (pageData.number1 == 0 ? 1 : 5);
@@ -38,16 +52,7 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 			}
 		}else{
 			if(buttonIndex == BTN_UP) {
-				int32_t hour = pageData.number3 / 60, minute = pageData.number3 % 60;
-
-				timer.hour = MiteOS::currentTime.Hour + hour;
-				timer.minute = MiteOS::currentTime.Minute + minute;
-				while(timer.minute > 60) {
-					hour += 1;
-					timer.minute -= 60;
-				}
-
-				timer.enableAlarm = true;
+				startTimer();
 				return true;
 			}else if(buttonIndex == BTN_TOGGLE_BTN) {
 				pageData.number1 += 1;
@@ -55,6 +60,7 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 				return true;
 			}
 		}
+		#endif
 	}
 	return false;
 }
@@ -75,6 +81,9 @@ void TimerPage::drawTime() {
 		String currentTime = String(minutes);
 		MiteOS::drawCentreString(currentTime.c_str(), 100, 110);
 
+		#if TIMER_SLIM_MODE
+		pageData.number1 = 0;
+		#endif
 
 		MiteOS::display.setFont(&Seven_Segment10pt7b);
 		if(timer.enableAlarm) {
@@ -100,7 +109,11 @@ void TimerPage::drawIcons() {
 	if(timer.enableAlarm) {
 		MiteOS::drawButtonIcon(BTN_UP, icon_stop);
 	} else {
+		#if TIMER_SLIM_MODE
+		MiteOS::drawButtonIcon(BTN_TOGGLE_BTN, icon_play);
+		#else
 		MiteOS::drawButtonIcon(BTN_TOGGLE_BTN, icon_right);
+		#endif
 		if(pageData.number1 == 0) {
 			MiteOS::drawButtonIcon(BTN_UP, icon_plus);
 			MiteOS::drawButtonIcon(BTN_DOWN, icon_minus);
@@ -111,4 +124,17 @@ void TimerPage::drawIcons() {
 			MiteOS::drawButtonIcon(BTN_UP, icon_play);
 		}
 	}
+}
+
+void TimerPage::startTimer() {
+	int32_t hour = pageData.number3 / 60, minute = pageData.number3 % 60;
+
+	timer.hour = MiteOS::currentTime.Hour + hour;
+	timer.minute = MiteOS::currentTime.Minute + minute;
+	while(timer.minute > 60) {
+		hour += 1;
+		timer.minute -= 60;
+	}
+
+	timer.enableAlarm = true;
 }

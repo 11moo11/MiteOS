@@ -9,5 +9,6 @@ class TimerPage : public Page {
 	private:
 		void drawTime();
 		void drawIcons();
+		void startTimer();
 };
 #endif
