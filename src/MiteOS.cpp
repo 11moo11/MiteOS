@@ -156,7 +156,7 @@ void MiteOS::waitForAdditionalButtons() {
 				DownBtnPressedFor = 0;
 			}
 		}
-		delay(100);
+		delay(50);
 	}
 }
 
@@ -172,8 +172,8 @@ void MiteOS::handleAdditionalButtonPress(uint8_t buttonIndex, unsigned long *las
 
 	// Only accept additional buttons once its been held for longer time or pressed again
 	if(*lastTime == 0 || holdingTime > BUTTON_PRESS_REPEAT_DELAY) {
-		while(holdingTime > (unsigned long) BUTTON_PRESS_REPEAT_DELAY) {
-			holdingTime -= (unsigned long) BUTTON_PRESS_REPEAT_DELAY;
+		if(holdingTime > (unsigned long) BUTTON_PRESS_REPEAT_DELAY) {
+			//holdingTime -= (unsigned long) BUTTON_PRESS_REPEAT_DELAY;
 			handleButtonPress(buttonIndex);
 		}
 		*lastTime = currentTime;
@@ -208,11 +208,14 @@ void MiteOS::handleButtonPress(uint8_t buttonIndex) {
 	}
 
 	if(buttonIndex == BTN_MENU) {
+		uint8_t newIndex = pageData.pageIndex;
 		do {
-			pageData.pageIndex += 1;
-			if(pageData.pageIndex >= PAGE_COUNT) pageData.pageIndex = 0;
-		} while(! pages[pageData.pageIndex]->isPageable());
-
+			newIndex++;
+			if(newIndex >= PAGE_COUNT) newIndex = 0;
+		} while(! pages[newIndex]->isPageable());
+		
+		showPage(newIndex);
+		
 		refreshPage();
 		return;
 	}
@@ -240,6 +243,11 @@ void MiteOS::refreshPage(bool partialRefresh) {
 }
 
 void MiteOS::showPage(uint8_t pageIndex) {
+	if(pageData.pageIndex != pageIndex) { // Reset the page data when its really changed
+		pageData = PageData();
+		pages[pageIndex]->initPage();
+	}
+	
 	pageData.pageIndex = pageIndex;
 	//osInstance->refreshPage();
 }

@@ -10,6 +10,7 @@
 
 #define BTN_TOGGLE_BTN BTN_BACK
 #define BTN_NEXT_PAGE BTN_MENU
+#define BTN_CONFIRM BTN_MENU
 
 typedef struct PageData {
   uint8_t pageIndex;
@@ -27,6 +28,7 @@ typedef struct PageData {
 class Page {
   public:
     Page() {};
+    virtual void initPage() {};
 		virtual void drawPage() {};
 		virtual bool onButtonPressed(uint8_t buttonIndex) { return false; };
     virtual bool isPageable() { return true; };

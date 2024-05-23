@@ -12,10 +12,10 @@ void Page::showMenu(const char *menuItems[], uint8_t itemCount, bool partialRefr
 	int16_t x1, y1;
 	uint16_t w, h;
 	int16_t yPos;
-
+	
 	if(pageData.menuIndex >= itemCount) pageData.menuIndex = 0;
 	else if(pageData.menuIndex < 0 || pageData.menuIndex > 250) pageData.menuIndex = itemCount - 1;
-
+	
 	for (int i = 0; i < itemCount; i++) {
 		yPos = MENU_HEIGHT + (MENU_HEIGHT * i);
 		MiteOS::display.setCursor(0, yPos);
@@ -29,9 +29,9 @@ void Page::showMenu(const char *menuItems[], uint8_t itemCount, bool partialRefr
 			MiteOS::display.println(menuItems[i]);
 		}
 	}
-
+	
 	MiteOS::display.display(partialRefresh);
-
+	
 	//guiState = MAIN_MENU_STATE;
 	//alreadyInMenu = false;
 }

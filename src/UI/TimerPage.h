@@ -4,6 +4,7 @@
 
 class TimerPage : public Page {
 	public:
+		void initPage() override;
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;
 	private:
