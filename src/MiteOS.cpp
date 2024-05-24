@@ -1,25 +1,23 @@
 #include "MiteOS.h"
 
 WatchyRTC MiteOS::RTC;
-GxEPD2_BW<WatchyDisplay, WatchyDisplay::HEIGHT> MiteOS::display(WatchyDisplay{});
+WatchyDisplay MiteOS::watchyDisplay {};
+GxEPD2_BW<WatchyDisplay, WatchyDisplay::HEIGHT> MiteOS::display(watchyDisplay);
+MiteOS *MiteOS::instance;
 
 RTC_DATA_ATTR BMA423 accSensor;
-RTC_DATA_ATTR bool WIFI_CONFIGURED;
-RTC_DATA_ATTR bool BLE_CONFIGURED;
+//RTC_DATA_ATTR bool BLE_CONFIGURED;
 //RTC_DATA_ATTR WeatherData currentWeather;
 //RTC_DATA_ATTR int weatherIntervalCounter = -1;
 RTC_DATA_ATTR long gmtTimeOffset = 0;
 
 RTC_DATA_ATTR tmElements_t osBootTime;
-//RTC_DATA_ATTR uint32_t lastIPAddress;
-//RTC_DATA_ATTR char lastSSID[30];
 
 RTC_DATA_ATTR PageData pageData;
 RTC_DATA_ATTR bool DARKMODE;
 
 RTC_DATA_ATTR AlarmData timer;
 RTC_DATA_ATTR AlarmData alarms[2];
-
 
 WatchfacePage watchfacePage;
 TimerPage timerPage;
@@ -41,7 +39,7 @@ void MiteOS::init() {
 	Serial.println("Booting up");
 	#endif
 
-	osInstance = this;
+	instance = this;
 
 	esp_sleep_wakeup_cause_t wakeup_reason;
 	wakeup_reason = esp_sleep_get_wakeup_cause(); // get wake up reason
@@ -236,6 +234,8 @@ void MiteOS::refreshPage(bool partialRefresh) {
 		#endif
 		display.setFullWindow();
 		display.fillScreen(BACKGROUND_COLOR);
+		watchyDisplay.setDarkBorder(DARKMODE);
+		
 		display.setTextColor(FOREGROUND_COLOR);
 		
 		pages[pageData.pageIndex]->drawPage();
@@ -489,26 +489,4 @@ uint8_t MiteOS::getBoardRevision() {
 		return 30;
 	}
 	return -1;
-}
-
-
-bool MiteOS::connectWiFi() {
-	if (WL_CONNECT_FAILED ==
-		WiFi.begin()) { // WiFi not setup, you can also use hard coded credentials
-						// with WiFi.begin(SSID,PASS);
-	WIFI_CONFIGURED = false;
-	} else {
-	if (WL_CONNECTED ==
-		WiFi.waitForConnectResult()) { // attempt to connect for 10s
-		//lastIPAddress = WiFi.localIP();
-		//WiFi.SSID().toCharArray(lastSSID, 30);
-		WIFI_CONFIGURED = true;
-	} else { // connection failed, time out
-		WIFI_CONFIGURED = false;
-		// turn off radios
-		WiFi.mode(WIFI_OFF);
-		btStop();
-	}
-	}
-	return WIFI_CONFIGURED;
 }

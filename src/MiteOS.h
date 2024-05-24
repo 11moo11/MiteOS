@@ -54,16 +54,6 @@ typedef struct MiteSettings {
 	uint8_t darkmodeEndM;
 } MiteSettings;
 
-typedef struct WeatherData {
-	int8_t temperature;
-	int16_t weatherConditionCode;
-	bool isMetric;
-	String weatherDescription;
-	bool external;
-	tmElements_t sunrise;
-	tmElements_t sunset;
-} WeatherData;
-
 typedef struct AlarmData {
 	bool enableAlarm;
 	bool triggered;
@@ -74,9 +64,11 @@ typedef struct AlarmData {
 class MiteOS {
 	public:
 		MiteSettings settings;
+		static WatchyDisplay watchyDisplay;
 		static GxEPD2_BW<WatchyDisplay, WatchyDisplay::HEIGHT> display;
 		static WatchyRTC RTC;
 		static tmElements_t currentTime;
+		static MiteOS *instance;
 
 	public:
 		explicit MiteOS(const MiteSettings &s) : settings(s) {} // constructor
@@ -95,8 +87,6 @@ class MiteOS {
 		static void drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]);
 		static void drawCentreString(const char *buf, int x, int y);
 		
-		static bool connectWiFi();
-		
 		static uint8_t getBoardRevision();
 		
 	private:
@@ -110,8 +100,8 @@ class MiteOS {
 };
 
 extern RTC_DATA_ATTR BMA423 accSensor;
-extern RTC_DATA_ATTR bool WIFI_CONFIGURED;
-extern RTC_DATA_ATTR bool BLE_CONFIGURED;
+//extern RTC_DATA_ATTR bool WIFI_CONFIGURED;
+//extern RTC_DATA_ATTR bool BLE_CONFIGURED;
 extern RTC_DATA_ATTR PageData pageData;
 extern RTC_DATA_ATTR tmElements_t osBootTime;
 
@@ -122,7 +112,5 @@ extern RTC_DATA_ATTR AlarmData alarms[2];
 
 #define BACKGROUND_COLOR (DARKMODE ? GxEPD_BLACK : GxEPD_WHITE)
 #define FOREGROUND_COLOR (DARKMODE ? GxEPD_WHITE : GxEPD_BLACK)
-
-static MiteOS *osInstance;
 
 #endif

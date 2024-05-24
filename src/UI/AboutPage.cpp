@@ -2,6 +2,7 @@
 #include "../MiteOS.h"
 #include "../Images/menu_icons.h"
 #include <Fonts/FreeMonoBold9pt7b.h>
+#include "../Managers/NetworkManager.h"
 
 void AboutPage::drawPage() {
 	MiteOS::drawButtonIcon(BTN_BACK, icon_left);
@@ -39,14 +40,14 @@ void AboutPage::drawPage() {
 	mDisplay.print("h");
 	mDisplay.print(minutes);
 	mDisplay.println("m");    
-	//if(WIFI_CONFIGURED){
-	//	mDisplay.print("SSID: ");
-	//	mDisplay.println(lastSSID);
-	//	mDisplay.print("IP: ");
-	//	mDisplay.println(IPAddress(lastIPAddress).toString());
-	//}else{
+	if(WifiConfigured){
+		mDisplay.print("SSID: ");
+		mDisplay.println(lastWifiSSID);
+		mDisplay.print("IP: ");
+		mDisplay.println(IPAddress(lastWifiIPAddress).toString());
+	}else{
 		mDisplay.println("WiFi Not Connected");
-	//}
+	}
 }
 
 bool AboutPage::onButtonPressed(uint8_t buttonIndex) {

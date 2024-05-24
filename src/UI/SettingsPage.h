@@ -9,7 +9,7 @@ class SettingsPage : public Page {
 		bool onButtonPressed(uint8_t buttonIndex) override;
 		bool isPageable() override { return false; };
 	private:
-		void setupWifi();
-		static void _configModeCallback(WiFiManager *myWiFiManager);
+		void setTime();
+		void showAccelerometer();
 };
 #endif

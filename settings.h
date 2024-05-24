@@ -28,7 +28,7 @@
 #define INVERSE_DARKMODE false // Defines whether the timespan will make it darkmode or lightmode
 #define DARKMODE_START_H 23
 #define DARKMODE_START_M 0
-#define DARKMODE_END_H 6	
+#define DARKMODE_END_H 6
 #define DARKMODE_END_M 30
 
 MiteSettings settings {
