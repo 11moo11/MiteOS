@@ -2,7 +2,7 @@
 #define SETTINGS_H
 
 //Weather Settings
-#define CITY_ID "5128581" //New York City https://openweathermap.org/current#cityid
+#define CITY_ID "2948825" //New York City https://openweathermap.org/current#cityid
 
 //You can also use LAT,LON for your location instead of CITY_ID, but not both
 //#define LAT "40.7127" //New York City, Looked up on https://www.latlong.net/
@@ -21,7 +21,7 @@
 
 //NTP Settings
 #define NTP_SERVER "pool.ntp.org"
-#define GMT_OFFSET_SEC 3600 * -5 //New York is UTC -5 EST, -4 EDT, will be overwritten by weather data
+#define GMT_OFFSET_SEC 3600 * 0 //New York is UTC -5 EST, -4 EDT, will be overwritten by weather data
 
 // Darkmode Settings
 #define ENABLE_AUTO_DARKMODE false // Makes the clock automatically switch between dark and lightmode depending on the time

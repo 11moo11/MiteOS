@@ -17,6 +17,7 @@ typedef struct WeatherData {
 class WeatherManager {
 	public:
 		static WeatherData getWeatherData();
+		static void timeTick();
 	private:
 		static WeatherData _getWeatherData(String cityID, String lat, String lon, String units, String lang,
 									String url, String apiKey,

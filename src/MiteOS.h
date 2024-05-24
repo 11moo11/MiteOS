@@ -20,6 +20,9 @@
 #include "UI/SettingsPage.h"
 #include "UI/AboutPage.h"
 
+// Manager
+#include "Managers/WeatherManager.h"
+
 #define GLOBAL_PAGE_WATCHFACE 0
 #define GLOBAL_PAGE_TIMER 1
 #define GLOBAL_PAGE_SETTINGS 2

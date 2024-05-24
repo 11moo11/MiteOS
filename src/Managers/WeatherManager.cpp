@@ -8,16 +8,20 @@ RTC_DATA_ATTR WeatherData currentWeatherData;
 
 RTC_DATA_ATTR int weatherCheckCounter = -1;
 
+void WeatherManager::timeTick() {
+	weatherCheckCounter += 1;
+}
+
 WeatherData WeatherManager::getWeatherData() {
-  return _getWeatherData( MiteOS::instance->settings.cityID
-  						, MiteOS::instance->settings.lat
-						, MiteOS::instance->settings.lon
-						, MiteOS::instance->settings.weatherUnit
-						, MiteOS::instance->settings.weatherLang
-						, MiteOS::instance->settings.weatherURL
-						, MiteOS::instance->settings.weatherAPIKey
-						, MiteOS::instance->settings.weatherUpdateInterval
-						);
+	return _getWeatherData( MiteOS::instance->settings.cityID
+						  , MiteOS::instance->settings.lat
+						  , MiteOS::instance->settings.lon
+						  , MiteOS::instance->settings.weatherUnit
+						  , MiteOS::instance->settings.weatherLang
+						  , MiteOS::instance->settings.weatherURL
+						  , MiteOS::instance->settings.weatherAPIKey
+						  , MiteOS::instance->settings.weatherUpdateInterval
+						  );
 }
 
 WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lon, String units, String lang,
@@ -84,7 +88,7 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 		}
 		weatherCheckCounter = 0;
 	} else {
-		weatherCheckCounter++;
+		// weatherCheckCounter++;
 	}
 	return currentWeatherData;
 }

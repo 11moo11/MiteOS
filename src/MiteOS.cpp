@@ -56,7 +56,9 @@ void MiteOS::init() {
 			Serial.println("RTC Alarm");
 			#endif
 			checkTime();
-
+			
+			WeatherManager::timeTick();
+			
 			//vibMotor(75, 4);
 			refreshPage();
 			break;
