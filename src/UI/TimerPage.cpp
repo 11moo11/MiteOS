@@ -58,7 +58,7 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 			}
 		}
 	}else{
-		if(pageData.number1 <= PAGE_5MINUTES) {
+		if(pageData.number1 <= PAGE_MINUTES) {
 			if(buttonIndex == BTN_UP) {
 				pageData.number3 += (pageData.number1 == PAGE_5MINUTES ? 5 : 1);
 				return true;
