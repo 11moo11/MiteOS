@@ -31,10 +31,10 @@ void Page::showMenu(const char *menuItems[], uint8_t itemCount, bool partialRefr
 		}
 	}
 	
-	MiteOS::drawButtonIcon(BTN_BACK, icon_left);
-	MiteOS::drawButtonIcon(BTN_MENU, icon_checkmark);
-	MiteOS::drawButtonIcon(BTN_UP,   icon_up);
-	MiteOS::drawButtonIcon(BTN_DOWN, icon_down);
+	drawButtonIcon(BTN_BACK, icon_left);
+	drawButtonIcon(BTN_MENU, icon_checkmark);
+	drawButtonIcon(BTN_UP,   icon_up);
+	drawButtonIcon(BTN_DOWN, icon_down);
 }
 
 bool Page::handleMenuButtons(uint8_t buttonIndex) {
@@ -46,4 +46,33 @@ bool Page::handleMenuButtons(uint8_t buttonIndex) {
 		return true;
 	}
 	return false;
+}
+
+
+void Page::drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]) {
+	switch(buttonIndex) {
+		case BTN_BACK:
+			mDisplay.drawBitmap(5, 5, bitmap, 20, 20, FOREGROUND_COLOR);
+			break;
+		
+		case BTN_MENU:
+			mDisplay.drawBitmap(5, 175, bitmap, 20, 20, FOREGROUND_COLOR);
+			break;
+
+		case BTN_UP:
+			mDisplay.drawBitmap(175, 5, bitmap, 20, 20, FOREGROUND_COLOR);
+			break;
+		
+		case BTN_DOWN:
+			mDisplay.drawBitmap(175, 175, bitmap, 20, 20, FOREGROUND_COLOR);
+			break;
+	}
+}
+
+void Page::drawCentreString(const char *buf, int x, int y) {
+	int16_t x1, y1;
+	uint16_t w, h;
+	mDisplay.getTextBounds(buf, x, y, &x1, &y1, &w, &h); //calc width of new string
+	mDisplay.setCursor(x - w / 2, y);
+	mDisplay.print(buf);
 }

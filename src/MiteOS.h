@@ -77,18 +77,15 @@ class MiteOS {
 		explicit MiteOS(const MiteSettings &s) : settings(s) {} // constructor
 		void init();
 		void deepSleep();
-  		void handleButtonPress();
-  		void handleButtonPress(uint8_t buttonIndex);
+		void handleButtonPress();
+		void handleButtonPress(uint8_t buttonIndex);
 		
 		void refreshPage(bool partialRefresh = true);
 		static void showPage(uint8_t pageIndex);
-
+		
   		static void vibMotor(uint8_t intervalMs = 100, uint8_t length = 20);
   		static float getBatteryVoltage();
 		static float getBatteryPercentage();
-
-		static void drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]);
-		static void drawCentreString(const char *buf, int x, int y);
 		
 		static uint8_t getBoardRevision();
 		

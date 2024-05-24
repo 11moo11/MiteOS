@@ -93,7 +93,7 @@ void TimerPage::drawTime() {
 	mDisplay.setFont(&DSEG7_Classic_Regular_39);
 	
 	if(timer.triggered) {
-		MiteOS::drawCentreString("ALARM", 100, 110);
+		drawCentreString("ALARM", 100, 110);
 	}else{
 		uint32_t minutes = pageData.number3;
 		if(timer.enableAlarm) {
@@ -103,11 +103,11 @@ void TimerPage::drawTime() {
 		int16_t  x1, y1;
 		uint16_t w, h;
 		String currentTime = String(minutes);
-		MiteOS::drawCentreString(currentTime.c_str(), 100, 110);
+		drawCentreString(currentTime.c_str(), 100, 110);
 		
 		mDisplay.setFont(&Seven_Segment10pt7b);
 		if(timer.enableAlarm) {
-			MiteOS::drawCentreString("Alarm in:", 100, 60);
+			drawCentreString("Alarm in:", 100, 60);
 		} else {
 			if(pageData.number1 <= PAGE_MINUTES) {
 				String right_border = (pageData.number1 == PAGE_5MINUTES ? "5" : "1");
@@ -116,7 +116,7 @@ void TimerPage::drawTime() {
 			}
 		}
 		
-		MiteOS::drawCentreString("MIN", 100, 140);
+		drawCentreString("MIN", 100, 140);
 		/*
 		mDisplay.setFont(&DSEG7_Classic_Bold_25);
 		mDisplay.setCursor(10, 30);
@@ -127,15 +127,15 @@ void TimerPage::drawTime() {
 
 void TimerPage::drawIcons() {
 	if(timer.enableAlarm) {
-		MiteOS::drawButtonIcon(BTN_UP, icon_stop);
+		drawButtonIcon(BTN_UP, icon_stop);
 	} else {
-		MiteOS::drawButtonIcon(BTN_TOGGLE_BTN, icon_right);
+		drawButtonIcon(BTN_TOGGLE_BTN, icon_right);
 		if(pageData.number1 == PAGE_MINUTES || pageData.number1 == PAGE_5MINUTES) {
-			MiteOS::drawButtonIcon(BTN_UP, icon_plus);
-			MiteOS::drawButtonIcon(BTN_DOWN, icon_minus);
+			drawButtonIcon(BTN_UP, icon_plus);
+			drawButtonIcon(BTN_DOWN, icon_minus);
 		}else if(pageData.number1 == PAGE_START_MENU) {
-			MiteOS::drawButtonIcon(BTN_UP, icon_play);
-			MiteOS::drawButtonIcon(BTN_DOWN, icon_menu);
+			drawButtonIcon(BTN_UP, icon_play);
+			drawButtonIcon(BTN_DOWN, icon_menu);
 		}
 	}
 }

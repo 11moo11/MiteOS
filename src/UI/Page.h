@@ -37,6 +37,9 @@ class Page {
     virtual bool isPageable() { return true; };
 		void showMenu(const char *menuItems[], uint8_t itemCount, bool partialRefresh);
     bool handleMenuButtons(uint8_t buttonIndex);
+    
+		static void drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]);
+		static void drawCentreString(const char *buf, int x, int y);
 };
 
 #endif

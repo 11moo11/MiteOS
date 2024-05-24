@@ -439,34 +439,6 @@ float MiteOS::getBatteryPercentage() {
     return percentage;
 }
 
-void MiteOS::drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]) {
-	switch(buttonIndex) {
-		case BTN_BACK:
-			display.drawBitmap(5, 5, bitmap, 20, 20, FOREGROUND_COLOR);
-			break;
-		
-		case BTN_MENU:
-			display.drawBitmap(5, 175, bitmap, 20, 20, FOREGROUND_COLOR);
-			break;
-
-		case BTN_UP:
-			display.drawBitmap(175, 5, bitmap, 20, 20, FOREGROUND_COLOR);
-			break;
-		
-		case BTN_DOWN:
-			display.drawBitmap(175, 175, bitmap, 20, 20, FOREGROUND_COLOR);
-			break;
-	}
-}
-
-void MiteOS::drawCentreString(const char *buf, int x, int y) {
-    int16_t x1, y1;
-    uint16_t w, h;
-    display.getTextBounds(buf, x, y, &x1, &y1, &w, &h); //calc width of new string
-    display.setCursor(x - w / 2, y);
-    display.print(buf);
-}
-
 uint8_t MiteOS::getBoardRevision() {
 	esp_chip_info_t chip_info;
 	esp_chip_info(&chip_info);
