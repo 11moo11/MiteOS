@@ -23,11 +23,13 @@ WatchfacePage watchfacePage;
 TimerPage timerPage;
 SettingsPage settingsPage;
 AboutPage aboutPage;
+MoonPage moonPage;
 Page* pages[] = {
 	&watchfacePage,
 	&timerPage,
 	&settingsPage,
-	&aboutPage
+	&aboutPage,
+	&moonPage
 };
 
 tmElements_t MiteOS::currentTime;
@@ -66,6 +68,23 @@ void MiteOS::init() {
 			#ifdef DEBUG
 			Serial.println("Button Press");
 			#endif
+			
+			if (esp_sleep_get_ext1_wakeup_status() & ACC_INT_MASK) { // Woken up by accelerator
+				if(accSensor.isTilt()) {
+					#ifdef DEBUG
+					Serial.println("Tilt");
+					#endif
+					// TODO: Future low power mode (maybe only at night)
+				}
+				
+				if(accSensor.isDoubleClick()) {
+					handleButtonPress(BTN_DOUBLE_TAP);
+				}else{
+					handleButtonPress(BTN_SINGLE_TAP);
+				}
+				break;
+			}
+			
 			//vibMotor(75, 4);
 			handleButtonPress();
 			waitForAdditionalButtons();
@@ -105,7 +124,7 @@ void MiteOS::deepSleep() {
 	}
 	esp_sleep_enable_ext0_wakeup((gpio_num_t) RTC_INT_PIN, 0); // enable deep sleep wake on RTC interrupt
 	esp_sleep_enable_ext1_wakeup(
-		BTN_PIN_MASK,
+		BTN_PIN_MASK | ACC_INT_MASK,
 		ESP_EXT1_WAKEUP_ANY_HIGH
 	); // enable deep sleep wake on button press
 
@@ -228,7 +247,9 @@ void MiteOS::refreshPage(bool partialRefresh) {
 	// At this point it is sure we are going to update
 	display.epd2.asyncPowerOn();
 	
+	#ifdef DEBUG
 	Serial.println("Power On Display");
+	#endif
 	
 	if(sizeof(pages) > pageData.pageIndex) {
 		#ifdef DEBUG
@@ -390,7 +411,8 @@ void MiteOS::_bmaConfig() {
 	config.input_en  = BMA4_INPUT_DISABLE;
 	// The correct trigger interrupt needs to be configured as needed
 	accSensor.setINTPinConfig(config, BMA4_INTR1_MAP);
-
+	
+	/*
 	struct bma423_axes_remap remap_data;
 	remap_data.x_axis      = 1;
 	remap_data.x_axis_sign = 0xFF;
@@ -400,20 +422,31 @@ void MiteOS::_bmaConfig() {
 	remap_data.z_axis_sign = 0xFF;
 	// Need to raise the wrist function, need to set the correct axis
 	accSensor.setRemapAxes(&remap_data);
+	*/
+	struct bma423_axes_remap remap_data = {
+			.x_axis      = 1,
+			.x_axis_sign = 0,
+			.y_axis      = 0,
+			.y_axis_sign = 0,
+			.z_axis      = 2,
+			.z_axis_sign = 1,
+	};
 
+	accSensor.setRemapAxes(&remap_data);
+	
 	// Enable BMA423 isStepCounter feature
 	accSensor.enableFeature(BMA423_STEP_CNTR, true);
 	// Enable BMA423 isTilt feature
-	accSensor.enableFeature(BMA423_TILT, true);
+	accSensor.enableFeature(BMA423_TILT, false);
 	// Enable BMA423 isDoubleClick feature
 	accSensor.enableFeature(BMA423_WAKEUP, true);
-
+	
 	// Reset steps
 	//accSensor.resetStepCounter();
-
+	
 	// Turn on feature interrupt
-	accSensor.enableStepCountInterrupt();
-	accSensor.enableTiltInterrupt();
+	//accSensor.enableStepCountInterrupt();
+	//accSensor.enableTiltInterrupt();
 	// It corresponds to isDoubleClick interrupt
 	accSensor.enableWakeupInterrupt();
 }

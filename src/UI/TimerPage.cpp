@@ -89,12 +89,14 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 	return false;
 }
 
-void TimerPage::drawTime() {
-	mDisplay.setFont(&DSEG7_Classic_Regular_39);
-	
+void TimerPage::drawTime() {	
 	if(timer.triggered) {
+		mDisplay.setFont(&DSEG7_Classic_Regular_39);
+		
 		drawCentreString("ALARM", 100, 110);
 	}else{
+		mDisplay.setFont(&DSEG7_Classic_Regular_39);
+		
 		uint32_t minutes = pageData.number3;
 		if(timer.enableAlarm) {
 			minutes = (timer.hour - MiteOS::currentTime.Hour) * 60 + (timer.minute - MiteOS::currentTime.Minute);

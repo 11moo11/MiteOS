@@ -12,6 +12,9 @@
 #define BTN_NEXT_PAGE BTN_MENU
 #define BTN_CONFIRM BTN_MENU
 
+#define BTN_SINGLE_TAP 5
+#define BTN_DOUBLE_TAP 6
+
 #define mDisplay MiteOS::display
 #define mRTC MiteOS::RTC
 

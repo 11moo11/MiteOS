@@ -5,7 +5,7 @@
 #include "../Managers/NetworkManager.h"
 
 void AboutPage::drawPage() {
-	MiteOS::drawButtonIcon(BTN_BACK, icon_left);
+	drawButtonIcon(BTN_BACK, icon_left);
 	
 	mDisplay.setFont(&FreeMonoBold9pt7b);
 	

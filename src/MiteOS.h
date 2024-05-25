@@ -3,7 +3,7 @@
 
 #define MITE_OS_VER "0.0.1"
 
-//#define DEBUG
+#define DEBUG
 
 #include <Arduino.h>
 #include <bma.h>
@@ -19,6 +19,7 @@
 #include "UI/TimerPage.h"
 #include "UI/SettingsPage.h"
 #include "UI/AboutPage.h"
+#include "UI/MoonPage.h"
 
 // Manager
 #include "Managers/WeatherManager.h"
@@ -28,7 +29,7 @@
 #define GLOBAL_PAGE_SETTINGS 2
 #define GLOBAL_PAGE_ABOUT 3
 
-#define PAGE_COUNT 4
+#define PAGE_COUNT 5
 
 #define ADDITONAL_BUTTON_CHECK_DURATION 3000
 #define BUTTON_PRESS_REPEAT_DELAY 150

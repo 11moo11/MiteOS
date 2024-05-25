@@ -92,3 +92,39 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 	}
 	return currentWeatherData;
 }
+
+double WeatherManager::_Julian(int32_t year, int32_t month, const double &day) {
+	int32_t b, c, e;
+	b = 0;
+	if (month < 3) {
+		year--;
+		month += 12;
+	}
+	if (year > 1582 || (year == 1582 && month > 10) ||
+		(year == 1582 && month == 10 && day > 15)) {
+		int32_t a;
+		a = year / 100;
+		b = 2 - a + a / 4;
+	}
+	c = 365.25 * year;
+	e = 30.6001 * (month + 1);
+
+	return b + c + e + day + 1720994.5;
+}
+
+float WeatherManager::getMoonPhase() {
+	return getMoonPhase(MiteOS::currentTime.Year, MiteOS::currentTime.Month, MiteOS::currentTime.Day);
+}
+
+
+float WeatherManager::getMoonPhase(uint8_t year, uint8_t month, uint8_t day) {
+	double j = _Julian(((int32_t) year) + 1970, month, (double) day) - 2444238.5;
+
+	// Calculate illumination (synodic) phase.
+	// From number of days since new moon on Julian date MOON_SYNODIC_OFFSET
+	// (1815UTC January 6, 2000), determine remainder of incomplete cycle.
+	float phase = (j - MOON_SYNODIC_OFFSET) / MOON_SYNODIC_PERIOD;
+	phase -= floor(phase);
+	
+	return phase;
+}
