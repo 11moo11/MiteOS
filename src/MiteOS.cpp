@@ -1,5 +1,12 @@
 #include "MiteOS.h"
 
+// Pages
+#include "UI/WatchfacePage.h"
+#include "UI/TimerPage.h"
+#include "UI/SettingsPage.h"
+#include "UI/AboutPage.h"
+#include "UI/MoonPage.h"
+
 WatchyRTC MiteOS::RTC;
 WatchyDisplay MiteOS::watchyDisplay {};
 GxEPD2_BW<WatchyDisplay, WatchyDisplay::HEIGHT> MiteOS::display(watchyDisplay);
@@ -64,12 +71,11 @@ void MiteOS::init() {
 			//vibMotor(75, 4);
 			refreshPage();
 			break;
-		case ESP_SLEEP_WAKEUP_EXT1: // button Press
-			#ifdef DEBUG
-			Serial.println("Button Press");
-			#endif
-			
+		case ESP_SLEEP_WAKEUP_EXT1: // button Press			
 			if (esp_sleep_get_ext1_wakeup_status() & ACC_INT_MASK) { // Woken up by accelerator
+				#ifdef DEBUG
+				Serial.println("Accelerator");
+				#endif
 				if(accSensor.isTilt()) {
 					#ifdef DEBUG
 					Serial.println("Tilt");
@@ -84,6 +90,9 @@ void MiteOS::init() {
 				}
 				break;
 			}
+			#ifdef DEBUG
+			Serial.println("Button Press");
+			#endif
 			
 			//vibMotor(75, 4);
 			handleButtonPress();

@@ -1,28 +1,36 @@
 #ifndef MOON_PAGE_H
 #define MOON_PAGE_H
+
 #include "Page.h"
+#include "../MiteOS.h"
 #include "../Managers/WeatherManager.h"
 #include "../Images/moon_icons.h"
 
 class MoonPage : public Page {
 	public:
-		void drawPage() override {
-			float phase = WeatherManager::getMoonPhase();
+		void drawPage() {
+			mDisplay.fillScreen(GxEPD_BLACK);
 			
-			if(phase <= 0.1 || phase >= 0.9) {
-				mDisplay.drawBitmap(40, 40, icon_moon_full, 80, 80, FOREGROUND_COLOR);
-			} else if(phase >= 0.8) {
-				mDisplay.drawBitmap(40, 40, icon_moon_waning3, 80, 80, FOREGROUND_COLOR);
-			} else if(phase >= 0.7) {
-				mDisplay.drawBitmap(40, 40, icon_moon_waning2, 80, 80, FOREGROUND_COLOR);
-			} else if(phase >= 0.6) {
-				mDisplay.drawBitmap(40, 40, icon_moon_waning1, 80, 80, FOREGROUND_COLOR);
-			} else if(phase >= 0.4) {
-				mDisplay.drawBitmap(40, 40, icon_moon_crescent1, 80, 80, FOREGROUND_COLOR);
-			} else if(phase >= 0.3) {
-				mDisplay.drawBitmap(40, 40, icon_moon_crescent2, 80, 80, FOREGROUND_COLOR);
-			} else if(phase >= 0.2) {
-				mDisplay.drawBitmap(40, 40, icon_moon_crescent3, 80, 80, FOREGROUND_COLOR);
+			for(int i = -1; i <= 1; i++) {
+				float phase = WeatherManager::getMoonPhase(MiteOS::currentTime.Year, MiteOS::currentTime.Month, MiteOS::currentTime.Day + (i * 7));
+				
+				if(phase <= 0.1 || phase >= 0.9) {
+					mDisplay.drawBitmap(80 - (-50 * i), 80, icon_moon_new, 40, 40, GxEPD_WHITE);
+				} else if(phase >= 0.8) {
+					mDisplay.drawBitmap(80 - (-50 * i), 80, icon_moon_waning3, 40, 40, GxEPD_WHITE);
+				} else if(phase >= 0.7) {
+					mDisplay.drawBitmap(80 - (-50 * i), 80, icon_moon_waning2, 40, 40, GxEPD_WHITE);
+				} else if(phase >= 0.6) {
+					mDisplay.drawBitmap(80 - (-50 * i), 80, icon_moon_waning1, 40, 40, GxEPD_WHITE);
+				} else if(phase >= 0.4) {
+					mDisplay.drawBitmap(80 - (-50 * i), 80, icon_moon_full, 40, 40, GxEPD_WHITE);
+				} else if(phase >= 0.3) {
+					mDisplay.drawBitmap(80 - (-50 * i), 80, icon_moon_crescent1, 40, 40, GxEPD_WHITE);
+				} else if(phase >= 0.2) {
+					mDisplay.drawBitmap(80 - (-50 * i), 80, icon_moon_crescent2, 40, 40, GxEPD_WHITE);
+				} else {
+					mDisplay.drawBitmap(80 - (-50 * i), 80, icon_moon_crescent3, 40, 40, GxEPD_WHITE);
+				}
 			}
 		};
 };

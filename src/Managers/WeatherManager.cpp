@@ -118,7 +118,7 @@ float WeatherManager::getMoonPhase() {
 
 
 float WeatherManager::getMoonPhase(uint8_t year, uint8_t month, uint8_t day) {
-	double j = _Julian(((int32_t) year) + 1970, month, (double) day) - 2444238.5;
+	double j = _Julian(((int32_t) year) + 1970, month, (double) day);
 
 	// Calculate illumination (synodic) phase.
 	// From number of days since new moon on Julian date MOON_SYNODIC_OFFSET

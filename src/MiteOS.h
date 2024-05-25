@@ -12,14 +12,7 @@
 #include <TimeLib.h>
 #include <WatchyRTC.h>
 #include <Fonts/FreeMonoBold9pt7b.h>
-
-// Pages
 #include "UI/Page.h"
-#include "UI/WatchfacePage.h"
-#include "UI/TimerPage.h"
-#include "UI/SettingsPage.h"
-#include "UI/AboutPage.h"
-#include "UI/MoonPage.h"
 
 // Manager
 #include "Managers/WeatherManager.h"
