@@ -15,9 +15,6 @@
 #define BTN_SINGLE_TAP 5
 #define BTN_DOUBLE_TAP 6
 
-#define mDisplay MiteOS::display
-#define mRTC MiteOS::RTC
-
 typedef struct PageData {
   uint8_t pageIndex;
   uint8_t menuIndex;

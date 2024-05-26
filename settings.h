@@ -47,7 +47,7 @@ MiteSettings settings {
 	.ntpServer = NTP_SERVER,
 	.gmtOffset = GMT_OFFSET_SEC,
 	//
-	.vibrateOClock = true,
+	.vibrateOClock = false,
 	//
 	.enableAutoDarkMode = ENABLE_AUTO_DARKMODE,
 	.inverseDarkMode = INVERSE_DARKMODE,

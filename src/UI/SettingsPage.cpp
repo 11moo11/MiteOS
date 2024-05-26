@@ -18,12 +18,12 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 		return true;
 	
 	if(buttonIndex == BTN_BACK) {
-		MiteOS::showPage(GLOBAL_PAGE_WATCHFACE);
+		PageManager::showPage(GLOBAL_PAGE_WATCHFACE);
 		return true;
 	}else if(buttonIndex == BTN_CONFIRM) {
 		switch(pageData.menuIndex) {
 			case 0:
-				MiteOS::showPage(GLOBAL_PAGE_ABOUT);
+				PageManager::showPage(GLOBAL_PAGE_ABOUT);
 				return true;
 			
 			case 1:
@@ -205,7 +205,7 @@ void SettingsPage::setTime() {
 
 	mRTC.set(tm);
 	
-	MiteOS::instance->refreshPage();
+	PageManager::refreshPage();
 }
 
 void SettingsPage::showAccelerometer() {
@@ -274,5 +274,5 @@ void SettingsPage::showAccelerometer() {
 		}
 	}
 	
-	MiteOS::instance->refreshPage();
+	PageManager::refreshPage();
 }

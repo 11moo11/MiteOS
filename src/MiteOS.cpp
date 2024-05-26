@@ -1,12 +1,5 @@
 #include "MiteOS.h"
 
-// Pages
-#include "UI/WatchfacePage.h"
-#include "UI/TimerPage.h"
-#include "UI/SettingsPage.h"
-#include "UI/AboutPage.h"
-#include "UI/MoonPage.h"
-
 WatchyRTC MiteOS::RTC;
 WatchyDisplay MiteOS::watchyDisplay {};
 GxEPD2_BW<WatchyDisplay, WatchyDisplay::HEIGHT> MiteOS::display(watchyDisplay);
@@ -25,19 +18,6 @@ RTC_DATA_ATTR bool DARKMODE;
 
 RTC_DATA_ATTR AlarmData timer;
 RTC_DATA_ATTR AlarmData alarms[2];
-
-WatchfacePage watchfacePage;
-TimerPage timerPage;
-SettingsPage settingsPage;
-AboutPage aboutPage;
-MoonPage moonPage;
-Page* pages[] = {
-	&watchfacePage,
-	&timerPage,
-	&settingsPage,
-	&aboutPage,
-	&moonPage
-};
 
 tmElements_t MiteOS::currentTime;
 
@@ -69,7 +49,7 @@ void MiteOS::init() {
 			WeatherManager::timeTick();
 			
 			//vibMotor(75, 4);
-			refreshPage();
+			PageManager::refreshPage();
 			break;
 		case ESP_SLEEP_WAKEUP_EXT1: // button Press			
 			if (esp_sleep_get_ext1_wakeup_status() & ACC_INT_MASK) { // Woken up by accelerator
@@ -84,9 +64,9 @@ void MiteOS::init() {
 				}
 				
 				if(accSensor.isDoubleClick()) {
-					handleButtonPress(BTN_DOUBLE_TAP);
+					PageManager::handleButtonPress(BTN_DOUBLE_TAP);
 				}else{
-					handleButtonPress(BTN_SINGLE_TAP);
+					PageManager::handleButtonPress(BTN_SINGLE_TAP);
 				}
 				break;
 			}
@@ -110,7 +90,7 @@ void MiteOS::init() {
 
 			RTC.read(osBootTime);
 			
-			refreshPage(false); // full update on reset
+			PageManager::refreshPage(false); // full update on reset
 			vibMotor(75, 4);
 			
 			// For some reason, seems to be enabled on first boot
@@ -204,7 +184,7 @@ void MiteOS::handleAdditionalButtonPress(uint8_t buttonIndex, unsigned long *las
 	if(*lastTime == 0 || holdingTime > BUTTON_PRESS_REPEAT_DELAY) {
 		if(holdingTime > (unsigned long) BUTTON_PRESS_REPEAT_DELAY) {
 			//holdingTime -= (unsigned long) BUTTON_PRESS_REPEAT_DELAY;
-			handleButtonPress(buttonIndex);
+			PageManager::handleButtonPress(buttonIndex);
 		}
 		*lastTime = currentTime;
 	}
@@ -214,76 +194,18 @@ void MiteOS::handleButtonPress() {
 	uint64_t wakeupBit = esp_sleep_get_ext1_wakeup_status();
 
 	if (wakeupBit & MENU_BTN_MASK) { // MENU Button (Bottom Left)
-		handleButtonPress(BTN_MENU);
+		PageManager::handleButtonPress(BTN_MENU);
 		return;
 	}else if (wakeupBit & BACK_BTN_MASK) { // Back Button (Top Left)
-		handleButtonPress(BTN_BACK);
+		PageManager::handleButtonPress(BTN_BACK);
 		return;
 	} else if (wakeupBit & UP_BTN_MASK) { // Up Button (Top Right)
-		handleButtonPress(BTN_UP);
+		PageManager::handleButtonPress(BTN_UP);
 		return;
 	} else if (wakeupBit & DOWN_BTN_MASK) { // Down Button (Bottom Right)
-		handleButtonPress(BTN_DOWN);
+		PageManager::handleButtonPress(BTN_DOWN);
 		return;
 	}
-}
-
-void MiteOS::handleButtonPress(uint8_t buttonIndex) {
-	// Check if the page is available to handle the input
-	if(sizeof(pages) > pageData.pageIndex) {
-		if(pages[pageData.pageIndex]->onButtonPressed(buttonIndex)) { // If the page handled the input, no need for the main OS to handle it
-			refreshPage();
-			return;
-		}
-	}
-
-	if(buttonIndex == BTN_MENU) {
-		uint8_t newIndex = pageData.pageIndex;
-		do {
-			newIndex++;
-			if(newIndex >= PAGE_COUNT) newIndex = 0;
-		} while(! pages[newIndex]->isPageable());
-		
-		showPage(newIndex);
-		
-		refreshPage();
-		return;
-	}
-}
-
-void MiteOS::refreshPage(bool partialRefresh) {
-	display.setFullWindow();
-	// At this point it is sure we are going to update
-	display.epd2.asyncPowerOn();
-	
-	#ifdef DEBUG
-	Serial.println("Power On Display");
-	#endif
-	
-	if(sizeof(pages) > pageData.pageIndex) {
-		#ifdef DEBUG
-		Serial.println("Rendering Page " + String(pageData.pageIndex));
-		#endif
-		display.setFullWindow();
-		display.fillScreen(BACKGROUND_COLOR);
-		watchyDisplay.setDarkBorder(DARKMODE);
-		
-		display.setTextColor(FOREGROUND_COLOR);
-		
-		pages[pageData.pageIndex]->drawPage();
-	}
-	
-	display.display(partialRefresh);
-}
-
-void MiteOS::showPage(uint8_t pageIndex) {
-	if(pageData.pageIndex != pageIndex) { // Reset the page data when its really changed
-		pageData = PageData();
-		pages[pageIndex]->initPage();
-	}
-	
-	pageData.pageIndex = pageIndex;
-	//osInstance->refreshPage();
 }
 
 void MiteOS::checkTime() {

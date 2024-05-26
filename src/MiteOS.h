@@ -15,14 +15,8 @@
 #include "UI/Page.h"
 
 // Manager
+#include "Managers/PageManager.h"
 #include "Managers/WeatherManager.h"
-
-#define GLOBAL_PAGE_WATCHFACE 0
-#define GLOBAL_PAGE_TIMER 1
-#define GLOBAL_PAGE_SETTINGS 2
-#define GLOBAL_PAGE_ABOUT 3
-
-#define PAGE_COUNT 5
 
 #define ADDITONAL_BUTTON_CHECK_DURATION 500
 #define BUTTON_PRESS_REPEAT_DELAY 150
@@ -72,10 +66,6 @@ class MiteOS {
 		void init();
 		void deepSleep();
 		void handleButtonPress();
-		void handleButtonPress(uint8_t buttonIndex);
-		
-		void refreshPage(bool partialRefresh = true);
-		static void showPage(uint8_t pageIndex);
 		
   		static void vibMotor(uint8_t intervalMs = 100, uint8_t length = 20);
   		static float getBatteryVoltage();
@@ -106,5 +96,8 @@ extern RTC_DATA_ATTR AlarmData alarms[2];
 
 #define BACKGROUND_COLOR (DARKMODE ? GxEPD_BLACK : GxEPD_WHITE)
 #define FOREGROUND_COLOR (DARKMODE ? GxEPD_WHITE : GxEPD_BLACK)
+
+#define mDisplay MiteOS::display
+#define mRTC MiteOS::RTC
 
 #endif

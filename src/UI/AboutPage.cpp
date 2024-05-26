@@ -52,7 +52,7 @@ void AboutPage::drawPage() {
 
 bool AboutPage::onButtonPressed(uint8_t buttonIndex) {
 	if(buttonIndex == BTN_BACK) {
-		MiteOS::showPage(GLOBAL_PAGE_SETTINGS);
+		PageManager::showPage(GLOBAL_PAGE_SETTINGS);
 		return true;
 	}
 

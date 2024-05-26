@@ -33,12 +33,12 @@ bool WatchfacePage::onButtonPressed(uint8_t buttonIndex) {
 			if(watchFaceId >= WATCHFACE_COUNT) watchFaceId = 0;
 		}
 		//DARKMODE = !DARKMODE;
-		//MiteOS::refreshPage();
+		//PageManager::refreshPage();
 		return true;
 	}
 	
 	if(buttonIndex == BTN_UP) {
-		MiteOS::showPage(GLOBAL_PAGE_SETTINGS);
+		PageManager::showPage(GLOBAL_PAGE_SETTINGS);
 		return true;
 	}
 	return false;
