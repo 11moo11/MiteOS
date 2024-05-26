@@ -44,7 +44,7 @@ tmElements_t MiteOS::currentTime;
 void MiteOS::init() {
 	#ifdef DEBUG
 	Serial.begin(115200);
-  	while(!Serial) delay(100);
+  	if(!Serial) delay(1000);
 	Serial.println("Booting up");
 	#endif
 
