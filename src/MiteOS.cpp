@@ -133,7 +133,7 @@ void MiteOS::deepSleep() {
 	}
 	esp_sleep_enable_ext0_wakeup((gpio_num_t) RTC_INT_PIN, 0); // enable deep sleep wake on RTC interrupt
 	esp_sleep_enable_ext1_wakeup(
-		BTN_PIN_MASK | ACC_INT_MASK,
+		BTN_PIN_MASK/* | ACC_INT_MASK */,
 		ESP_EXT1_WAKEUP_ANY_HIGH
 	); // enable deep sleep wake on button press
 
