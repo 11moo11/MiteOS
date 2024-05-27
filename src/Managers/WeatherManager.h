@@ -8,7 +8,7 @@ typedef struct WeatherData {
 	int8_t temperature;
 	int16_t weatherConditionCode;
 	bool isMetric;
-	String weatherDescription;
+	char weatherDescription[20];
 	bool external;
 	tmElements_t sunrise;
 	tmElements_t sunset;
@@ -20,7 +20,7 @@ class WeatherManager {
 		static void timeTick();
 		
 		static float getMoonPhase();
-		static float getMoonPhase(uint8_t year, uint8_t month, uint8_t day);
+		static float getMoonPhase(uint8_t year, uint8_t month, uint8_t day, uint8_t hour = 0);
 	private:
 		static WeatherData _getWeatherData(String cityID, String lat, String lon, String units, String lang,
 									String url, String apiKey,

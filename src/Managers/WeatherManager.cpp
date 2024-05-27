@@ -9,7 +9,7 @@ RTC_DATA_ATTR WeatherData currentWeatherData;
 RTC_DATA_ATTR int weatherCheckCounter = -1;
 
 void WeatherManager::timeTick() {
-	weatherCheckCounter += 1;
+	if(weatherCheckCounter >= 0) weatherCheckCounter += 1;
 }
 
 WeatherData WeatherManager::getWeatherData() {
@@ -57,10 +57,12 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 			int httpResponseCode = http.GET();
 			if (httpResponseCode == 200) {
 				String payload             = http.getString();
+				
 				JSONVar responseObject     = JSON.parse(payload);
 				currentWeatherData.temperature = int(responseObject["main"]["temp"]);
 				currentWeatherData.weatherConditionCode = int(responseObject["weather"][0]["id"]);
-				currentWeatherData.weatherDescription = JSONVar::stringify(responseObject["weather"][0]["main"]);
+				String desc = JSONVar::stringify(responseObject["weather"][0]["main"]);
+				desc.substring(1, desc.length() - 1).toCharArray(currentWeatherData.weatherDescription, 20);
 				currentWeatherData.external = true;
 				
 				breakTime((time_t)(int)responseObject["sys"]["sunrise"], currentWeatherData.sunrise);
@@ -117,8 +119,8 @@ float WeatherManager::getMoonPhase() {
 }
 
 
-float WeatherManager::getMoonPhase(uint8_t year, uint8_t month, uint8_t day) {
-	double j = _Julian(((int32_t) year) + 1970, month, (double) day);
+float WeatherManager::getMoonPhase(uint8_t year, uint8_t month, uint8_t day, uint8_t hour) {
+	double j = _Julian(((int32_t) year) + 1970, month, (double) day + (hour / 24.0));
 
 	// Calculate illumination (synodic) phase.
 	// From number of days since new moon on Julian date MOON_SYNODIC_OFFSET

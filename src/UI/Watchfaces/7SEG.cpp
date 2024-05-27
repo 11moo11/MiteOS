@@ -9,12 +9,11 @@
 #include "../../Fonts/icons.h"
 #include "../../Managers/NetworkManager.h"
 #include "../../Managers/WeatherManager.h"
+#include "../../Images/weather_icons.h"
 
 const uint8_t BATTERY_SEGMENT_WIDTH = 7;
 const uint8_t BATTERY_SEGMENT_HEIGHT = 11;
 const uint8_t BATTERY_SEGMENT_SPACING = 9;
-const uint8_t WEATHER_ICON_WIDTH = 48;
-const uint8_t WEATHER_ICON_HEIGHT = 32;
 
 void SEG7::draw() {
 	drawTime();

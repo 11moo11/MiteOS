@@ -5,19 +5,19 @@
 #include "../UI/TimerPage.h"
 #include "../UI/SettingsPage.h"
 #include "../UI/AboutPage.h"
-#include "../UI/MoonPage.h"
+#include "../UI/WeatherPage.h"
 
 WatchfacePage watchfacePage;
 TimerPage timerPage;
 SettingsPage settingsPage;
 AboutPage aboutPage;
-MoonPage moonPage;
+WeatherPage weatherPage;
 Page* pages[] = {
 	&watchfacePage,
 	&timerPage,
 	&settingsPage,
 	&aboutPage,
-	&moonPage
+	&weatherPage
 };
 
 
