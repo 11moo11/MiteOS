@@ -86,9 +86,15 @@ void MiteOS::init() {
 			_bmaConfig();
 			pageData.pageIndex = 0; // Set Page to Watchface
 			gmtTimeOffset = settings.gmtOffset;
-			initDarkmode();
 
 			RTC.read(osBootTime);
+			
+			#ifdef DEBUG
+			Serial.println("Restoring Settings File");
+			#endif
+			Configuration::loadAll();
+			
+			initDarkmode();
 			
 			PageManager::refreshPage(false); // full update on reset
 			vibMotor(75, 4);

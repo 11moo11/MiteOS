@@ -1,20 +1,37 @@
 #include "AlarmPage.h"
 #include "../MiteOS.h"
-#include "../Fonts/Seven_Seg18pt7b.h"
+#include "../Fonts/DSEG7_Classic_Bold_25.h"
+#include <DSEG7_Classic_Bold_53.h>
 #include "../Images/menu_icons.h"
 
+#include "../lang.h"
+
 #define ALARM_PAGE_OVERVIEW 0
+#define ALARM_PAGE_CONFIGURATION 1
+#define ALARM_PAGE_SET_TIME 2
+
+#define ALARM_MODE_ONCE 0
+#define ALARM_MODE_WORKDAY 1
+#define ALARM_MODE_WEEKEND 2
+#define ALARM_MODE_DAILY 3
 
 void AlarmPage::initPage() {
 	pageData.subPageIndex = ALARM_PAGE_OVERVIEW;
 }
 
 void AlarmPage::drawPage() {
-	switch(pageData.subPageIndex) {
-		case ALARM_PAGE_OVERVIEW:
-			drawOverview();
-			break;
-		default: break;
+	if(pageData.subPageIndex == ALARM_PAGE_OVERVIEW) {
+		drawOverview();
+	}else if(pageData.subPageIndex == ALARM_PAGE_CONFIGURATION) {
+		const char *menuItems[] = {
+			(alarms[pageData.number2].enableAlarm ? TXT_DISABLE : TXT_ENABLE),
+			TXT_SET_TIME,
+			(alarms[pageData.number2].mode == ALARM_MODE_ONCE ? TXT_ONCE
+				: (alarms[pageData.number2].mode == ALARM_MODE_WORKDAY ? TXT_WORKDAY
+					: (alarms[pageData.number2].mode == ALARM_MODE_WEEKEND ? TXT_WEEKEND
+						: TXT_EVERY_DAY)))
+		};
+		showMenu(menuItems, 3, true);
 	}
 	drawIcons();
 }
@@ -30,7 +47,34 @@ bool AlarmPage::onButtonPressed(uint8_t buttonIndex) {
 				pageData.number2--;
 				if(pageData.number2 > 250) pageData.number2 = ALARM_COUNT - 1;
 				return true;
+			}else if(buttonIndex == BTN_TOGGLE_BTN) {
+				pageData.subPageIndex = ALARM_PAGE_CONFIGURATION;
+				return true;
 			}
+			break;
+		case ALARM_PAGE_CONFIGURATION:
+			if(handleMenuButtons(buttonIndex)) {
+				return true;
+			}else if(buttonIndex == BTN_BACK) {
+				Configuration::saveAlarms();
+				pageData.subPageIndex = ALARM_PAGE_OVERVIEW;
+				return true;
+			}else if(buttonIndex == BTN_CONFIRM) {
+				if(pageData.menuIndex == 0) { // Enable / Disable
+					alarms[pageData.number2].enableAlarm = !alarms[pageData.number2].enableAlarm;
+					return true;
+				}else if(pageData.menuIndex == 1) { // Set Time
+					setTime();
+					return true;
+				}else if(pageData.menuIndex == 2) { // Type Selection
+					alarms[pageData.number2].mode++;
+					if(alarms[pageData.number2].mode >= 4) alarms[pageData.number2].mode = 0;
+					return true;
+				}
+			}
+			break;
+		case ALARM_PAGE_SET_TIME:
+			setTime();
 			break;
 		default: break;
 	}
@@ -42,7 +86,7 @@ void AlarmPage::drawOverview() {
 	int16_t x1, y1;
 	uint16_t w, h;
 	
-	mDisplay.setFont(&Seven_Seg18pt7b);
+	mDisplay.setFont(&DSEG7_Classic_Bold_25);
 	for(uint8_t i = 0; i < 3; i++) {
 		uint8_t yPos = 18 + (55 * i);
 		
@@ -60,10 +104,11 @@ void AlarmPage::drawOverview() {
 			mDisplay.setTextColor(FOREGROUND_COLOR);
 		}
 		
-		mDisplay.setCursor(60, yPos + 35);
+		mDisplay.setCursor(56, yPos + 38);
 		mDisplay.println(item);
 		
-		if(!alarms[i].enableAlarm) mDisplay.fillRect(45, yPos + 24, 110, 3, i == pageData.number2 ? BACKGROUND_COLOR : FOREGROUND_COLOR);
+		if(alarms[i].enableAlarm) mDisplay.drawBitmap(30, yPos + 14, icon_alarm, 20, 20, i == pageData.number2 ? BACKGROUND_COLOR : FOREGROUND_COLOR);
+		else mDisplay.fillRect(45, yPos + 24, 110, 3, i == pageData.number2 ? BACKGROUND_COLOR : FOREGROUND_COLOR);
 		
 	}
 }
@@ -73,8 +118,97 @@ void AlarmPage::drawIcons() {
 		case ALARM_PAGE_OVERVIEW:
 			drawButtonIcon(BTN_UP, icon_up);
 			drawButtonIcon(BTN_DOWN, icon_down);
-			drawButtonIcon(BTN_CONFIRM, icon_gear);
+			drawButtonIcon(BTN_TOGGLE_BTN, icon_gear);
 			break;
 		default: break;
 	}
+}
+
+void AlarmPage::setTime() {
+	int8_t setIndex = SET_HOUR;
+	
+	int8_t blink = 0;
+	
+	pinMode(DOWN_BTN_PIN, INPUT);
+	pinMode(UP_BTN_PIN, INPUT);
+	pinMode(MENU_BTN_PIN, INPUT);
+	pinMode(BACK_BTN_PIN, INPUT);
+	
+	mDisplay.setFullWindow();
+	
+	delay(500);
+	
+	while (1) {
+		if (digitalRead(MENU_BTN_PIN) == 1) {
+			setIndex++;
+			if (setIndex > SET_MINUTE) {
+				break;
+			}
+		}
+		if (digitalRead(BACK_BTN_PIN) == 1) {
+			if (setIndex != SET_HOUR) {
+				setIndex--;
+			}
+		}
+		
+		blink = 1 - blink;
+
+		if (digitalRead(DOWN_BTN_PIN) == 1) {
+			blink = 1;
+			switch (setIndex) {
+				case SET_HOUR:
+					alarms[pageData.number2].hour == 0 ? (alarms[pageData.number2].hour = 23) : alarms[pageData.number2].hour--;
+					break;
+				case SET_MINUTE:
+					alarms[pageData.number2].minute == 0 ? (alarms[pageData.number2].minute = 59) : alarms[pageData.number2].minute--;
+					break;
+				default:
+					break;
+			}
+		}
+
+		if (digitalRead(UP_BTN_PIN) == 1) {
+			blink = 1;
+			switch (setIndex) {
+				case SET_HOUR:
+					alarms[pageData.number2].hour == 23 ? (alarms[pageData.number2].hour = 0) : alarms[pageData.number2].hour++;
+					break;
+				case SET_MINUTE:
+					alarms[pageData.number2].minute == 59 ? (alarms[pageData.number2].minute = 0) : alarms[pageData.number2].minute++;
+					break;
+				default:
+					break;
+			}
+		}
+		
+		mDisplay.fillScreen(BACKGROUND_COLOR);
+		mDisplay.setTextColor(FOREGROUND_COLOR);
+		mDisplay.setFont(&DSEG7_Classic_Bold_53);
+		
+		mDisplay.setCursor(5, 120);
+		if (setIndex == SET_HOUR) { // blink hour digits
+			mDisplay.setTextColor(blink ? FOREGROUND_COLOR : BACKGROUND_COLOR);
+		}
+		if (alarms[pageData.number2].hour < 10) {
+			mDisplay.print("0");
+		}
+		mDisplay.print(alarms[pageData.number2].hour);
+
+		mDisplay.setTextColor(FOREGROUND_COLOR);
+		mDisplay.print(":");
+
+		mDisplay.setCursor(108, 120);
+		if (setIndex == SET_MINUTE) { // blink minute digits
+			mDisplay.setTextColor(blink ? FOREGROUND_COLOR : BACKGROUND_COLOR);
+		}
+		if (alarms[pageData.number2].minute < 10) {
+			mDisplay.print("0");
+		}
+		mDisplay.print(alarms[pageData.number2].minute);
+		
+		
+		mDisplay.display(true); // partial refresh
+	}
+	
+	pageData.subPageIndex = ALARM_PAGE_CONFIGURATION;
 }

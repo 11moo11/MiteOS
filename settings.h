@@ -23,7 +23,7 @@
 #define NTP_SERVER "pool.ntp.org"
 #define GMT_OFFSET_SEC 3600 * 0 //New York is UTC -5 EST, -4 EDT, will be overwritten by weather data
 
-// Darkmode Settings
+// Darkmode Settings // TODO Put as in System Settings
 #define ENABLE_AUTO_DARKMODE false // Makes the clock automatically switch between dark and lightmode depending on the time
 #define INVERSE_DARKMODE false // Defines whether the timespan will make it darkmode or lightmode
 #define DARKMODE_START_H 23

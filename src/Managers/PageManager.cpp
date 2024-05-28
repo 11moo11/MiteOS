@@ -73,6 +73,8 @@ void PageManager::showPage(uint8_t pageIndex) {
 	
 	if(pageData.pageIndex != pageIndex) { // Reset the page data when its really changed
 		pageData = PageData();
+		pageData.subPageIndex = 0;
+		pageData.menuIndex = 0;
 		pages[pageIndex]->initPage();
 	}
 	

@@ -2,15 +2,46 @@
 #include "../MiteOS.h"
 #include "../Managers/NetworkManager.h"
 #include <DSEG7_Classic_Bold_53.h>
+#include "../Data/Configuration.h"
+
+#define SETTINGS_PAGE_OVERVIEW 0
+#define SETTINGS_PAGE_TIME 1
+#define SETTINGS_PAGE_NETWORK 2
+#define SETTINGS_PAGE_DISPLAY 3
+#define SETTINGS_PAGE_TEST 4
 
 void SettingsPage::drawPage() {
-	
-	const char *menuItems[] = {
-		"About MiteOS", "Vibrate Motor", "Accelerometer",
-		"Set Time",     "Setup WiFi",    "Sync NTP"
-	};
-	
-	showMenu(menuItems, 6, true);
+	if(pageData.subPageIndex == SETTINGS_PAGE_OVERVIEW) {
+		const char *menuItems[] = {
+			"About MiteOS", "Time", "Network", "Display", "Test"
+		};
+		
+		showMenu(menuItems, 5, true);
+	}else if(pageData.subPageIndex == SETTINGS_PAGE_TIME) {
+		const char *menuItems[] = {
+			"Set Time", "Sync NTP"
+		};
+		
+		showMenu(menuItems, 2, true);
+	}else if(pageData.subPageIndex == SETTINGS_PAGE_NETWORK) {
+		const char *menuItems[] = {
+			"Setup WiFi"
+		};
+		
+		showMenu(menuItems, 1, true);
+	}else if(pageData.subPageIndex == SETTINGS_PAGE_DISPLAY) {
+		const char *menuItems[] = {
+			(DARKMODE ? "Darkmode" : "Lightmode")
+		};
+		
+		showMenu(menuItems, 1, true);
+	}else if(pageData.subPageIndex == SETTINGS_PAGE_TEST) {
+		const char *menuItems[] = {
+			"Vibrate Motor", "Accelerometer"
+		};
+		
+		showMenu(menuItems, 2, true);
+	}
 }
 
 bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
@@ -18,36 +49,75 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 		return true;
 	
 	if(buttonIndex == BTN_BACK) {
-		PageManager::showPage(GLOBAL_PAGE_WATCHFACE);
+		if(pageData.subPageIndex > 0) {
+			pageData.subPageIndex = 0;
+		}else{
+			PageManager::showPage(GLOBAL_PAGE_WATCHFACE);
+		}
 		return true;
 	}else if(buttonIndex == BTN_CONFIRM) {
-		switch(pageData.menuIndex) {
-			case 0:
-				PageManager::showPage(GLOBAL_PAGE_ABOUT);
+		switch(pageData.subPageIndex) {
+			case SETTINGS_PAGE_OVERVIEW:
+				if(pageData.menuIndex == 0) {
+					PageManager::showPage(GLOBAL_PAGE_ABOUT);
+				}else{
+					pageData.subPageIndex = pageData.menuIndex;
+				}
 				return true;
 			
-			case 1:
-				MiteOS::vibMotor(50, 50);
-				return true;
-			
-			case 2:
-				showAccelerometer();
-				return true;
-			
-			case 3:
-				setTime();
-				return true;
-			
-			case 4:
-				NetworkManager::registerNewWifiConnection();
-				return true;
-				
-			case 5:
-				NetworkManager::showSyncNTP();
-				return true;
-			
-			default:
+			case SETTINGS_PAGE_TIME:
+				switch(pageData.menuIndex) {
+					case 0:
+						setTime();
+						return true;
+					
+					case 1:
+						NetworkManager::showSyncNTP();
+						return true;
+					default: break;
+				}
 				break;
+			
+			case SETTINGS_PAGE_NETWORK:
+				switch(pageData.menuIndex) {
+					case 0:
+						NetworkManager::registerNewWifiConnection();
+						return true;
+					
+					case 1:
+						NetworkManager::registerNewWifiConnection();
+						return true;
+					
+					default: break;
+				}
+				break;
+			
+			case SETTINGS_PAGE_DISPLAY:
+				switch(pageData.menuIndex) {
+					case 0:
+						DARKMODE = !DARKMODE;
+						Configuration::saveSettings();
+						return true;
+					
+					default: break;
+				}
+				break;
+			
+			case SETTINGS_PAGE_TEST:
+				switch(pageData.menuIndex) {
+					case 0:
+						MiteOS::vibMotor(50, 50);
+						return true;
+					
+					case 1:
+						showAccelerometer();
+						return true;
+					
+					default: break;
+				}
+				break;
+			
+			default: break;
 		}
 	}
 	
@@ -76,6 +146,8 @@ void SettingsPage::setTime() {
 	
 	mDisplay.setFullWindow();
 
+	delay(500);
+	
 	while (1) {
 		if (digitalRead(MENU_BTN_PIN) == 1) {
 			setIndex++;

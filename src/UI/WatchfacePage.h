@@ -8,4 +8,6 @@ class WatchfacePage : public Page {
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;
 };
+
+extern RTC_DATA_ATTR uint8_t watchFaceId;
 #endif

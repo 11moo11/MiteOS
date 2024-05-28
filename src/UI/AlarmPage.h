@@ -10,5 +10,6 @@ class AlarmPage : public Page {
 	private:
 		void drawOverview();
 		void drawIcons();
+		void setTime();
 };
 #endif

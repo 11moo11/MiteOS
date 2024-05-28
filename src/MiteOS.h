@@ -3,7 +3,7 @@
 
 #define MITE_OS_VER "0.0.1"
 
-//#define DEBUG
+#define DEBUG
 
 #include <Arduino.h>
 #include <bma.h>
@@ -13,6 +13,7 @@
 #include <WatchyRTC.h>
 #include <Fonts/FreeMonoBold9pt7b.h>
 #include "UI/Page.h"
+#include "Data/Configuration.h"
 
 // Manager
 #include "Managers/PageManager.h"
@@ -48,8 +49,9 @@ typedef struct MiteSettings {
 typedef struct AlarmData {
 	bool enableAlarm;
 	bool triggered;
-	int8_t hour;
-	int8_t minute;
+	uint8_t mode;
+	uint8_t hour;
+	uint8_t minute;
 } AlarmData;
 
 class MiteOS {
@@ -62,7 +64,7 @@ class MiteOS {
 		static MiteOS *instance;
 
 	public:
-		explicit MiteOS(const MiteSettings &s) : settings(s) {} // constructor
+		explicit MiteOS(const MiteSettings &s) : settings(s) { } // constructor
 		void init();
 		void deepSleep();
 		void handleButtonPress();
