@@ -18,7 +18,9 @@
 typedef struct PageData {
   uint8_t pageIndex;
   uint8_t menuIndex;
-
+  
+  uint8_t subPageIndex;
+  
   String string1;
   String string2;
 
@@ -39,6 +41,7 @@ class Page {
     bool handleMenuButtons(uint8_t buttonIndex);
     
 		static void drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]);
+    static void drawCentreString(String buf, int x, int y);
 		static void drawCentreString(const char *buf, int x, int y);
 };
 

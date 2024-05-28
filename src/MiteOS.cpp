@@ -17,7 +17,7 @@ RTC_DATA_ATTR PageData pageData;
 RTC_DATA_ATTR bool DARKMODE;
 
 RTC_DATA_ATTR AlarmData timer;
-RTC_DATA_ATTR AlarmData alarms[2];
+RTC_DATA_ATTR AlarmData alarms[ALARM_COUNT];
 
 tmElements_t MiteOS::currentTime;
 

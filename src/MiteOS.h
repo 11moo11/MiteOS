@@ -91,8 +91,10 @@ extern RTC_DATA_ATTR tmElements_t osBootTime;
 
 extern RTC_DATA_ATTR bool DARKMODE;
 
+#define ALARM_COUNT 3
+
 extern RTC_DATA_ATTR AlarmData timer;
-extern RTC_DATA_ATTR AlarmData alarms[2];
+extern RTC_DATA_ATTR AlarmData alarms[ALARM_COUNT];
 
 #define BACKGROUND_COLOR (DARKMODE ? GxEPD_BLACK : GxEPD_WHITE)
 #define FOREGROUND_COLOR (DARKMODE ? GxEPD_WHITE : GxEPD_BLACK)

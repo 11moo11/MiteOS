@@ -69,6 +69,10 @@ void Page::drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]) {
 	}
 }
 
+void Page::drawCentreString(String buf, int x, int y) {
+	drawCentreString(buf.c_str(), x, y);
+}
+
 void Page::drawCentreString(const char *buf, int x, int y) {
 	int16_t x1, y1;
 	uint16_t w, h;

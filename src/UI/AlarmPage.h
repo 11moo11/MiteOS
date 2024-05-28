@@ -9,5 +9,6 @@ class AlarmPage : public Page {
 		bool onButtonPressed(uint8_t buttonIndex) override;
 	private:
 		void drawOverview();
+		void drawIcons();
 };
 #endif

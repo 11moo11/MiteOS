@@ -10,7 +10,7 @@
 #define GLOBAL_PAGE_ABOUT 4
 #define GLOBAL_PAGE_WEATHER 5
 
-#define PAGE_COUNT 5
+#define PAGE_COUNT 6
 
 class PageManager {
 	public:

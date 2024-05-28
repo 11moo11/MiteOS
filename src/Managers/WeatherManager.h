@@ -8,7 +8,7 @@ typedef struct WeatherData {
 	int8_t temperature;
 	int16_t weatherConditionCode;
 	bool isMetric;
-	char weatherDescription[20];
+	char weatherDescription[30];
 	bool external;
 	tmElements_t sunrise;
 	tmElements_t sunset;

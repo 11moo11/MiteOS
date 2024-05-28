@@ -10,12 +10,12 @@
 #define PAGE_TIME_SELECTION 3
 
 void TimerPage::initPage() {
-	pageData.number1 = PAGE_START_MENU;
+	pageData.subPageIndex = PAGE_START_MENU;
 	pageData.number3 = 5;
 }
 
 void TimerPage::drawPage() {
-	if(pageData.number1 == PAGE_TIME_SELECTION) {
+	if(pageData.subPageIndex == PAGE_TIME_SELECTION) {
 		const char *menuItems[] = { "10m", "15m", "20m", "30m", "45m", "1h", "2h" };
 		showMenu(menuItems, 7, true);
 	}else{
@@ -25,7 +25,7 @@ void TimerPage::drawPage() {
 }
 
 bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
-	if(pageData.number1 == PAGE_TIME_SELECTION) {
+	if(pageData.subPageIndex == PAGE_TIME_SELECTION) {
 		if(handleMenuButtons(buttonIndex)) return true;
 		
 		if(buttonIndex == BTN_CONFIRM) {
@@ -36,7 +36,7 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 		}
 		
 		if(buttonIndex == BTN_BACK) {
-			pageData.number1 = PAGE_START_MENU;
+			pageData.subPageIndex = PAGE_START_MENU;
 			return true;
 		}
 		return false;
@@ -47,28 +47,28 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 			timer.triggered = false;
 			timer.enableAlarm = false;
 			pageData.number3 = 5;
-			pageData.number1 = PAGE_START_MENU;
+			pageData.subPageIndex = PAGE_START_MENU;
 			return true;
 		}else{
 			if(buttonIndex == BTN_UP) {
 				pageData.number3 = (timer.hour - MiteOS::currentTime.Hour) * 60 + (timer.minute - MiteOS::currentTime.Minute);
 				timer.enableAlarm = false;
-				pageData.number1 = PAGE_START_MENU;
+				pageData.subPageIndex = PAGE_START_MENU;
 				return true;
 			}
 		}
 	}else{
-		if(pageData.number1 <= PAGE_MINUTES) {
+		if(pageData.subPageIndex <= PAGE_MINUTES) {
 			if(buttonIndex == BTN_UP) {
-				pageData.number3 += (pageData.number1 == PAGE_5MINUTES ? 5 : 1);
+				pageData.number3 += (pageData.subPageIndex == PAGE_5MINUTES ? 5 : 1);
 				return true;
 			}else if(buttonIndex == BTN_DOWN) {
-				pageData.number3 -= (pageData.number1 == PAGE_5MINUTES ? 5 : 1);
+				pageData.number3 -= (pageData.subPageIndex == PAGE_5MINUTES ? 5 : 1);
 				if(pageData.number3 < 1) pageData.number3 = 1;
 				return true;
 			}else if(buttonIndex == BTN_TOGGLE_BTN) {
-				pageData.number1 += 1;
-				if(pageData.number1 > PAGE_START_MENU) pageData.number1 = PAGE_5MINUTES;
+				pageData.subPageIndex += 1;
+				if(pageData.subPageIndex > PAGE_START_MENU) pageData.subPageIndex = PAGE_5MINUTES;
 				return true;
 			}
 		}else{
@@ -76,12 +76,12 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 				startTimer();
 				return true;
 			}else if(buttonIndex == BTN_DOWN) {
-				pageData.number1 = PAGE_TIME_SELECTION;
+				pageData.subPageIndex = PAGE_TIME_SELECTION;
 				pageData.menuIndex = 3; // Select the center entry by default
 				return true;
 			}else if(buttonIndex == BTN_TOGGLE_BTN) {
-				pageData.number1 += 1;
-				if(pageData.number1 > PAGE_START_MENU) pageData.number1 = PAGE_5MINUTES;
+				pageData.subPageIndex += 1;
+				if(pageData.subPageIndex > PAGE_START_MENU) pageData.subPageIndex = PAGE_5MINUTES;
 				return true;
 			}
 		}
@@ -111,8 +111,8 @@ void TimerPage::drawTime() {
 		if(timer.enableAlarm) {
 			drawCentreString("Alarm in:", 100, 60);
 		} else {
-			if(pageData.number1 <= PAGE_MINUTES) {
-				String right_border = (pageData.number1 == PAGE_5MINUTES ? "5" : "1");
+			if(pageData.subPageIndex <= PAGE_MINUTES) {
+				String right_border = (pageData.subPageIndex == PAGE_5MINUTES ? "5" : "1");
 				mDisplay.setCursor(180, 100);
 				mDisplay.println(right_border);
 			}
@@ -132,10 +132,10 @@ void TimerPage::drawIcons() {
 		drawButtonIcon(BTN_UP, icon_stop);
 	} else {
 		drawButtonIcon(BTN_TOGGLE_BTN, icon_right);
-		if(pageData.number1 == PAGE_MINUTES || pageData.number1 == PAGE_5MINUTES) {
+		if(pageData.subPageIndex == PAGE_MINUTES || pageData.subPageIndex == PAGE_5MINUTES) {
 			drawButtonIcon(BTN_UP, icon_plus);
 			drawButtonIcon(BTN_DOWN, icon_minus);
-		}else if(pageData.number1 == PAGE_START_MENU) {
+		}else if(pageData.subPageIndex == PAGE_START_MENU) {
 			drawButtonIcon(BTN_UP, icon_play);
 			drawButtonIcon(BTN_DOWN, icon_menu);
 		}
@@ -152,6 +152,6 @@ void TimerPage::startTimer() {
 		timer.minute -= 60;
 	}
 	
-	pageData.number1 = PAGE_START_MENU;
+	pageData.subPageIndex = PAGE_START_MENU;
 	timer.enableAlarm = true;
 }
