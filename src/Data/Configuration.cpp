@@ -77,7 +77,8 @@ void Configuration::loadAlarms() {
 void Configuration::saveSettings() {
 	if(!initialized) init();
 	
-	preferences.putBool("darkmode", DARKMODE);
+	preferences.putBool("autodarkmode", AUTO_DARKMODE);
+	preferences.putBool("darkmode", PREF_DARKMODE);
 	preferences.putUInt("watchface", watchFaceId);
 	#ifdef DEBUG
 	Serial.println("Saved Settings");
@@ -86,8 +87,9 @@ void Configuration::saveSettings() {
 void Configuration::loadSettings() {
 	if(!initialized) init();
 	
-	DARKMODE = preferences.getBool("darkmode", DARKMODE);
-	watchFaceId = preferences.getUInt("watchface", watchFaceId);
+	AUTO_DARKMODE = preferences.putBool("autodarkmode", AUTO_DARKMODE);
+	PREF_DARKMODE = preferences.getBool("darkmode", PREF_DARKMODE);
+	watchFaceId   = preferences.getUInt("watchface", watchFaceId);
 	#ifdef DEBUG
 	Serial.println("Loaded Settings");
 	#endif

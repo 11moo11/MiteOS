@@ -14,6 +14,8 @@ RTC_DATA_ATTR long gmtTimeOffset = 0;
 RTC_DATA_ATTR tmElements_t osBootTime;
 
 RTC_DATA_ATTR PageData pageData;
+RTC_DATA_ATTR bool AUTO_DARKMODE;
+RTC_DATA_ATTR bool PREF_DARKMODE;
 RTC_DATA_ATTR bool DARKMODE;
 
 RTC_DATA_ATTR AlarmData timer;
@@ -222,7 +224,7 @@ void MiteOS::checkTime() {
 		}
 	}
 
-	if(settings.enableAutoDarkMode) {
+	if(AUTO_DARKMODE) {
 		if(MiteOS::currentTime.Hour == settings.darkmodeStartH && MiteOS::currentTime.Minute == settings.darkmodeStartM) {
 			DARKMODE = !settings.inverseDarkMode;
 		}else if(MiteOS::currentTime.Hour == settings.darkmodeEndH && MiteOS::currentTime.Minute == settings.darkmodeEndM) {
@@ -239,12 +241,14 @@ void MiteOS::checkTime() {
 }
 
 void MiteOS::initDarkmode() {
-	if(settings.enableAutoDarkMode) {
-		if(MiteOS::currentTime.Hour > settings.darkmodeStartH || (MiteOS::currentTime.Hour == settings.darkmodeStartH && MiteOS::currentTime.Minute >= settings.darkmodeStartM)) {
-			DARKMODE = !settings.inverseDarkMode;
-		}else if(MiteOS::currentTime.Hour > settings.darkmodeEndH || (MiteOS::currentTime.Hour == settings.darkmodeEndH && MiteOS::currentTime.Minute >= settings.darkmodeEndM)) {
-			DARKMODE = settings.inverseDarkMode;
+	if(AUTO_DARKMODE) {
+		if(MiteOS::currentTime.Hour > instance->settings.darkmodeStartH || (MiteOS::currentTime.Hour == instance->settings.darkmodeStartH && MiteOS::currentTime.Minute >= instance->settings.darkmodeStartM)) {
+			DARKMODE = !instance->settings.inverseDarkMode;
+		}else if(MiteOS::currentTime.Hour > instance->settings.darkmodeEndH || (MiteOS::currentTime.Hour == instance->settings.darkmodeEndH && MiteOS::currentTime.Minute >= instance->settings.darkmodeEndM)) {
+			DARKMODE = instance->settings.inverseDarkMode;
 		}
+	}else{
+		DARKMODE = PREF_DARKMODE;
 	}
 	#ifdef DEBUG
 	Serial.println("DARKMODE " + String(DARKMODE));

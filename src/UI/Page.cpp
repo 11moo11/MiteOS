@@ -5,10 +5,16 @@
 #include <Fonts/FreeMonoBold9pt7b.h>
 #include "../Images/menu_icons.h"
 
-void Page::showMenu(const char *menuItems[], uint8_t itemCount, bool partialRefresh) {
+void Page::showMenu(const char *menuItems[], uint8_t itemCount, bool partialRefresh, String title) {
 	mDisplay.setFullWindow();
 	mDisplay.fillScreen(BACKGROUND_COLOR);
 	mDisplay.setFont(&FreeMonoBold9pt7b);
+	
+	if(title.length() > 0) {
+		mDisplay.setRotation(3);
+		drawCentreString(title, 100, 13, false);
+		mDisplay.setRotation(0);
+	}
 	
 	int16_t x1, y1;
 	uint16_t w, h;
@@ -69,13 +75,14 @@ void Page::drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]) {
 	}
 }
 
-void Page::drawCentreString(String buf, int x, int y) {
+void Page::drawCentreString(String buf, int x, int y, bool textWrap) {
 	drawCentreString(buf.c_str(), x, y);
 }
 
-void Page::drawCentreString(const char *buf, int x, int y) {
+void Page::drawCentreString(const char *buf, int x, int y, bool textWrap) {
 	int16_t x1, y1;
 	uint16_t w, h;
+	mDisplay.setTextWrap(false);
 	mDisplay.getTextBounds(buf, x, y, &x1, &y1, &w, &h); //calc width of new string
 	mDisplay.setCursor(x - w / 2, y);
 	mDisplay.print(buf);

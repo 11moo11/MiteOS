@@ -38,7 +38,6 @@ typedef struct MiteSettings {
 	//
 	bool vibrateOClock;
 	//
-	bool enableAutoDarkMode;
 	bool inverseDarkMode;
 	uint8_t darkmodeStartH;
 	uint8_t darkmodeStartM;
@@ -75,12 +74,12 @@ class MiteOS {
 		
 		static uint8_t getBoardRevision();
 		
+		static void initDarkmode();
 	private:
 		void checkTime();  
 		void _bmaConfig();
 		static uint16_t _readRegister(uint8_t address, uint8_t reg, uint8_t *data, uint16_t len);
 		static uint16_t _writeRegister(uint8_t address, uint8_t reg, uint8_t *data, uint16_t len);
-		void initDarkmode();
 		void waitForAdditionalButtons();
 		void handleAdditionalButtonPress(uint8_t buttonIndex, unsigned long *holdingTime);
 };
@@ -91,6 +90,8 @@ extern RTC_DATA_ATTR BMA423 accSensor;
 extern RTC_DATA_ATTR PageData pageData;
 extern RTC_DATA_ATTR tmElements_t osBootTime;
 
+extern RTC_DATA_ATTR bool AUTO_DARKMODE;
+extern RTC_DATA_ATTR bool PREF_DARKMODE;
 extern RTC_DATA_ATTR bool DARKMODE;
 
 #define ALARM_COUNT 3

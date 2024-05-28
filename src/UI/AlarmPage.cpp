@@ -31,7 +31,7 @@ void AlarmPage::drawPage() {
 					: (alarms[pageData.number2].mode == ALARM_MODE_WEEKEND ? TXT_WEEKEND
 						: TXT_EVERY_DAY)))
 		};
-		showMenu(menuItems, 3, true);
+		showMenu(menuItems, 3, true, "Alarm " + String(pageData.number2 + 1));
 	}
 	drawIcons();
 }

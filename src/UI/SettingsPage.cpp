@@ -10,37 +10,59 @@
 #define SETTINGS_PAGE_DISPLAY 3
 #define SETTINGS_PAGE_TEST 4
 
+#define SETTINGS_PAGE_DARKMODE 11
+
 void SettingsPage::drawPage() {
 	if(pageData.subPageIndex == SETTINGS_PAGE_OVERVIEW) {
 		const char *menuItems[] = {
 			"About MiteOS", "Time", "Network", "Display", "Test"
 		};
 		
-		showMenu(menuItems, 5, true);
+		showMenu(menuItems, 5, true, "Settings");
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_TIME) {
 		const char *menuItems[] = {
 			"Set Time", "Sync NTP"
 		};
 		
-		showMenu(menuItems, 2, true);
+		showMenu(menuItems, 2, true, "Time");
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_NETWORK) {
 		const char *menuItems[] = {
 			"Setup WiFi"
 		};
 		
-		showMenu(menuItems, 1, true);
+		showMenu(menuItems, 1, true, "Network");
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_DISPLAY) {
 		const char *menuItems[] = {
-			(DARKMODE ? "Darkmode" : "Lightmode")
+			"Color Scheme"
 		};
 		
-		showMenu(menuItems, 1, true);
+		showMenu(menuItems, 1, true, "Display");
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_TEST) {
 		const char *menuItems[] = {
 			"Vibrate Motor", "Accelerometer"
 		};
 		
-		showMenu(menuItems, 2, true);
+		showMenu(menuItems, 2, true, "Test");
+	}
+	
+	
+	
+	
+	else if(pageData.subPageIndex == SETTINGS_PAGE_DARKMODE) {
+		if(AUTO_DARKMODE) {
+			const char *menuItems[] = {
+				"Timed"
+			};
+			
+			showMenu(menuItems, 1, true, "Color Scheme");
+		}else{
+			const char *menuItems[] = {
+				"Static",
+				(PREF_DARKMODE ? "Darkmode" : "Lightmode")
+			};
+			
+			showMenu(menuItems, 2, true, "Color Scheme");
+		}
 	}
 }
 
@@ -49,7 +71,9 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 		return true;
 	
 	if(buttonIndex == BTN_BACK) {
-		if(pageData.subPageIndex > 0) {
+		if(pageData.subPageIndex == 11) { // Darkmode
+			pageData.subPageIndex = SETTINGS_PAGE_DISPLAY;
+		} else if(pageData.subPageIndex > 0) {
 			pageData.subPageIndex = 0;
 		}else{
 			PageManager::showPage(GLOBAL_PAGE_WATCHFACE);
@@ -95,7 +119,28 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 			case SETTINGS_PAGE_DISPLAY:
 				switch(pageData.menuIndex) {
 					case 0:
-						DARKMODE = !DARKMODE;
+						pageData.subPageIndex = SETTINGS_PAGE_DARKMODE;
+						return true;
+					
+					default: break;
+				}
+				break;
+			
+			
+			
+			
+			
+			
+			case SETTINGS_PAGE_DARKMODE:
+				switch(pageData.menuIndex) {
+					case 0:
+						AUTO_DARKMODE = !AUTO_DARKMODE;
+						MiteOS::initDarkmode();
+						Configuration::saveSettings();
+						return true;
+					case 1:
+						PREF_DARKMODE = !PREF_DARKMODE;
+						MiteOS::initDarkmode();
 						Configuration::saveSettings();
 						return true;
 					

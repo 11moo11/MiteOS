@@ -17,7 +17,7 @@ void TimerPage::initPage() {
 void TimerPage::drawPage() {
 	if(pageData.subPageIndex == PAGE_TIME_SELECTION) {
 		const char *menuItems[] = { "10m", "15m", "20m", "30m", "45m", "1h", "2h" };
-		showMenu(menuItems, 7, true);
+		showMenu(menuItems, 7, true, "Preset");
 	}else{
 		drawTime();
 		drawIcons();
