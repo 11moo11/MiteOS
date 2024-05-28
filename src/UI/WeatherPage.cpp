@@ -33,38 +33,42 @@ void WeatherPage::drawWeather() {
 	mDisplay.drawBitmap(10 + String(temperature).length() * 35, 15, currentWeather.isMetric ? celsius : fahrenheit, 26, 20, FOREGROUND_COLOR);
 	
 	const unsigned char* weatherIcon;
-
-	if(weatherConditionCode > 0) {
-		//https://openweathermap.org/weather-conditions
-		if(weatherConditionCode > 801){//Cloudy
-			weatherIcon = cloudy;
-		}else if(weatherConditionCode == 801){//Few Clouds
-			weatherIcon = cloudsun;
-		}else if(weatherConditionCode == 800){//Clear
-			weatherIcon = sunny;
-		}else if(weatherConditionCode >=700){//Atmosphere
-			weatherIcon = atmosphere;
-		}else if(weatherConditionCode >=600){//Snow
-			weatherIcon = snow;
-		}else if(weatherConditionCode >=500){//Rain
-			weatherIcon = rain;
-		}else if(weatherConditionCode >=300){//Drizzle
-			weatherIcon = drizzle;
-		}else if(weatherConditionCode >=200){//Thunderstorm
-			weatherIcon = thunderstorm;
-		}else{
-			return;
-		}
-	}
-	
-	mDisplay.drawBitmap(130, 20, weatherIcon, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, FOREGROUND_COLOR);
 	
 	mDisplay.setFont(&Seven_Seg18pt7b);
 	drawCentreString(currentWeatherData.weatherDescription, 100, 90);
+	
+	if(currentWeather.external) {
+		if(weatherConditionCode > 0) {
+			//https://openweathermap.org/weather-conditions
+			if(weatherConditionCode > 801){//Cloudy
+				weatherIcon = cloudy;
+			}else if(weatherConditionCode == 801){//Few Clouds
+				weatherIcon = cloudsun;
+			}else if(weatherConditionCode == 800){//Clear
+				weatherIcon = sunny;
+			}else if(weatherConditionCode >=700){//Atmosphere
+				weatherIcon = atmosphere;
+			}else if(weatherConditionCode >=600){//Snow
+				weatherIcon = snow;
+			}else if(weatherConditionCode >=500){//Rain
+				weatherIcon = rain;
+			}else if(weatherConditionCode >=300){//Drizzle
+				weatherIcon = drizzle;
+			}else if(weatherConditionCode >=200){//Thunderstorm
+				weatherIcon = thunderstorm;
+			}else{
+				return;
+			}
+		}
+	}else{
+		weatherIcon = chip;
+	}
+	
+	mDisplay.drawBitmap(130, 20, weatherIcon, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, FOREGROUND_COLOR);
 }
 
 void WeatherPage::drawMoonPhase() {
-	mDisplay.fillRect(0, 125, 200, 75, GxEPD_BLACK);
+	mDisplay.fillRect(0, 120, 200, 80, GxEPD_BLACK);
 	
 	float phase = WeatherManager::getMoonPhase(MiteOS::currentTime.Year, MiteOS::currentTime.Month, MiteOS::currentTime.Day, MiteOS::currentTime.Hour);
 	

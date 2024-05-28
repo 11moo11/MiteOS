@@ -3,7 +3,7 @@
 
 #define MITE_OS_VER "0.0.1"
 
-#define DEBUG
+//#define DEBUG
 
 #include <Arduino.h>
 #include <bma.h>

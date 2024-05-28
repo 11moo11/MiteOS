@@ -61,7 +61,7 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 				JSONVar responseObject     = JSON.parse(payload);
 				currentWeatherData.temperature = int(responseObject["main"]["temp"]);
 				currentWeatherData.weatherConditionCode = int(responseObject["weather"][0]["id"]);
-				String desc = JSONVar::stringify(responseObject["weather"][0]["main"]);
+				String desc = JSONVar::stringify(responseObject["weather"][0]["description"]);
 				desc.substring(1, desc.length() - 1).toCharArray(currentWeatherData.weatherDescription, 20);
 				currentWeatherData.external = true;
 				
@@ -87,6 +87,7 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 			currentWeatherData.temperature          = temperature;
 			currentWeatherData.weatherConditionCode = 800;
 			currentWeatherData.external             = false;
+			String("Chip").toCharArray(currentWeatherData.weatherDescription, 20);
 		}
 		weatherCheckCounter = 0;
 	} else {
@@ -102,6 +103,7 @@ double WeatherManager::_Julian(int32_t year, int32_t month, const double &day) {
 		year--;
 		month += 12;
 	}
+	
 	if (year > 1582 || (year == 1582 && month > 10) ||
 		(year == 1582 && month == 10 && day > 15)) {
 		int32_t a;
