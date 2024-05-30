@@ -31,8 +31,8 @@ bool WatchfacePage::onButtonPressed(uint8_t buttonIndex) {
 		return true;
 	}
 	
-	if(buttonIndex == BTN_UP) {
-		PageManager::showPage(GLOBAL_PAGE_SETTINGS);
+	if(buttonIndex == BTN_MENU) {
+		PageManager::showPage(GLOBAL_PAGE_APPS);
 		return true;
 	}
 	return false;

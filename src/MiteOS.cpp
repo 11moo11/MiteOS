@@ -23,6 +23,8 @@ RTC_DATA_ATTR AlarmData alarms[ALARM_COUNT];
 
 tmElements_t MiteOS::currentTime;
 
+RTC_DATA_ATTR bool hourVibrate = true;
+
 void MiteOS::init() {
 	#ifdef DEBUG
 	Serial.begin(115200);
@@ -217,7 +219,7 @@ void MiteOS::handleButtonPress() {
 }
 
 void MiteOS::checkTime() {
-	if (settings.vibrateOClock) {
+	if (hourVibrate) {
 		if (currentTime.Minute == 0) {
 			// The RTC wakes us up once per minute
 			vibMotor(75, 4);
@@ -244,7 +246,9 @@ void MiteOS::initDarkmode() {
 	if(AUTO_DARKMODE) {
 		if(MiteOS::currentTime.Hour > instance->settings.darkmodeStartH || (MiteOS::currentTime.Hour == instance->settings.darkmodeStartH && MiteOS::currentTime.Minute >= instance->settings.darkmodeStartM)) {
 			DARKMODE = !instance->settings.inverseDarkMode;
-		}else if(MiteOS::currentTime.Hour > instance->settings.darkmodeEndH || (MiteOS::currentTime.Hour == instance->settings.darkmodeEndH && MiteOS::currentTime.Minute >= instance->settings.darkmodeEndM)) {
+		}else if(MiteOS::currentTime.Hour < instance->settings.darkmodeEndH || (MiteOS::currentTime.Hour == instance->settings.darkmodeEndH && MiteOS::currentTime.Minute <= instance->settings.darkmodeEndM)) {
+			DARKMODE = !instance->settings.inverseDarkMode;
+		}else{
 			DARKMODE = instance->settings.inverseDarkMode;
 		}
 	}else{

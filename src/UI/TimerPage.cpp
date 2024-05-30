@@ -66,7 +66,7 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 				pageData.number3 -= (pageData.subPageIndex == PAGE_5MINUTES ? 5 : 1);
 				if(pageData.number3 < 1) pageData.number3 = 1;
 				return true;
-			}else if(buttonIndex == BTN_TOGGLE_BTN) {
+			}else if(buttonIndex == BTN_MENU) {
 				pageData.subPageIndex += 1;
 				if(pageData.subPageIndex > PAGE_START_MENU) pageData.subPageIndex = PAGE_5MINUTES;
 				return true;
@@ -79,7 +79,7 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 				pageData.subPageIndex = PAGE_TIME_SELECTION;
 				pageData.menuIndex = 3; // Select the center entry by default
 				return true;
-			}else if(buttonIndex == BTN_TOGGLE_BTN) {
+			}else if(buttonIndex == BTN_MENU) {
 				pageData.subPageIndex += 1;
 				if(pageData.subPageIndex > PAGE_START_MENU) pageData.subPageIndex = PAGE_5MINUTES;
 				return true;
@@ -128,10 +128,11 @@ void TimerPage::drawTime() {
 }
 
 void TimerPage::drawIcons() {
+	drawButtonIcon(BTN_BACK, icon_left);
 	if(timer.enableAlarm) {
 		drawButtonIcon(BTN_UP, icon_stop);
 	} else {
-		drawButtonIcon(BTN_TOGGLE_BTN, icon_right);
+		drawButtonIcon(BTN_MENU, icon_right);
 		if(pageData.subPageIndex == PAGE_MINUTES || pageData.subPageIndex == PAGE_5MINUTES) {
 			drawButtonIcon(BTN_UP, icon_plus);
 			drawButtonIcon(BTN_DOWN, icon_minus);

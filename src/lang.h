@@ -11,4 +11,7 @@
 #define TXT_WEEKEND "Weekend"
 #define TXT_EVERY_DAY "Every Day"
 
+#define TXT_ENABLE_ON "[X] Active"
+#define TXT_ENABLE_OFF "[ ] Active"
+
 #endif

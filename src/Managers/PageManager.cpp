@@ -7,6 +7,7 @@
 #include "../UI/SettingsPage.h"
 #include "../UI/AboutPage.h"
 #include "../UI/WeatherPage.h"
+#include "../UI/AppPage.h"
 
 WatchfacePage watchfacePage;
 TimerPage timerPage;
@@ -14,13 +15,15 @@ SettingsPage settingsPage;
 AboutPage aboutPage;
 WeatherPage weatherPage;
 AlarmPage alarmPage;
+AppPage appPage;
 Page* pages[] = {
 	&watchfacePage,
 	&timerPage,
 	&alarmPage,
 	&settingsPage,
 	&aboutPage,
-	&weatherPage
+	&weatherPage,
+	&appPage
 };
 
 
@@ -33,10 +36,17 @@ void PageManager::handleButtonPress(uint8_t buttonIndex) {
 		}
 	}
 
-	if(buttonIndex == BTN_MENU) {
+	if(buttonIndex == BTN_NEXT_PAGE) {
 		nextPage();
-		showPage(pageData.pageIndex);
 		
+		refreshPage();
+		return;
+	}else if(buttonIndex == BTN_HOME) {
+		if(pageData.pageIndex != GLOBAL_PAGE_WATCHFACE && pageData.pageIndex != GLOBAL_PAGE_APPS)
+			showPage(GLOBAL_PAGE_APPS);
+		else
+			showPage(GLOBAL_PAGE_WATCHFACE);
+
 		refreshPage();
 		return;
 	}

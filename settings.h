@@ -1,5 +1,6 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
+#include "src/MiteOS.h"
 
 //Weather Settings
 #define CITY_ID "2948825" //New York City https://openweathermap.org/current#cityid
@@ -45,8 +46,6 @@ MiteSettings settings {
 	.weatherUpdateInterval = WEATHER_UPDATE_INTERVAL,
 	.ntpServer = NTP_SERVER,
 	.gmtOffset = GMT_OFFSET_SEC,
-	//
-	.vibrateOClock = false,
 	//
 	.inverseDarkMode = INVERSE_DARKMODE,
 	.darkmodeStartH = DARKMODE_START_H,

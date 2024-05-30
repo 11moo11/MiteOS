@@ -36,8 +36,6 @@ typedef struct MiteSettings {
 	String ntpServer;
 	int gmtOffset;
 	//
-	bool vibrateOClock;
-	//
 	bool inverseDarkMode;
 	uint8_t darkmodeStartH;
 	uint8_t darkmodeStartM;
@@ -98,6 +96,8 @@ extern RTC_DATA_ATTR bool DARKMODE;
 
 extern RTC_DATA_ATTR AlarmData timer;
 extern RTC_DATA_ATTR AlarmData alarms[ALARM_COUNT];
+
+extern RTC_DATA_ATTR bool hourVibrate;
 
 #define BACKGROUND_COLOR (DARKMODE ? GxEPD_BLACK : GxEPD_WHITE)
 #define FOREGROUND_COLOR (DARKMODE ? GxEPD_WHITE : GxEPD_BLACK)

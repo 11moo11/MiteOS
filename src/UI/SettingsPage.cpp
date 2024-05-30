@@ -21,10 +21,11 @@ void SettingsPage::drawPage() {
 		showMenu(menuItems, 5, true, "Settings");
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_TIME) {
 		const char *menuItems[] = {
-			"Set Time", "Sync NTP"
+			"Set Time", "Sync NTP", 
+			(hourVibrate ? "[X] Hour Vib." : "[ ] Hour Vib.")
 		};
 		
-		showMenu(menuItems, 2, true, "Time");
+		showMenu(menuItems, 3, true, "Time");
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_NETWORK) {
 		const char *menuItems[] = {
 			"Setup WiFi"
@@ -76,7 +77,7 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 		} else if(pageData.subPageIndex > 0) {
 			pageData.subPageIndex = 0;
 		}else{
-			PageManager::showPage(GLOBAL_PAGE_WATCHFACE);
+			PageManager::showPage(GLOBAL_PAGE_APPS);
 		}
 		return true;
 	}else if(buttonIndex == BTN_CONFIRM) {
@@ -98,6 +99,12 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 					case 1:
 						NetworkManager::showSyncNTP();
 						return true;
+
+					case 2:
+						hourVibrate = !hourVibrate;
+						Configuration::saveSettings();
+						return true;
+					
 					default: break;
 				}
 				break;

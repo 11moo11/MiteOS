@@ -24,7 +24,7 @@ void AlarmPage::drawPage() {
 		drawOverview();
 	}else if(pageData.subPageIndex == ALARM_PAGE_CONFIGURATION) {
 		const char *menuItems[] = {
-			(alarms[pageData.number2].enableAlarm ? TXT_DISABLE : TXT_ENABLE),
+			(alarms[pageData.number2].enableAlarm ? TXT_ENABLE_ON : TXT_ENABLE_OFF),
 			TXT_SET_TIME,
 			(alarms[pageData.number2].mode == ALARM_MODE_ONCE ? TXT_ONCE
 				: (alarms[pageData.number2].mode == ALARM_MODE_WORKDAY ? TXT_WORKDAY
@@ -47,8 +47,11 @@ bool AlarmPage::onButtonPressed(uint8_t buttonIndex) {
 				pageData.number2--;
 				if(pageData.number2 > 250) pageData.number2 = ALARM_COUNT - 1;
 				return true;
-			}else if(buttonIndex == BTN_TOGGLE_BTN) {
+			}else if(buttonIndex == BTN_MENU) {
 				pageData.subPageIndex = ALARM_PAGE_CONFIGURATION;
+				return true;
+			}else if(buttonIndex == BTN_BACK) {
+				PageManager::showPage(GLOBAL_PAGE_APPS);
 				return true;
 			}
 			break;
@@ -118,7 +121,8 @@ void AlarmPage::drawIcons() {
 		case ALARM_PAGE_OVERVIEW:
 			drawButtonIcon(BTN_UP, icon_up);
 			drawButtonIcon(BTN_DOWN, icon_down);
-			drawButtonIcon(BTN_TOGGLE_BTN, icon_gear);
+			drawButtonIcon(BTN_MENU, icon_gear);
+			drawButtonIcon(BTN_BACK, icon_left);
 			break;
 		default: break;
 	}
