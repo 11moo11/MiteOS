@@ -3,6 +3,7 @@
 #include "../Fonts/DSEG7_Classic_Bold_25.h"
 #include <DSEG7_Classic_Bold_53.h>
 #include "../Images/menu_icons.h"
+#include "../Images/app_icons.h"
 
 #include "../lang.h"
 
@@ -10,16 +11,18 @@
 #define ALARM_PAGE_CONFIGURATION 1
 #define ALARM_PAGE_SET_TIME 2
 
-#define ALARM_MODE_ONCE 0
-#define ALARM_MODE_WORKDAY 1
-#define ALARM_MODE_WEEKEND 2
-#define ALARM_MODE_DAILY 3
-
 void AlarmPage::initPage() {
 	pageData.subPageIndex = ALARM_PAGE_OVERVIEW;
 }
 
 void AlarmPage::drawPage() {
+	for(uint8_t i = 0; i < ALARM_COUNT; i++) {
+		if(alarms[i].triggered) {
+			AlertManager::showPermanentAlert(TXT_ALARM " " + String(i + 1), app_icon_alarm, "00:00");
+			alarms[i].triggered = false;
+		}
+	}
+	
 	if(pageData.subPageIndex == ALARM_PAGE_OVERVIEW) {
 		drawOverview();
 	}else if(pageData.subPageIndex == ALARM_PAGE_CONFIGURATION) {
@@ -31,7 +34,7 @@ void AlarmPage::drawPage() {
 					: (alarms[pageData.number2].mode == ALARM_MODE_WEEKEND ? TXT_WEEKEND
 						: TXT_EVERY_DAY)))
 		};
-		showMenu(menuItems, 3, true, "Alarm " + String(pageData.number2 + 1));
+		showMenu(menuItems, 3, true, TXT_ALARM " " + String(pageData.number2 + 1));
 	}
 	drawIcons();
 }
@@ -111,7 +114,7 @@ void AlarmPage::drawOverview() {
 		mDisplay.println(item);
 		
 		if(alarms[i].enableAlarm) mDisplay.drawBitmap(30, yPos + 14, icon_alarm, 20, 20, i == pageData.number2 ? BACKGROUND_COLOR : FOREGROUND_COLOR);
-		else mDisplay.fillRect(45, yPos + 24, 110, 3, i == pageData.number2 ? BACKGROUND_COLOR : FOREGROUND_COLOR);
+		else mDisplay.fillRect(45, yPos + 26, 110, 3, i == pageData.number2 ? BACKGROUND_COLOR : FOREGROUND_COLOR);
 		
 	}
 }

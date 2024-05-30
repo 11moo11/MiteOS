@@ -93,7 +93,7 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 			currentWeatherData.temperature          = temperature;
 			currentWeatherData.weatherConditionCode = 800;
 			currentWeatherData.external             = false;
-			String("Chip").toCharArray(currentWeatherData.weatherDescription, 20);
+			String(TXT_CHIP).toCharArray(currentWeatherData.weatherDescription, 20);
 		}
 		weatherCheckCounter = 0;
 	} else {

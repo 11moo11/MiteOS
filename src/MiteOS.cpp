@@ -101,7 +101,7 @@ void MiteOS::init() {
 			initDarkmode();
 			
 			PageManager::refreshPage(false); // full update on reset
-			vibMotor(75, 4);
+			AlertManager::vibMotor(75, 4);
 			
 			// For some reason, seems to be enabled on first boot
 			esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
@@ -222,7 +222,7 @@ void MiteOS::checkTime() {
 	if (hourVibrate) {
 		if (currentTime.Minute == 0) {
 			// The RTC wakes us up once per minute
-			vibMotor(75, 4);
+			AlertManager::vibMotor(75, 4);
 		}
 	}
 
@@ -237,8 +237,30 @@ void MiteOS::checkTime() {
 	if(timer.triggered
 	|| (timer.enableAlarm && currentTime.Hour == timer.hour && currentTime.Minute == timer.minute)) {
 		timer.triggered = true;
-		pageData.pageIndex = 1;
-		vibMotor(100, 20);
+		pageData.pageIndex = GLOBAL_PAGE_TIMER;
+		AlertManager::vibMotor(100, 10);
+	}
+
+	for(uint8_t i = 0; i < ALARM_COUNT; i++) {
+		if(alarms[i].triggered
+		|| (alarms[i].enableAlarm && currentTime.Hour == alarms[i].hour && currentTime.Minute == alarms[i].minute)) {
+			if(alarms[i].mode == ALARM_MODE_ONCE) {
+				// Alarm should only be triggered once, so we disable it and save it to the settings file
+				alarms[i].enableAlarm = false;
+				Configuration::saveAlarms(); 
+			}else if(alarms[i].mode == ALARM_MODE_WEEKEND) {
+				if(currentTime.Wday != 1 && currentTime.Wday != 7) {
+					continue;
+				}
+			}else if(alarms[i].mode == ALARM_MODE_WORKDAY) {
+				if(currentTime.Wday == 1 || currentTime.Wday == 7) {
+					continue;
+				}
+			}
+			alarms[i].triggered = true;
+			
+			pageData.pageIndex = GLOBAL_PAGE_ALARM;
+		}
 	}
 }
 
@@ -258,16 +280,6 @@ void MiteOS::initDarkmode() {
 	Serial.println("DARKMODE " + String(DARKMODE));
 	#endif
 	
-}
-
-void MiteOS::vibMotor(uint8_t intervalMs, uint8_t length) {
-	pinMode(VIB_MOTOR_PIN, OUTPUT);
-	bool motorOn = false;
-	for (int i = 0; i < length; i++) {
-		motorOn = !motorOn;
-		digitalWrite(VIB_MOTOR_PIN, motorOn);
-		delay(intervalMs);
-	}
 }
 
 uint16_t MiteOS::_readRegister(uint8_t address, uint8_t reg, uint8_t *data, uint16_t len) {

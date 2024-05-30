@@ -1,7 +1,7 @@
 #ifndef MITEOS_H
 #define MITEOS_H
 
-#define MITE_OS_VER "0.0.1"
+#define MITE_OS_VER "2024-05-30"
 
 #define DEBUG
 
@@ -15,9 +15,12 @@
 #include "UI/Page.h"
 #include "Data/Configuration.h"
 
+#include "lang.h"
+
 // Manager
 #include "Managers/PageManager.h"
 #include "Managers/WeatherManager.h"
+#include "Managers/AlertManager.h"
 
 #define ADDITONAL_BUTTON_CHECK_DURATION 500
 #define BUTTON_PRESS_REPEAT_DELAY 150
@@ -43,6 +46,12 @@ typedef struct MiteSettings {
 	uint8_t darkmodeEndM;
 } MiteSettings;
 
+
+#define ALARM_MODE_ONCE 0
+#define ALARM_MODE_WORKDAY 1
+#define ALARM_MODE_WEEKEND 2
+#define ALARM_MODE_DAILY 3
+
 typedef struct AlarmData {
 	bool enableAlarm;
 	bool triggered;
@@ -66,7 +75,6 @@ class MiteOS {
 		void deepSleep();
 		void handleButtonPress();
 		
-  		static void vibMotor(uint8_t intervalMs = 100, uint8_t length = 20);
   		static float getBatteryVoltage();
 		static float getBatteryPercentage();
 		

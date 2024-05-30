@@ -18,9 +18,9 @@ static const unsigned char* const pageIcons[] = {
 };
 
 static const String pageTitles[] = {
-	"Settings",
-	"Alarm",
-	"Timer",
+	TXT_SETTINGS,
+	TXT_ALARM,
+	TXT_TIMER,
 	""
 };
 static const uint8_t pageTarget[] = {
@@ -36,6 +36,10 @@ void AppPage::drawPage() {
 	drawButtonIcon(BTN_CONFIRM, icon_checkmark);
 	drawButtonIcon(BTN_UP, icon_up);
 	drawButtonIcon(BTN_DOWN, icon_down);
+
+	if(APP_PAGE_COUNT > 1) {
+		drawCentreString(String(currentAppPage + 1) + " / " + String(APP_PAGE_COUNT + 1), 100, 190, false);
+	}
 	displayPage();
 }
 

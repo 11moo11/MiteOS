@@ -15,55 +15,47 @@
 void SettingsPage::drawPage() {
 	if(pageData.subPageIndex == SETTINGS_PAGE_OVERVIEW) {
 		const char *menuItems[] = {
-			"About MiteOS", "Time", "Network", "Display", "Test"
+			TXT_ABOUT " " TXT_OS_NAME, TXT_TIME, TXT_NETWORK, TXT_DISPLAY, TXT_TEST
 		};
 		
-		showMenu(menuItems, 5, true, "Settings");
+		showMenu(menuItems, 5, true, TXT_SETTINGS);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_TIME) {
 		const char *menuItems[] = {
-			"Set Time", "Sync NTP", 
-			(hourVibrate ? "[X] Hour Vib." : "[ ] Hour Vib.")
+			TXT_SET_TIME, TXT_SYNC_NTP, 
+			(hourVibrate ? TXT_CHECKBOX_ON " " TXT_HOUR_VIB : TXT_CHECKBOX_OFF " " TXT_HOUR_VIB)
 		};
 		
-		showMenu(menuItems, 3, true, "Time");
+		showMenu(menuItems, 3, true, TXT_TIME);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_NETWORK) {
 		const char *menuItems[] = {
-			"Setup WiFi"
+			TXT_SETUP_WIFI
 		};
 		
-		showMenu(menuItems, 1, true, "Network");
+		showMenu(menuItems, 1, true, TXT_NETWORK);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_DISPLAY) {
 		const char *menuItems[] = {
-			"Color Scheme"
+			TXT_COLOR_SCHEME
 		};
 		
-		showMenu(menuItems, 1, true, "Display");
+		showMenu(menuItems, 1, true, TXT_DISPLAY);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_TEST) {
 		const char *menuItems[] = {
-			"Vibrate Motor", "Accelerometer"
+			TXT_VIB_MOTOR, TXT_SHOW_ACC
 		};
 		
-		showMenu(menuItems, 2, true, "Test");
+		showMenu(menuItems, 2, true, TXT_TEST);
 	}
 	
 	
 	
 	
 	else if(pageData.subPageIndex == SETTINGS_PAGE_DARKMODE) {
-		if(AUTO_DARKMODE) {
-			const char *menuItems[] = {
-				"Timed"
-			};
-			
-			showMenu(menuItems, 1, true, "Color Scheme");
-		}else{
-			const char *menuItems[] = {
-				"Static",
-				(PREF_DARKMODE ? "Darkmode" : "Lightmode")
-			};
-			
-			showMenu(menuItems, 2, true, "Color Scheme");
-		}
+		const char *menuItems[] = {
+			(AUTO_DARKMODE ? TXT_TIMED : TXT_STATIC),
+			(PREF_DARKMODE ? TXT_DARKMODE : TXT_LIGHTMODE)
+		};
+		
+		showMenu(menuItems, AUTO_DARKMODE ? 1 : 2, true, TXT_COLOR_SCHEME);
 	}
 }
 
@@ -158,7 +150,7 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 			case SETTINGS_PAGE_TEST:
 				switch(pageData.menuIndex) {
 					case 0:
-						MiteOS::vibMotor(50, 50);
+						AlertManager::vibMotor(50, 50);
 						return true;
 					
 					case 1:

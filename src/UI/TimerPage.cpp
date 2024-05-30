@@ -3,6 +3,8 @@
 #include "../Fonts/DSEG7_Classic_Regular_39.h"
 #include "../Fonts/Seven_Segment10pt7b.h"
 #include "../Images/menu_icons.h"
+#include "../Images/app_icons.h"
+#include <Fonts/FreeMonoBold24pt7b.h>
 
 #define PAGE_5MINUTES 0
 #define PAGE_MINUTES 1
@@ -17,7 +19,7 @@ void TimerPage::initPage() {
 void TimerPage::drawPage() {
 	if(pageData.subPageIndex == PAGE_TIME_SELECTION) {
 		const char *menuItems[] = { "10m", "15m", "20m", "30m", "45m", "1h", "2h" };
-		showMenu(menuItems, 7, true, "Preset");
+		showMenu(menuItems, 7, true, TXT_PRESET);
 	}else{
 		drawTime();
 		drawIcons();
@@ -43,19 +45,11 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 	}
 	
 	if(timer.enableAlarm) {
-		if(timer.triggered) {
-			timer.triggered = false;
+		if(buttonIndex == BTN_UP) {
+			pageData.number3 = (timer.hour - MiteOS::currentTime.Hour) * 60 + (timer.minute - MiteOS::currentTime.Minute);
 			timer.enableAlarm = false;
-			pageData.number3 = 5;
 			pageData.subPageIndex = PAGE_START_MENU;
 			return true;
-		}else{
-			if(buttonIndex == BTN_UP) {
-				pageData.number3 = (timer.hour - MiteOS::currentTime.Hour) * 60 + (timer.minute - MiteOS::currentTime.Minute);
-				timer.enableAlarm = false;
-				pageData.subPageIndex = PAGE_START_MENU;
-				return true;
-			}
 		}
 	}else{
 		if(pageData.subPageIndex <= PAGE_MINUTES) {
@@ -91,40 +85,43 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 
 void TimerPage::drawTime() {	
 	if(timer.triggered) {
-		mDisplay.setFont(&DSEG7_Classic_Regular_39);
+		AlertManager::showPermanentAlert(TXT_TIMER_CAPS, app_icon_stopwatch);
 		
-		drawCentreString("ALARM", 100, 110);
-	}else{
-		mDisplay.setFont(&DSEG7_Classic_Regular_39);
-		
-		uint32_t minutes = pageData.number3;
-		if(timer.enableAlarm) {
-			minutes = (timer.hour - MiteOS::currentTime.Hour) * 60 + (timer.minute - MiteOS::currentTime.Minute);
-		}
-		
-		int16_t  x1, y1;
-		uint16_t w, h;
-		String currentTime = String(minutes);
-		drawCentreString(currentTime.c_str(), 100, 110);
-		
-		mDisplay.setFont(&Seven_Segment10pt7b);
-		if(timer.enableAlarm) {
-			drawCentreString("Alarm in:", 100, 60);
-		} else {
-			if(pageData.subPageIndex <= PAGE_MINUTES) {
-				String right_border = (pageData.subPageIndex == PAGE_5MINUTES ? "5" : "1");
-				mDisplay.setCursor(180, 100);
-				mDisplay.println(right_border);
-			}
-		}
-		
-		drawCentreString("MIN", 100, 140);
-		/*
-		mDisplay.setFont(&DSEG7_Classic_Bold_25);
-		mDisplay.setCursor(10, 30);
-		mDisplay.println(String(MiteOS::getBatteryVoltage()) + "V");
-		*/
+		timer.triggered = false;
+		timer.enableAlarm = false;
+		pageData.number3 = 5;
+		pageData.subPageIndex = PAGE_START_MENU;
 	}
+	
+	mDisplay.setFont(&DSEG7_Classic_Regular_39);
+	
+	uint32_t minutes = pageData.number3;
+	if(timer.enableAlarm) {
+		minutes = (timer.hour - MiteOS::currentTime.Hour) * 60 + (timer.minute - MiteOS::currentTime.Minute);
+	}
+	
+	int16_t  x1, y1;
+	uint16_t w, h;
+	String currentTime = String(minutes);
+	drawCentreString(currentTime.c_str(), 100, 110);
+	
+	mDisplay.setFont(&Seven_Segment10pt7b);
+	if(timer.enableAlarm) {
+		drawCentreString(TXT_ALARM_IN, 100, 60);
+	} else {
+		if(pageData.subPageIndex <= PAGE_MINUTES) {
+			String right_border = (pageData.subPageIndex == PAGE_5MINUTES ? "5" : "1");
+			mDisplay.setCursor(180, 100);
+			mDisplay.println(right_border);
+		}
+	}
+	
+	drawCentreString(TXT_MIN_CAPS, 100, 140);
+	/*
+	mDisplay.setFont(&DSEG7_Classic_Bold_25);
+	mDisplay.setCursor(10, 30);
+	mDisplay.println(String(MiteOS::getBatteryVoltage()) + "V");
+	*/
 }
 
 void TimerPage::drawIcons() {
