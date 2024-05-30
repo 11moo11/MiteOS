@@ -18,7 +18,14 @@ void AlarmPage::initPage() {
 void AlarmPage::drawPage() {
 	for(uint8_t i = 0; i < ALARM_COUNT; i++) {
 		if(alarms[i].triggered) {
-			AlertManager::showPermanentAlert(TXT_ALARM " " + String(i + 1), app_icon_alarm, "00:00");
+			String item = "";
+			if(alarms[i].hour < 10) item += "0";
+			item += String(alarms[i].hour) + ":";
+			
+			if(alarms[i].minute < 10) item += "0";
+			item += String(alarms[i].minute);
+			
+			AlertManager::showPermanentAlert(TXT_ALARM " " + String(i + 1), app_icon_alarm, item);
 			alarms[i].triggered = false;
 		}
 	}
@@ -114,7 +121,7 @@ void AlarmPage::drawOverview() {
 		mDisplay.println(item);
 		
 		if(alarms[i].enableAlarm) mDisplay.drawBitmap(30, yPos + 14, icon_alarm, 20, 20, i == pageData.number2 ? BACKGROUND_COLOR : FOREGROUND_COLOR);
-		else mDisplay.fillRect(45, yPos + 26, 110, 3, i == pageData.number2 ? BACKGROUND_COLOR : FOREGROUND_COLOR);
+		else mDisplay.fillRect(45, yPos + 26, 110, 2, i == pageData.number2 ? BACKGROUND_COLOR : FOREGROUND_COLOR);
 		
 	}
 }
