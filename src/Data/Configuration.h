@@ -19,6 +19,9 @@ class Configuration : Preferences {
         
         static void saveAlarms();
         static void loadAlarms();
+        
+        static void saveSteps();
+        static std::array<uint32_t, 7> loadSteps();
     private:
         static bool initialized;
         static Preferences preferences;

@@ -86,17 +86,16 @@ void SEG7::drawBattery() {
 	mDisplay.drawBitmap(154, 73, battery, 37, 21, FOREGROUND_COLOR);
 	mDisplay.fillRect(159, 78, 27, BATTERY_SEGMENT_HEIGHT, BACKGROUND_COLOR);//clear battery segments
 	int8_t batteryLevel = 0;
-	float VBAT = MiteOS::getBatteryVoltage();
-	if(VBAT > 4.1){
+	uint8_t bat_percentage = MiteOS::getBatteryPercentage();
+	if(bat_percentage > 66){
 		batteryLevel = 3;
 	}
-	else if(VBAT > 3.95 && VBAT <= 4.1){
+	else if(bat_percentage > 33){
 		batteryLevel = 2;
 	}
-	else if(VBAT > 3.80 && VBAT <= 3.95){
+	else if(bat_percentage > 1){
 		batteryLevel = 1;
-	}
-	else if(VBAT <= 3.80){
+	}else{
 		batteryLevel = 0;
 	}
 

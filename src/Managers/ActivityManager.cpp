@@ -2,6 +2,13 @@
 
 #include "../MiteOS.h"
 
+void ActivityManager::resetSteps(bool save) {
+	if(save) {
+		Configuration::saveSteps();
+	}
+	accSensor.resetStepCounter(); // TODO Save to config for tracking
+}
+
 uint32_t ActivityManager::getStepCount() {
 	return accSensor.getCounter();
 }

@@ -235,7 +235,7 @@ void MiteOS::checkTime() {
 	}
 	
 	if(currentTime.Hour == 0 || currentTime.Minute == 0) {
-		accSensor.resetStepCounter(); // TODO Save to config for tracking
+		ActivityManager::resetSteps();
 	}
 
 	if(AUTO_DARKMODE) {
