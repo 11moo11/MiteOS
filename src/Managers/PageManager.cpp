@@ -45,7 +45,7 @@ void PageManager::handleButtonPress(uint8_t buttonIndex) {
 		refreshPage();
 		return;
 	}else if(buttonIndex == BTN_HOME) {
-		if(pageData.pageIndex != GLOBAL_PAGE_WATCHFACE && pageData.pageIndex != GLOBAL_PAGE_APPS)
+		if(pageData.pageIndex != GLOBAL_PAGE_APPS && !pages[pageData.pageIndex]->isPageable())
 			showPage(GLOBAL_PAGE_APPS);
 		else
 			showPage(GLOBAL_PAGE_WATCHFACE);

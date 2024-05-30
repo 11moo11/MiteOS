@@ -33,7 +33,7 @@ void ActivityPage::drawCircle() {
 		}
 	}
 	
-	for(double angle = endAngle; angle <= 2 * M_PI; angle += M_PI / 10) {
+	for(double angle = 0; angle <= 2 * M_PI; angle += M_PI / 10) {
 		for (int r = radius - lineThickness; r <= radius; ++r) {
 			int x = static_cast<int>(radius + r * cos(angle));
 			int y = static_cast<int>(radius + r * sin(angle));
