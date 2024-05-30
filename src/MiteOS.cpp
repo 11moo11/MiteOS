@@ -121,7 +121,11 @@ void MiteOS::deepSleep() {
 			continue;
 		pinMode(i, INPUT);
 	}
-	esp_sleep_enable_ext0_wakeup((gpio_num_t) RTC_INT_PIN, 0); // enable deep sleep wake on RTC interrupt
+	
+	// Enable RTC Wakeup as long as the battery voltage is safe
+	if(getBatteryVoltage() > 3.6) 
+		esp_sleep_enable_ext0_wakeup((gpio_num_t) RTC_INT_PIN, 0); // enable deep sleep wake on RTC interrupt
+	
 	esp_sleep_enable_ext1_wakeup(
 		BTN_PIN_MASK/* | ACC_INT_MASK */,
 		ESP_EXT1_WAKEUP_ANY_HIGH
@@ -417,16 +421,19 @@ float MiteOS::getBatteryVoltage() {
 }
 
 float MiteOS::getBatteryPercentage() {
-    float voltage = getBatteryVoltage();
-
-    uint8_t percentage = 2808.3808 * pow(voltage, 4)
-                        - 43560.9157 * pow(voltage, 3)
-                        + 252848.5888 * pow(voltage, 2)
-                        - 650767.4615 * voltage
-                        + 626532.5703;
-    percentage = min((uint8_t) 100, percentage);
-    percentage = max((uint8_t) 0, percentage);
-    return percentage;
+	float voltage = getBatteryVoltage();
+	
+	uint8_t percentage = map(voltage, 3.6, 4.2, 0, 100);
+	/*
+	uint8_t percentage = 2808.3808 * pow(voltage, 4)
+						- 43560.9157 * pow(voltage, 3)
+						+ 252848.5888 * pow(voltage, 2)
+						- 650767.4615 * voltage
+						+ 626532.5703;
+	*/
+	percentage = min((uint8_t) 100, percentage);
+	percentage = max((uint8_t)   0, percentage);
+	return percentage;
 }
 
 uint8_t MiteOS::getBoardRevision() {
