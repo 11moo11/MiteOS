@@ -10,8 +10,9 @@
 #define GLOBAL_PAGE_ABOUT 4
 #define GLOBAL_PAGE_WEATHER 5
 #define GLOBAL_PAGE_APPS 6
+#define GLOBAL_PAGE_ACTIVITY 7
 
-#define PAGE_COUNT 7
+#define PAGE_COUNT 8
 
 class PageManager {
 	public:

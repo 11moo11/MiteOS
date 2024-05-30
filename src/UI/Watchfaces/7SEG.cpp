@@ -48,7 +48,7 @@ void SEG7::drawTime() {
 	mDisplay.println(MiteOS::currentTime.Minute);
 }
 
-void SEG7::drawDate(){
+void SEG7::drawDate() {
 	mDisplay.setFont(&Seven_Segment10pt7b);
 	
 	int16_t  x1, y1;
@@ -76,17 +76,13 @@ void SEG7::drawDate(){
 	mDisplay.setCursor(5, 150);
 	mDisplay.println(tmYearToCalendar(MiteOS::currentTime.Year));// offset from 1970, since year is stored in uint8_t
 }
-void SEG7::drawSteps(){
-	// reset step counter at midnight
-	if (MiteOS::currentTime.Hour == 0 && MiteOS::currentTime.Minute == 0){
-	  accSensor.resetStepCounter();
-	}
-	uint32_t stepCount = accSensor.getCounter();
+void SEG7::drawSteps() {
+	uint32_t stepCount = ActivityManager::getStepCount();
 	mDisplay.drawBitmap(10, 165, steps, 19, 23, FOREGROUND_COLOR);
 	mDisplay.setCursor(35, 190);
 	mDisplay.println(stepCount);
 }
-void SEG7::drawBattery(){
+void SEG7::drawBattery() {
 	mDisplay.drawBitmap(154, 73, battery, 37, 21, FOREGROUND_COLOR);
 	mDisplay.fillRect(159, 78, 27, BATTERY_SEGMENT_HEIGHT, BACKGROUND_COLOR);//clear battery segments
 	int8_t batteryLevel = 0;

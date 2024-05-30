@@ -4,6 +4,9 @@
 #include "../MiteOS.h"
 #include "settings.h"
 
+#define STEPS_PER_KM 1400
+#define KM_TO_MILES 0.621371
+
 class Configuration : Preferences {
     public:
         static void init();

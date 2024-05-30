@@ -21,6 +21,7 @@
 #include "Managers/PageManager.h"
 #include "Managers/WeatherManager.h"
 #include "Managers/AlertManager.h"
+#include "Managers/ActivityManager.h"
 
 #define ADDITONAL_BUTTON_CHECK_DURATION 500
 #define BUTTON_PRESS_REPEAT_DELAY 150

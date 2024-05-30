@@ -1,6 +1,10 @@
-Timer / Stopwatch / Alarm
+Timer ✅ / Stopwatch / Alarm ✅
 
 Sleep during Night -> Ultimate Battery Saver Mode
 
+Activity Tracking
+
 Bluetooth Audio Info:
 https://github.com/pschatzmann/ESP32-A2DP/blob/main/examples/bt_music_receiver_with_metadata/bt_music_receiver_with_metadata.ino
+
+Phone Notifications

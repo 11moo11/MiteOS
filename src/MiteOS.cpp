@@ -25,13 +25,15 @@ tmElements_t MiteOS::currentTime;
 
 RTC_DATA_ATTR bool hourVibrate = true;
 
+#include "esp32-hal-cpu.h"
+
 void MiteOS::init() {
 	#ifdef DEBUG
 	Serial.begin(115200);
   	if(!Serial) delay(1000);
 	Serial.println("Booting up");
 	#endif
-
+	
 	instance = this;
 
 	esp_sleep_wakeup_cause_t wakeup_reason;
@@ -102,6 +104,8 @@ void MiteOS::init() {
 			
 			PageManager::refreshPage(false); // full update on reset
 			AlertManager::vibMotor(75, 4);
+			
+			setCpuFrequencyMhz(80); // I don't think it really works, but just set it to lowest frequency possible
 			
 			// For some reason, seems to be enabled on first boot
 			esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
@@ -228,6 +232,10 @@ void MiteOS::checkTime() {
 			// The RTC wakes us up once per minute
 			AlertManager::vibMotor(75, 4);
 		}
+	}
+	
+	if(currentTime.Hour == 0 || currentTime.Minute == 0) {
+		accSensor.resetStepCounter(); // TODO Save to config for tracking
 	}
 
 	if(AUTO_DARKMODE) {

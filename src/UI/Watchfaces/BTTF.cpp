@@ -84,7 +84,7 @@ void BTTF::drawSteps(){
 	mDisplay.setFont(&FONT_7_SEG_MEDIUM);
 	mDisplay.setTextColor(BACKGROUND_COLOR);
 
-	uint32_t steps = accSensor.getCounter();
+	uint32_t steps = ActivityManager::getStepCount();
 	String stepStr = String(steps);
 	for(int i=1; i<5; i++){
 		stepStr = steps < pow(10, i) ? "0" + stepStr : stepStr;
