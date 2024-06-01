@@ -35,7 +35,12 @@ void MiteOS::init() {
 	#endif
 	
 	instance = this;
-
+	
+	while(true) {
+		BluetoothManager::initBLE();
+		delay(2000);
+	}
+	
 	esp_sleep_wakeup_cause_t wakeup_reason;
 	wakeup_reason = esp_sleep_get_wakeup_cause(); // get wake up reason
 	Wire.begin(SDA, SCL);                         // init i2c
@@ -429,9 +434,9 @@ float MiteOS::getBatteryVoltage() {
 }
 
 float MiteOS::getBatteryPercentage() {
-	float voltage = getBatteryVoltage();
+	long voltage = getBatteryVoltage() * 1000;
 	
-	uint8_t percentage = map(voltage, 3.6, 4.2, 0, 100);
+	uint8_t percentage = map(voltage, 3600, 4200, 0, 100);
 	/*
 	uint8_t percentage = 2808.3808 * pow(voltage, 4)
 						- 43560.9157 * pow(voltage, 3)

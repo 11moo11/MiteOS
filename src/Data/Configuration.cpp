@@ -9,6 +9,7 @@ Preferences Configuration::preferences;
 void Configuration::init() {
 	preferences.begin("miteos", false); 
 	initialized = true;
+	
 	#ifdef DEBUG
 	Serial.println("Initialized Configuration");
 	#endif
@@ -51,7 +52,6 @@ void Configuration::saveAlarms() {
 	Serial.println("Saved Alarms");
 	#endif
 }
-
 void Configuration::loadAlarms() {
 	if(!initialized) init();
 	
@@ -73,6 +73,7 @@ void Configuration::loadAlarms() {
 	Serial.println("Loaded Alarms");
 	#endif
 }
+
 
 void Configuration::saveSettings() {
 	if(!initialized) init();
@@ -99,6 +100,8 @@ void Configuration::loadSettings() {
 
 
 void Configuration::saveSteps() {
+	if(!initialized) init();
+	
 	uint8_t dow = MiteOS::currentTime.Wday;
 	if(MiteOS::currentTime.Hour == 0 && MiteOS::currentTime.Minute == 0) {
 		dow--;
@@ -108,8 +111,9 @@ void Configuration::saveSteps() {
 	}
 	preferences.putUInt(("steps" + String(dow)).c_str(), ActivityManager::getStepCount());
 }
-
 std::array<uint32_t, 7> Configuration::loadSteps() {
+	if(!initialized) init();
+	
 	std::array<uint32_t, 7> steps;
 	
 	for(uint8_t dow = 1; dow <= 7; dow++) {

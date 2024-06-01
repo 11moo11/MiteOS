@@ -98,7 +98,7 @@ void SEG7::drawBattery() {
 	}else{
 		batteryLevel = 0;
 	}
-
+	
 	for(int8_t batterySegments = 0; batterySegments < batteryLevel; batterySegments++){
 		mDisplay.fillRect(159 + (batterySegments * BATTERY_SEGMENT_SPACING), 78, BATTERY_SEGMENT_WIDTH, BATTERY_SEGMENT_HEIGHT, FOREGROUND_COLOR);
 	}
@@ -106,10 +106,10 @@ void SEG7::drawBattery() {
 
 void SEG7::drawWeather(){
 	WeatherData currentWeather = WeatherManager::getWeatherData();
-
+	
 	int8_t temperature = currentWeather.temperature;
 	int16_t weatherConditionCode = currentWeather.weatherConditionCode;
-
+	
 	mDisplay.setFont(&DSEG7_Classic_Regular_39);
 	int16_t  x1, y1;
 	uint16_t w, h;
@@ -124,7 +124,7 @@ void SEG7::drawWeather(){
 	mDisplay.println(temperature);
 	mDisplay.drawBitmap(165, 110, currentWeather.isMetric ? celsius : fahrenheit, 26, 20, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
 	const unsigned char* weatherIcon;
-
+	
 	if(WifiConfigured){
 		//https://openweathermap.org/weather-conditions
 		if(weatherConditionCode > 801){//Cloudy
