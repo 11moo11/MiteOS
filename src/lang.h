@@ -17,6 +17,7 @@
 #define TXT_SETTINGS "Settings"
 #define TXT_ALARM "Alarm"
 #define TXT_TIMER "Timer"
+#define TXT_BLUETOOTH "Bluetooth"
 
 #define TXT_ABOUT "About"
 #define TXT_TIME "Time"

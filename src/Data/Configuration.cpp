@@ -1,6 +1,7 @@
 #include "Configuration.h"
 
 #include "../UI/WatchfacePage.h"
+#include "../Managers/BluetoothManager.h"
 
 bool Configuration::initialized = false;
 Preferences Configuration::preferences;
@@ -20,6 +21,7 @@ void Configuration::saveAll() {
 	
 	saveAlarms();
 	saveSettings();
+	saveBluetooth();
 }
 
 void Configuration::loadAll() {
@@ -27,6 +29,7 @@ void Configuration::loadAll() {
 	
 	loadAlarms();
 	loadSettings();
+	loadBluetooth();
 }
 
 
@@ -38,14 +41,6 @@ void Configuration::saveAlarms() {
 		preferences.putUInt(("alr" + String(i) + "hr").c_str(), alarms[i].hour);
 		preferences.putUInt(("alr" + String(i) + "min").c_str(), alarms[i].minute);
 		preferences.putUInt(("alr" + String(i) + "mode").c_str(), alarms[i].mode);
-		
-		#ifdef DEBUG
-		Serial.print(alarms[i].enableAlarm);
-		Serial.print(" ");
-		Serial.print(alarms[i].hour);
-		Serial.print(":");
-		Serial.println(alarms[i].minute);
-		#endif
 	}
 	
 	#ifdef DEBUG
@@ -60,14 +55,6 @@ void Configuration::loadAlarms() {
 		alarms[i].hour		  = preferences.getUInt(("alr" + String(i) + "hr").c_str(), alarms[i].hour);
 		alarms[i].minute 	  = preferences.getUInt(("alr" + String(i) + "min").c_str(), alarms[i].minute);
 		alarms[i].mode 		  = preferences.getUInt(("alr" + String(i) + "mode").c_str(), alarms[i].mode);
-		
-		#ifdef DEBUG
-		Serial.print(alarms[i].enableAlarm);
-		Serial.print(" ");
-		Serial.print(alarms[i].hour);
-		Serial.print(":");
-		Serial.println(alarms[i].minute);
-		#endif
 	}
 	#ifdef DEBUG
 	Serial.println("Loaded Alarms");
@@ -95,6 +82,33 @@ void Configuration::loadSettings() {
 	watchFaceId   = preferences.getUInt("watchface", watchFaceId);
 	#ifdef DEBUG
 	Serial.println("Loaded Settings");
+	#endif
+}
+
+void Configuration::saveBluetooth() {
+	if(!initialized) init();
+	
+	preferences.putString("btLastDevice", btLastDevice.toString().c_str());
+	
+	#ifdef DEBUG
+	Serial.println("Saved Bluetooth");
+	#endif
+}
+
+void Configuration::loadBluetooth() {
+	if(!initialized) init();
+	
+	String deviceId = preferences.getString("btLastDevice", "0");
+	if(deviceId.length() > 5) {
+		btDeviceRegistered = true;
+		btLastDevice = BLEAddress(deviceId.c_str());
+	}
+	
+	Serial.println(btDeviceRegistered);
+	Serial.println(btLastDevice.toString().c_str());
+	
+	#ifdef DEBUG
+	Serial.println("Loaded Bluetooth");
 	#endif
 }
 

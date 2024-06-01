@@ -21,13 +21,13 @@ static const String pageTitles[] = {
 	TXT_SETTINGS,
 	TXT_ALARM,
 	TXT_TIMER,
-	""
+	TXT_BLUETOOTH
 };
 static const uint8_t pageTarget[] = {
 	GLOBAL_PAGE_SETTINGS,
 	GLOBAL_PAGE_ALARM,
 	GLOBAL_PAGE_TIMER,
-	255
+	GLOBAL_PAGE_BLUETOOTH
 };
 
 void AppPage::drawPage() {

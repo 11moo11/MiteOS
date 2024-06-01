@@ -16,21 +16,23 @@ class BluetoothManager {
 		static BLECharacteristic *commandCharacteristic;
 		static BLECharacteristic *notificationUpdateCharacteristic;
 		static BLEService *pService;
-		static BLEService *updateService;
 		static BLEServer *pServer;
 		static bool connected;
-		static bool operationInProgress;
-		static String currentDataField;
-		static boolean blockingCommandInProgress;
-		static String *bleReturnString;
+		static bool waitingForResponse;
+		static char tmp_buffer[];
+	private:
+		static bool initialized;
 	public:
-		static void initBLE();
-		static void startBLEAdvertising();
-		//static bool sendBLE(String command, String *returnString, boolean blocking);
-		//static bool sendBLE(String command);
-		//static void addData(String data);
+		static void init();
+		static void bondDevice();
+		static void connectDevice();
 		static void parseCommand(String value);
-		static void test();
+		static void requestNotifications();
+	private:
+		static void startBLEAdvertising();
 };
+
+extern RTC_DATA_ATTR bool btDeviceRegistered;
+extern RTC_DATA_ATTR BLEAddress btLastDevice;
 
 #endif

@@ -20,6 +20,9 @@ class Configuration : Preferences {
         static void saveAlarms();
         static void loadAlarms();
         
+        static void saveBluetooth();
+        static void loadBluetooth();
+        
         static void saveSteps();
         static std::array<uint32_t, 7> loadSteps();
     private:

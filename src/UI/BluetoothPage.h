@@ -7,6 +7,7 @@ class BluetoothPage : public Page {
 	public:
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;
+		bool isPageable() { return false; };
 };
 
 #endif

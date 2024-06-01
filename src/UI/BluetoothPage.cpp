@@ -4,27 +4,31 @@
 #include "../Managers/PageManager.h"
 
 void BluetoothPage::drawPage() {
-	const char *items[] = { "Test" };
-	showMenu(items, 1);
+	const char *items[] = { 
+		(btDeviceRegistered ? "Rebond" : "Bond"),
+		"Test"
+	};
+	showMenu(items, 2, true, "Bluetooth");
 }
 
 bool BluetoothPage::onButtonPressed(uint8_t buttonIndex) {
+	if(handleMenuButtons(buttonIndex)) return true;
+	
 	if(buttonIndex == BTN_CONFIRM) {
-		BluetoothManager::initBLE();
+		if(pageData.menuIndex == 0) {
+			BluetoothManager::bondDevice();
+		}else if(pageData.menuIndex == 1 || pageData.menuIndex == 0) {
+			BluetoothManager::connectDevice();
+			uint8_t i = 0;
+			while(i < 1) {
+				i++;
+				if(BluetoothManager::connected) {
+					BluetoothManager::test();
+				}
+			}
+			delay(1000);
+		}
 		
-		BluetoothManager::startBLEAdvertising();
-		while(!BluetoothManager::connected) {
-			//BluetoothManager::pServer->startAdvertising();
-			delay(100);
-		}
-		delay(5000);
-		while(BluetoothManager::connected) {
-			BluetoothManager::test();
-			delay(5000);
-		}
-		return true;
-	}else if(buttonIndex == BTN_HOME) {
-		PageManager::nextPage();
 		return true;
 	}
 	return false;
