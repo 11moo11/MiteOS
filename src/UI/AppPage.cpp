@@ -14,7 +14,7 @@ static const unsigned char* const pageIcons[] = {
 	app_icon_gear,
 	app_icon_alarm,
 	app_icon_stopwatch,
-	app_icon_empty
+	app_icon_bluetooth
 };
 
 static const String pageTitles[] = {

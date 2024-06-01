@@ -115,4 +115,11 @@ extern RTC_DATA_ATTR bool hourVibrate;
 #define mDisplay MiteOS::display
 #define mRTC MiteOS::RTC
 
+#ifdef DEBUG
+#define printDebug(a) Serial.println(a)
+#endif
+#ifndef DEBUG
+#define printDebug(a)
+#endif
+
 #endif

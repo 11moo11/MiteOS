@@ -10,6 +10,7 @@
 #include "../UI/AppPage.h"
 #include "../UI/ActivityPage.h"
 #include "../UI/BluetoothPage.h"
+#include "../UI/NotificationPage.h"
 
 WatchfacePage watchfacePage;
 TimerPage timerPage;
@@ -20,6 +21,7 @@ AlarmPage alarmPage;
 AppPage appPage;
 ActivityPage activityPage;
 BluetoothPage bluetoothPage;
+NotificationPage notificationPage;
 Page* pages[] = {
 	&watchfacePage,
 	&timerPage,
@@ -29,7 +31,8 @@ Page* pages[] = {
 	&weatherPage,
 	&appPage,
 	&activityPage,
-	&bluetoothPage
+	&bluetoothPage,
+	&notificationPage
 };
 
 
@@ -64,14 +67,11 @@ void PageManager::refreshPage(bool partialRefresh) {
 	// At this point it is sure we are going to update
 	mDisplay.epd2.asyncPowerOn();
 	
-	#ifdef DEBUG
-	Serial.println("Power On Display");
-	#endif
+	printDebug("Power On Display");
 	
 	if(sizeof(pages) > pageData.pageIndex) {
-		#ifdef DEBUG
-		Serial.println("Rendering Page " + String(pageData.pageIndex));
-		#endif
+		printDebug("Rendering Page " + String(pageData.pageIndex));
+		
 		mDisplay.setFullWindow();
 		mDisplay.fillScreen(BACKGROUND_COLOR);
 		//watchyDisplay.setDarkBorder(DARKMODE);

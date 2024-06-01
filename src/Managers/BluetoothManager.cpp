@@ -2,35 +2,19 @@
 #include "../MiteOS.h"
 #include <BLE2902.h>
 
-#ifdef DEBUG
-#define printDebug(a) Serial.println(a)
-#endif
-#ifndef DEBUG
-#define printDebug(a)
-#endif
-
 BLECharacteristic *BluetoothManager::commandCharacteristic;
 BLECharacteristic *BluetoothManager::notificationUpdateCharacteristic;
 BLEService *BluetoothManager::pService;
 BLEServer *BluetoothManager::pServer;
 bool BluetoothManager::connected = false;
-
 bool BluetoothManager::initialized = false;
+bool BluetoothManager::waitingForResponse = false;
 
+String BluetoothManager::lastResponse;
 char BluetoothManager::tmp_buffer[256];
 
 RTC_DATA_ATTR bool btDeviceRegistered(false);
 RTC_DATA_ATTR BLEAddress btLastDevice("0");
-
-class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
-    /**
-        Called for each advertising BLE server.
-    */
-    void onResult(BLEAdvertisedDevice advertisedDevice) {
-      Serial.print("BLE Advertised Device found: ");
-      Serial.println(advertisedDevice.toString().c_str());
-    } // onResult
-}; // MyAdvertisedDeviceCallbacks
 
 class cb : public BLEServerCallbacks {
 	void onConnect(BLEServer *pServer) {
@@ -46,15 +30,13 @@ class cb : public BLEServerCallbacks {
 class ccb : public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
 		std::string rxValue = pCharacteristic->getValue();
-
-		Serial.println("Received value:");
-
+		
 		if (rxValue.length() > 0) {
-
-			for (int i = 0; i < rxValue.length(); i++) {
-				Serial.print(rxValue[i]);
-			}
-			Serial.println(" ");
+			
+			//for (int i = 0; i < rxValue.length(); i++) {
+			//	Serial.print(rxValue[i]);
+			//}
+			//Serial.println(" ");
 
 			String value = rxValue.c_str();
 			BluetoothManager::parseCommand(value);
@@ -72,8 +54,10 @@ static void my_gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_pa
 			btLastDevice = address;
 			btDeviceRegistered = true;
 			
+			#ifdef DEBUG
 			Serial.print("Bonded with ");
 			Serial.println(address.toString().c_str());
+			#endif
 			break;
 		}
 	}
@@ -106,7 +90,7 @@ void BluetoothManager::bondDevice() {
 	
 	btDeviceRegistered = false;
 	
-	Serial.println("Registering device...");
+	printDebug("Waiting for Device to bond...");
 	
 	pServer->getAdvertising()->setScanFilter(false, false);
 
@@ -153,15 +137,13 @@ void BluetoothManager::connectDevice() {
 	
 	startBLEAdvertising();
 	
-	while(!connected) {
-		//pServer->connect(btLastDevice);
+	uint8_t wait = 0;
+	while(!connected && wait < 100) {
+		wait++;
 		delay(100);
 	}
-	/*
-	Serial.println(pServer->getConnectedCount());
-	connected = pServer->connect(btLastDevice);
-	Serial.println(pServer->getConnectedCount());
-	*/
+	
+	if(connected) delay(1000);
 }
 
 void BluetoothManager::startBLEAdvertising() {
@@ -169,7 +151,7 @@ void BluetoothManager::startBLEAdvertising() {
 	BLEAdvertising* advertising = pServer->getAdvertising();
 	//advertising->setAppearance(192);
 	//advertising->addServiceUUID(SERVICE_UUID);
-	advertising->setScanResponse(true);
+	//advertising->setScanResponse(true);
 	//advertising->setMinPreferred(0x06); // functions that help with iPhone connections issue
 	//advertising->setMinPreferred(0x12);
 	advertising->start();
@@ -179,24 +161,23 @@ void BluetoothManager::parseCommand(String value) {
 
 	if (value.startsWith("ECHO=")) {
 		value.replace("ECHO=", "");
-		Serial.println(value);
+		printDebug(value);
 
 	} else if (value.startsWith("NOTIFICATION_LIST")) {
 		value.replace("NOTIFICATION_LIST=", "");
 		//createNotificationList(value);
-		Serial.println(value);
-		value.toCharArray(tmp_buffer, 256, 0);
+		printDebug(value);
 
 	} else if (value.startsWith("NEW_NOTIFICATION=")) {
 		value.replace("NEW_NOTIFICATION=", "");
 		//alertNewNotification(value);
-		Serial.println(value);
+		printDebug(value);
 		//NEW_NOTIFICATION={"appName":"Messages","category":"msg","id":0,"pName":"com.google.android.apps.messaging","text":"MHNYMA AΠO KINHTO","title":"Μωρό μου"}
 		//NEW_NOTIFICATION={"appName":"Gmail","category":"email","id":0,"pName":"com.google.android.gm","subText":"themelisx@gmail.com","text":"Hello","title":"Παναγιώτης Θ"}
 
 	} else if (value.startsWith("GET_LIST")) {
 		//getNotificationList();
-		Serial.println(value);
+		printDebug(value);
 
 	} else if (value.startsWith("ICON=")) {
 		value.replace("ICON=", "");
@@ -217,20 +198,35 @@ void BluetoothManager::parseCommand(String value) {
 		*/
 	} else {
 		Serial.print("Unknown command: ");
-		Serial.println(value);
+		printDebug(value);
 	}
-	BluetoothManager::waitingForResponse = false;
+	lastResponse = value;
+	waitingForResponse = false;
 }
 
 void BluetoothManager::requestNotifications() {
-	Serial.println("Requesting notification list...");
+	// First try to connect, if its not connected after that, just exit
+	if(!connected) connectDevice();
+	if(!connected) return;
+	
+	printDebug("Requesting notification list...");
 	int notificationType = 0;  //All notifications
 	sprintf(tmp_buffer, "GET_NOTIF_LIST=%d", notificationType);
 	notificationUpdateCharacteristic->setValue(tmp_buffer);
 	notificationUpdateCharacteristic->notify();
 	
+	waitForResponse();
+}
+
+void BluetoothManager::waitForResponse() {
 	waitingForResponse = true;
-	while(waitingForResponse) {
+	lastResponse = "";	
+	
+	uint8_t wait = 0;
+	while(waitingForResponse && wait < 100) {
+		wait++;
 		delay(100);
 	}
+	
+	waitingForResponse = false;
 }

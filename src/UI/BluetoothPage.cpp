@@ -23,7 +23,7 @@ bool BluetoothPage::onButtonPressed(uint8_t buttonIndex) {
 			while(i < 1) {
 				i++;
 				if(BluetoothManager::connected) {
-					BluetoothManager::test();
+					BluetoothManager::requestNotifications();
 				}
 			}
 			delay(1000);

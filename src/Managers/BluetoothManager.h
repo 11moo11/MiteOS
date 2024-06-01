@@ -19,9 +19,10 @@ class BluetoothManager {
 		static BLEServer *pServer;
 		static bool connected;
 		static bool waitingForResponse;
-		static char tmp_buffer[];
+		static String lastResponse;
 	private:
 		static bool initialized;
+		static char tmp_buffer[];
 	public:
 		static void init();
 		static void bondDevice();
@@ -30,6 +31,7 @@ class BluetoothManager {
 		static void requestNotifications();
 	private:
 		static void startBLEAdvertising();
+		static void waitForResponse();
 };
 
 extern RTC_DATA_ATTR bool btDeviceRegistered;

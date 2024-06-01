@@ -31,7 +31,7 @@ void MiteOS::init() {
 	#ifdef DEBUG
 	Serial.begin(115200);
   	if(!Serial) delay(1000);
-	Serial.println("Booting up");
+	printDebug("Booting up");
 	#endif
 	
 	instance = this;
@@ -47,9 +47,7 @@ void MiteOS::init() {
 
 	switch (wakeup_reason) {
 		case ESP_SLEEP_WAKEUP_EXT0: // RTC Alarm
-			#ifdef DEBUG
-			Serial.println("RTC Alarm");
-			#endif
+			printDebug("RTC Alarm");
 			checkTime();
 			
 			WeatherManager::timeTick();
@@ -59,13 +57,9 @@ void MiteOS::init() {
 			break;
 		case ESP_SLEEP_WAKEUP_EXT1: // button Press			
 			if (esp_sleep_get_ext1_wakeup_status() & ACC_INT_MASK) { // Woken up by accelerator
-				#ifdef DEBUG
-				Serial.println("Accelerator");
-				#endif
+				printDebug("Accelerator");
 				if(accSensor.isTilt()) {
-					#ifdef DEBUG
-					Serial.println("Tilt");
-					#endif
+					printDebug("Tilt");
 					// TODO: Future low power mode (maybe only at night)
 				}
 				
@@ -76,18 +70,14 @@ void MiteOS::init() {
 				}
 				break;
 			}
-			#ifdef DEBUG
-			Serial.println("Button Press");
-			#endif
+			printDebug("Button Press");
 			
 			//vibMotor(75, 4);
 			handleButtonPress();
 			waitForAdditionalButtons();
 			break;
 		default: // reset
-			#ifdef DEBUG
-			Serial.println("Reset Boot");
-			#endif
+			printDebug("Reset Boot");
 			// Initial configuration
 			_bmaConfig();
 			pageData.pageIndex = 0; // Set Page to Watchface
@@ -95,9 +85,7 @@ void MiteOS::init() {
 
 			RTC.read(osBootTime);
 			
-			#ifdef DEBUG
-			Serial.println("Restoring Settings File");
-			#endif
+			printDebug("Restoring Settings File");
 			Configuration::loadAll();
 			
 			initDarkmode();
@@ -288,9 +276,7 @@ void MiteOS::initDarkmode() {
 	}else{
 		DARKMODE = PREF_DARKMODE;
 	}
-	#ifdef DEBUG
-	Serial.println("DARKMODE " + String(DARKMODE));
-	#endif
+	printDebug("DARKMODE " + String(DARKMODE));
 	
 }
 

@@ -8,12 +8,12 @@ Preferences Configuration::preferences;
 
 
 void Configuration::init() {
+	if(initialized) return;
+	
 	preferences.begin("miteos", false); 
 	initialized = true;
 	
-	#ifdef DEBUG
-	Serial.println("Initialized Configuration");
-	#endif
+	printDebug("Initialized Configuration");
 }
 
 void Configuration::saveAll() {
@@ -43,9 +43,7 @@ void Configuration::saveAlarms() {
 		preferences.putUInt(("alr" + String(i) + "mode").c_str(), alarms[i].mode);
 	}
 	
-	#ifdef DEBUG
-	Serial.println("Saved Alarms");
-	#endif
+	printDebug("Saved Alarms");
 }
 void Configuration::loadAlarms() {
 	if(!initialized) init();
@@ -56,9 +54,7 @@ void Configuration::loadAlarms() {
 		alarms[i].minute 	  = preferences.getUInt(("alr" + String(i) + "min").c_str(), alarms[i].minute);
 		alarms[i].mode 		  = preferences.getUInt(("alr" + String(i) + "mode").c_str(), alarms[i].mode);
 	}
-	#ifdef DEBUG
-	Serial.println("Loaded Alarms");
-	#endif
+	printDebug("Loaded Alarms");
 }
 
 
@@ -69,9 +65,8 @@ void Configuration::saveSettings() {
 	preferences.putBool("darkmode", PREF_DARKMODE);
 	preferences.putBool("hourvib", hourVibrate);
 	preferences.putUInt("watchface", watchFaceId);
-	#ifdef DEBUG
-	Serial.println("Saved Settings");
-	#endif
+	
+	printDebug("Saved Settings");
 }
 void Configuration::loadSettings() {
 	if(!initialized) init();
@@ -80,9 +75,8 @@ void Configuration::loadSettings() {
 	PREF_DARKMODE = preferences.getBool("darkmode", PREF_DARKMODE);
 	hourVibrate   = preferences.getBool("hourvib", hourVibrate);
 	watchFaceId   = preferences.getUInt("watchface", watchFaceId);
-	#ifdef DEBUG
-	Serial.println("Loaded Settings");
-	#endif
+	
+	printDebug("Loaded Settings");
 }
 
 void Configuration::saveBluetooth() {
@@ -90,9 +84,7 @@ void Configuration::saveBluetooth() {
 	
 	preferences.putString("btLastDevice", btLastDevice.toString().c_str());
 	
-	#ifdef DEBUG
-	Serial.println("Saved Bluetooth");
-	#endif
+	printDebug("Saved Bluetooth");
 }
 
 void Configuration::loadBluetooth() {
@@ -104,12 +96,10 @@ void Configuration::loadBluetooth() {
 		btLastDevice = BLEAddress(deviceId.c_str());
 	}
 	
-	Serial.println(btDeviceRegistered);
-	Serial.println(btLastDevice.toString().c_str());
+	printDebug(btDeviceRegistered);
+	printDebug(btLastDevice.toString().c_str());
 	
-	#ifdef DEBUG
-	Serial.println("Loaded Bluetooth");
-	#endif
+	printDebug("Loaded Bluetooth");
 }
 
 
@@ -136,4 +126,24 @@ std::array<uint32_t, 7> Configuration::loadSteps() {
 	steps[MiteOS::currentTime.Wday - 1] = ActivityManager::getStepCount();
 	
 	return steps;
+}
+
+
+void Configuration::saveNotification(uint8_t index, Notification n) {
+	String prefix = "n" + String(index);
+	Configuration::preferences.putString((prefix + "app").c_str(), n.app_name);
+	Configuration::preferences.putString((prefix + "title").c_str(), n.title);
+	Configuration::preferences.putString((prefix + "text").c_str(), n.message);
+}
+
+Notification Configuration::loadNotification(uint8_t index) {
+	String prefix = "n" + String(index);
+	
+	Notification n;
+	
+	Configuration::preferences.getString((prefix + "app").c_str(), "---").toCharArray(n.app_name, NOTIFICATION_APP_NAME_LENGTH);
+	Configuration::preferences.getString((prefix + "title").c_str(), "---").toCharArray(n.title, NOTIFICATION_TITLE_LENGTH);
+	Configuration::preferences.getString((prefix + "text").c_str(), "---").toCharArray(n.message, NOTIFICATION_MESSAGE_LENGTH);
+	
+	return n;
 }

@@ -9,9 +9,7 @@ RTC_DATA_ATTR uint8_t watchFaceId = 0;
 #define WATCHFACE_COUNT 2
 
 void WatchfacePage::drawPage() {
-	#ifdef DEBUG
-	Serial.println("Drawing Watchface");
-	#endif
+	printDebug("Drawing Watchface");
 	
 	mDisplay.fillScreen(BACKGROUND_COLOR);
 	mDisplay.setTextColor(FOREGROUND_COLOR);
