@@ -11,8 +11,9 @@
 #define GLOBAL_PAGE_WEATHER 5
 #define GLOBAL_PAGE_APPS 6
 #define GLOBAL_PAGE_ACTIVITY 7
+#define GLOBAL_PAGE_BLUETOOTH 8
 
-#define PAGE_COUNT 8
+#define PAGE_COUNT 9
 
 class PageManager {
 	public:

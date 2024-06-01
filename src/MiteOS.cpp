@@ -36,11 +36,6 @@ void MiteOS::init() {
 	
 	instance = this;
 	
-	while(true) {
-		BluetoothManager::initBLE();
-		delay(2000);
-	}
-	
 	esp_sleep_wakeup_cause_t wakeup_reason;
 	wakeup_reason = esp_sleep_get_wakeup_cause(); // get wake up reason
 	Wire.begin(SDA, SCL);                         // init i2c

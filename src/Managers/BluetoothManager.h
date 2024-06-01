@@ -1,25 +1,36 @@
 #ifndef BLUETOOTH_MANAGER_H
 #define BLUETOOTH_MANAGER_H
 
-#include "BLEDevice.h"
-#include "BLEHIDDevice.h"
-#include "Arduino.h"
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEServer.h>
+#include <esp_gatt_common_api.h>
+#include <Arduino.h>
 
-#define SERVICE_UUID "0000fdaa-0000-1000-8000-00805f9b34fb"
-#define CHARACTERISTIC_NOTIFICATION_UPDATE "00000007-09da-4bed-9652-f507366fcfc5"
+#define SERVICE_UUID           "6E400001-B5A3-F393-E0A9-E50E24DCCA9E" // UART service UUID
+#define CHARACTERISTIC_UUID_RX "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
+#define CHARACTERISTIC_UUID_TX "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
 
 class BluetoothManager {
 	public:
-		static BLERemoteCharacteristic* pRemoteCharacteristic;
-		static BLEAdvertisedDevice* device;
-		static BLEClient*  pClient;
+		static BLECharacteristic *commandCharacteristic;
+		static BLECharacteristic *notificationUpdateCharacteristic;
+		static BLEService *pService;
+		static BLEService *updateService;
+		static BLEServer *pServer;
 		static bool connected;
-		static bool registeredForCallback;
+		static bool operationInProgress;
+		static String currentDataField;
+		static boolean blockingCommandInProgress;
+		static String *bleReturnString;
 	public:
 		static void initBLE();
-		static void formConnection(void * pvParameters);
-		static void xFindDevice(void * pvParameters);
-		static String sendBLE(String command, bool hasReturnData);
+		static void startBLEAdvertising();
+		//static bool sendBLE(String command, String *returnString, boolean blocking);
+		//static bool sendBLE(String command);
+		//static void addData(String data);
+		static void parseCommand(String value);
+		static void test();
 };
 
 #endif

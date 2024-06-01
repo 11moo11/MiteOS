@@ -1,164 +1,242 @@
 #include "BluetoothManager.h"
 #include "../MiteOS.h"
+#include <BLE2902.h>
 
+#ifdef DEBUG
+#define printDebug(a) Serial.println(a)
+#endif
+#ifndef DEBUG
+#define printDebug(a)
+#endif
+
+BLECharacteristic *BluetoothManager::commandCharacteristic;
+BLECharacteristic *BluetoothManager::notificationUpdateCharacteristic;
+BLEService *BluetoothManager::pService;
+BLEService *BluetoothManager::updateService;
+BLEServer *BluetoothManager::pServer;
 bool BluetoothManager::connected = false;
-bool BluetoothManager::registeredForCallback = false;
-BLERemoteCharacteristic* BluetoothManager::pRemoteCharacteristic;
-BLEAdvertisedDevice* BluetoothManager::device;
-BLEClient*  BluetoothManager::pClient;
+bool BluetoothManager::operationInProgress = false;
+String BluetoothManager::currentDataField;
+boolean BluetoothManager::blockingCommandInProgress;
+String *BluetoothManager::bleReturnString;
 
-/* Callbacks */
-//callback called when an advertised device is found
-class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
-	void onResult(BLEAdvertisedDevice advertisedDevice) {
-		#ifdef DEBUG
-		Serial.println("BLE Advertised Device found: " + String(advertisedDevice.toString().c_str()));
-		#endif
-		if (advertisedDevice.haveServiceUUID() && advertisedDevice.isAdvertisingService(BLEUUID(SERVICE_UUID))) {
-			BLEDevice::getScan()->stop();
-			BluetoothManager::device = new BLEAdvertisedDevice(advertisedDevice);
-			#ifdef DEBUG
-			Serial.println("%%%%%%%%%%%% Device Found %%%%%%%%%%%%%%%%%");
-			#endif
+char tmp_buffer[256];
+
+/*
+void onNotificationEvent(String event){
+	//event will have value 'posted' or 'removed' 
+	Serial.printf("Notification Event '%s'\n", event);
+}
+
+void BluetoothManager::addData(String data) {
+	printDebug("Received:" + data);
+	currentDataField += data;
+	if (!blockingCommandInProgress) {
+		*bleReturnString = currentDataField;
+	}
+}
+*/
+
+class cb : public BLEServerCallbacks {
+	void onConnect(BLEServer *pServer) {
+		BluetoothManager::connected = true;
+		printDebug("BLE Device Connected");
+	}
+	void onDisconnect(BLEServer *pServer) {
+		BluetoothManager::connected = false;
+		printDebug("BLE Device Disconnected");
+	}
+};
+
+class ccb : public BLECharacteristicCallbacks {
+    void onWrite(BLECharacteristic *pCharacteristic) {
+		std::string rxValue = pCharacteristic->getValue();
+
+		Serial.println("Received value:");
+
+		if (rxValue.length() > 0) {
+
+			for (int i = 0; i < rxValue.length(); i++) {
+				Serial.print(rxValue[i]);
+			}
+			Serial.println(" ");
+
+			String value = rxValue.c_str();
+			BluetoothManager::parseCommand(value);
 		}
 	}
 };
 
-//client client callback which responds to connection related events
-class MyClientCallback : public BLEClientCallbacks {
-	void onConnect(BLEClient* pclient) {
-		BluetoothManager::connected = true;
-	}
-
-	void onDisconnect(BLEClient* pclient) {
-		BluetoothManager::connected = false;
-		#ifdef DEBUG
-		Serial.println("%%%%%%%%%% Device has Disconnected %%%%%%%%");
-		#endif
-	}
-};
-
-
-
-
 /* BLE interfacing functions
 */
-// Start by scanning for the device we want to communicate with a FreeRTOS task
 void BluetoothManager::initBLE() {
-	if (!connected) {
-		xFindDevice((void *) 1);
-		//xTaskCreatePinnedToCore( xFindDevice, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect, 0 );
-	}else{
-		Serial.println(sendBLE("/time", true));
-	}
+	printDebug("Initializing BT Device");
+	BLEDevice::init("MiteWatch");
+	esp_err_t err = esp_ble_gatt_set_local_mtu(256);
+	pServer = BLEDevice::createServer();
+	
+	// add server callback so we can detect when we're connected.
+	pServer->setCallbacks(new cb());
+	
+	// Security: device requires bonding
+	//BLESecurity* security = new BLESecurity();
+	//security->setStaticPIN(1234);
+	//security->setAuthenticationMode(ESP_LE_AUTH_BOND);
+	
+	
+	pService = pServer->createService(SERVICE_UUID);
+	// define the characteristics and how they can be used
+	notificationUpdateCharacteristic = pService->createCharacteristic(
+		CHARACTERISTIC_UUID_TX,
+		BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_READ
+	);
+	notificationUpdateCharacteristic->addDescriptor(new BLE2902());
+	
+	commandCharacteristic = pService->createCharacteristic(
+		CHARACTERISTIC_UUID_RX,
+    	BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_BROADCAST
+	);
+	commandCharacteristic->setCallbacks(new ccb());
+
+	//notificationUpdateCharacteristic->setCallbacks(new notification_update_callback());
+	//notificationUpdateCharacteristic->setValue("");
+
+	pService->start();
+	//startBLEAdvertising();
 }
 
-//Called from the
-void BluetoothManager::xFindDevice(void * pvParameters ) {
-	BLEDevice::init("");
-	#ifdef DEBUG
-	Serial.println("%%% Find Device Task Launched %%%");
-	#endif
-	
-	BLEScan* pBLEScan = BLEDevice::getScan();
-	pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
-	pBLEScan->setInterval(40);           //I've found these interval and window values to work the best with android, but others may be better.
-	pBLEScan->setWindow(39);
-	pBLEScan->setActiveScan(true);
-	pBLEScan->start(8);
-	
-	if (device) {
-		#ifdef DEBUG
-		Serial.println("%%% Device Found %%%");
-		#endif
-		formConnection((void *) 1);
-		//xTaskCreatePinnedToCore( formConnection, "FIND_DEVICE", 4096, (void *) 1 , tskIDLE_PRIORITY, &xConnect, 0 );
-	} else {
-		#ifdef DEBUG
-		Serial.println("%%%% Device Not Found %%%");
-		#endif
-	}
+void BluetoothManager::startBLEAdvertising() {
+	printDebug("startBLEAdvertising");
+	/*
+	// BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
+	BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+	pAdvertising->addServiceUUID(SERVICE_UUID);
+	pAdvertising->setScanResponse(true);
+	pAdvertising->setMinPreferred(0x06); // functions that help with iPhone connections issue
+	pAdvertising->setMinPreferred(0x12);
+	BLEDevice::startAdvertising();
+	*/
+	BLEAdvertising* advertising = pServer->getAdvertising();
+	//advertising->setAppearance(192);
+	//advertising->addServiceUUID(SERVICE_UUID);
+	//advertising->setScanResponse(true);
+	//advertising->setMinPreferred(0x06); // functions that help with iPhone connections issue
+	//advertising->setMinPreferred(0x12);
+	advertising->start();
 }
 
-/* Opens connection to the server and allows us to access the characteristic that data
-    is transmitted to, this should be called after xFindDevice completes, however it
-    cannot be run in a seperate thread due to I2C
+/*
+// sends BLE command and returns data to a specific string. This function can be blocking (if you need it to perform a specific action) or non-blocking
+// if you don't mind the data being used as its received.
+bool BluetoothManager::sendBLE(String command, String *returnString, boolean blocking) {
+	if (connected && !operationInProgress) {
+		blockingCommandInProgress = blocking;
+		operationInProgress = true;
+		commandCharacteristic->setValue(command.c_str());
+		commandCharacteristic->notify();
+
+		printDebug("Sent BLE Command: " + command);
+
+		if (blockingCommandInProgress) {
+			currentDataField = "";
+
+			unsigned long startTime = millis();
+			while (operationInProgress && (startTime + 8000 > millis()))
+				delay(25);
+
+			operationInProgress = false;
+			if (currentDataField.length() == 0) {
+				return false;
+			} else {
+				*returnString = currentDataField;
+				return true;
+			}
+		} else {
+			currentDataField = "";
+			bleReturnString = returnString;
+			*returnString = currentDataField;
+
+			unsigned long startTime = millis();
+			while ((currentDataField.length() == 0) && (startTime + 1000 > millis()))
+				delay(25);
+
+			if (currentDataField.length() == 0) {
+				operationInProgress = false;
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool BluetoothManager::sendBLE(String command) {
+	if (connected && !operationInProgress) {
+		operationInProgress = true;
+		commandCharacteristic->setValue(command.c_str());
+		commandCharacteristic->notify();
+
+		printDebug("Sent BLE Command: " + command);
+		unsigned long startTime = millis();
+		while (operationInProgress && (startTime + 200 > millis()))
+		delay(25);
+		return !operationInProgress;
+	}
+	return false;
+}
 */
-void BluetoothManager::formConnection(void * pvParameters) {
-  //if for some this function is called before we find the device then we need to
-  //do the scan again and make sure that we have a device
-  if (!device) {
-    xFindDevice((void*) 1);
-  }
 
-  //create a client to communicate to the server through
-  pClient = BLEDevice::createClient();
+void BluetoothManager::parseCommand(String value) {
 
-  //set callbacks for client, if it disconnects we need to know,
-  //also we don't consider the device to be connected unless the client is connected
-  pClient->setClientCallbacks(new MyClientCallback());
+	if (value.startsWith("ECHO=")) {
+		value.replace("ECHO=", "");
+		Serial.println(value);
 
-  //check that device is found again
-  //attempting to connect to a null device will cause the device to crash
-  if (device) {
-    pClient->connect(device);
-  } else {
-    return;
-  }
+	} else if (value.startsWith("NOTIFICATION_LIST")) {
+		value.replace("NOTIFICATION_LIST=", "");
+		//createNotificationList(value);
+		Serial.println(value);
 
-  //obtain a reference to the desired service
-  //and check for null reference, this indicates failure
-  BLERemoteService* pRemoteService = pClient->getService(SERVICE_UUID);
-  if (!pRemoteService) {
-    pClient->disconnect();
-	#ifdef DEBUG
-    Serial.println("%%%% Could not obtain remote service");
-	#endif
-	return;
-  }
+	} else if (value.startsWith("NEW_NOTIFICATION=")) {
+		value.replace("NEW_NOTIFICATION=", "");
+		//alertNewNotification(value);
+		Serial.println(value);
+		//NEW_NOTIFICATION={"appName":"Messages","category":"msg","id":0,"pName":"com.google.android.apps.messaging","text":"MHNYMA AΠO KINHTO","title":"Μωρό μου"}
+		//NEW_NOTIFICATION={"appName":"Gmail","category":"email","id":0,"pName":"com.google.android.gm","subText":"themelisx@gmail.com","text":"Hello","title":"Παναγιώτης Θ"}
 
-	std::map<std::string, BLERemoteCharacteristic*>* data = pRemoteService->getCharacteristics();
-	std::map<std::string, BLERemoteCharacteristic*>::iterator it;
+	} else if (value.startsWith("GET_LIST")) {
+		//getNotificationList();
+		Serial.println(value);
 
-	for (it = data->begin(); it != data->end(); it++) {
-		Serial.println(it->first.c_str());
+	} else if (value.startsWith("ICON=")) {
+		value.replace("ICON=", "");
+		/*
+		int inputStringLength = value.length();  //Get length of input
+		char *inputString = (char *)malloc(inputStringLength + 1);
+		value.getBytes((unsigned char *)inputString, inputStringLength);
+
+		int decodedLength = BASE64::decodeLength(inputString);
+		uint8_t *base64Result = (uint8_t *)malloc(inputStringLength);
+
+		BASE64::decode(inputString, base64Result);
+
+		drawArrayJpeg(base64Result, sizeof(base64Result), 0, 0);  //last two are coordinates to draw image
+
+		free(base64Result);
+		free(inputString);
+		*/
+	} else {
+		Serial.print("Unknown command: ");
+		Serial.println(value);
 	}
-	
-  //second verse same as the first, but for the characteristic
-  pRemoteCharacteristic = pRemoteService->getCharacteristic(CHARACTERISTIC_NOTIFICATION_UPDATE);
-  if (!pRemoteCharacteristic) {
-    pClient->disconnect();
-	#ifdef DEBUG
-    Serial.println("%%%% Could not obtain remote characteristic");
-	#endif
-	return;
-  }
 }
 
-String BluetoothManager::sendBLE(String command, bool hasReturnData) {
-  String ret = "";
-
-  //write our command to the remote characteristic
-  if (pRemoteCharacteristic) {
-    pRemoteCharacteristic->writeValue(command.c_str(), command.length());
-	#ifdef DEBUG
-    Serial.println("Wrote \"" + command + "\" to remote device");
-	#endif
-  } else {
-    return ret;
-  }
-
-  if (hasReturnData) {
-    while (ret[ret.length() - 1] != '*' && ret[ret.length() - 2] != '*' && ret[ret.length() - 3] != '*') {
-      String receivedData = String(pRemoteCharacteristic->readValue().c_str());
-      if (!receivedData.equals("null")) {
-        ret = ret + receivedData;
-        receivedData = "";
-      }
-    }
-	#ifdef DEBUG
-    Serial.println("Data Obtained from BLE Device: " + ret);
-	#endif
-  }
-  return ret;
+void BluetoothManager::test() {
+	Serial.println("Requesting notification list...");
+	int notificationType = 0;  //All notifications
+	sprintf(tmp_buffer, "GET_NOTIF_LIST=%d", notificationType);
+	notificationUpdateCharacteristic->setValue(tmp_buffer);
+	notificationUpdateCharacteristic->notify();
 }

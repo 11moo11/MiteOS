@@ -9,6 +9,7 @@
 #include "../UI/WeatherPage.h"
 #include "../UI/AppPage.h"
 #include "../UI/ActivityPage.h"
+#include "../UI/BluetoothPage.h"
 
 WatchfacePage watchfacePage;
 TimerPage timerPage;
@@ -18,6 +19,7 @@ WeatherPage weatherPage;
 AlarmPage alarmPage;
 AppPage appPage;
 ActivityPage activityPage;
+BluetoothPage bluetoothPage;
 Page* pages[] = {
 	&watchfacePage,
 	&timerPage,
@@ -26,7 +28,8 @@ Page* pages[] = {
 	&aboutPage,
 	&weatherPage,
 	&appPage,
-	&activityPage
+	&activityPage,
+	&bluetoothPage
 };
 
 
