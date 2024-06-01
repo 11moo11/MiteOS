@@ -6,7 +6,9 @@
 
 RTC_DATA_ATTR int8_t notificationRequeryCounter = -1;
 
-void PhoneConnectionManager::SyncNotifications() {
+void PhoneConnectionManager::SyncNotifications(bool force) {
+	if(force) notificationRequeryCounter = -1;
+	
 	if(notificationRequeryCounter > 0) {
 		notificationRequeryCounter--;
 		Configuration::init();

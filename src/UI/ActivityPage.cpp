@@ -78,7 +78,7 @@ void ActivityPage::drawStepList() {
 	uint8_t row = 0;
 	for(int i = 6; i >= 0; i--) {
 		int dow = MiteOS::currentTime.Wday - i;
-		if(dow < 1) dow = 7 - i;
+		if(dow < 1) dow = 7 + dow;
 		
 		if(i == 0) {
 			mDisplay.setTextColor(BACKGROUND_COLOR);

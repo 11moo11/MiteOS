@@ -33,6 +33,11 @@ bool WatchfacePage::onButtonPressed(uint8_t buttonIndex) {
 		PageManager::showPage(GLOBAL_PAGE_APPS);
 		return true;
 	}
+	
+	if(buttonIndex == BTN_UP) {
+		PageManager::showPage(GLOBAL_PAGE_NOTIFICATIONS);
+		return true;
+	}
 	return false;
 }
 

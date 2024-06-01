@@ -15,7 +15,7 @@ struct Notification {
 
 class PhoneConnectionManager {
 	public:
-		static void SyncNotifications();
+		static void SyncNotifications(bool force = false);
 		static Notification GetNotification(uint8_t index);
 		static uint8_t GetNotificationCount();
 };
