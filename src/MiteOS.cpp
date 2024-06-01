@@ -222,7 +222,7 @@ void MiteOS::checkTime() {
 		}
 	}
 	
-	if(currentTime.Hour == 0 || currentTime.Minute == 0) {
+	if(currentTime.Hour == 0 && currentTime.Minute == 0) {
 		ActivityManager::resetSteps();
 	}
 
@@ -262,6 +262,8 @@ void MiteOS::checkTime() {
 			pageData.pageIndex = GLOBAL_PAGE_ALARM;
 		}
 	}
+	
+	PhoneConnectionManager::SyncNotifications();
 }
 
 void MiteOS::initDarkmode() {

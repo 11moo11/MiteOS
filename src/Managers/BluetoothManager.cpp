@@ -138,7 +138,7 @@ void BluetoothManager::connectDevice() {
 	startBLEAdvertising();
 	
 	uint8_t wait = 0;
-	while(!connected && wait < 100) {
+	while(!connected && wait < 50) { // Wait for connection or 5 seconds, whatever comes first
 		wait++;
 		delay(100);
 	}
@@ -223,7 +223,7 @@ void BluetoothManager::waitForResponse() {
 	lastResponse = "";	
 	
 	uint8_t wait = 0;
-	while(waitingForResponse && wait < 100) {
+	while(waitingForResponse && wait < 30) { // Wait for response or 3 seconds, whatever comes first
 		wait++;
 		delay(100);
 	}
