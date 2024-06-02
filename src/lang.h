@@ -23,6 +23,7 @@
 #define TXT_TIME "Time"
 #define TXT_NETWORK "Network"
 #define TXT_DISPLAY "Display"
+#define TXT_STORAGE "Storage"
 #define TXT_TEST "Test"
 #define TXT_SYNC_NTP "Sync NTP"
 #define TXT_HOUR_VIB "Hour Vib."

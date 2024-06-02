@@ -2,23 +2,27 @@
 #include "../MiteOS.h"
 #include "../Managers/NetworkManager.h"
 #include <DSEG7_Classic_Bold_53.h>
+#include <Fonts/FreeSansBold9pt7b.h>
 #include "../Data/Configuration.h"
+
+#include "../Images/menu_icons.h"
 
 #define SETTINGS_PAGE_OVERVIEW 0
 #define SETTINGS_PAGE_TIME 1
 #define SETTINGS_PAGE_NETWORK 2
 #define SETTINGS_PAGE_DISPLAY 3
-#define SETTINGS_PAGE_TEST 4
+#define SETTINGS_PAGE_STORAGE 4
+#define SETTINGS_PAGE_TEST 5
 
 #define SETTINGS_PAGE_DARKMODE 11
 
 void SettingsPage::drawPage() {
 	if(pageData.subPageIndex == SETTINGS_PAGE_OVERVIEW) {
 		const char *menuItems[] = {
-			TXT_ABOUT " " TXT_OS_NAME, TXT_TIME, TXT_NETWORK, TXT_DISPLAY, TXT_TEST
+			TXT_ABOUT " " TXT_OS_NAME, TXT_TIME, TXT_NETWORK, TXT_DISPLAY, TXT_STORAGE, TXT_TEST
 		};
 		
-		showMenu(menuItems, 5, true, TXT_SETTINGS);
+		showMenu(menuItems, 6, true, TXT_SETTINGS);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_TIME) {
 		const char *menuItems[] = {
 			TXT_SET_TIME, TXT_SYNC_NTP, 
@@ -38,6 +42,19 @@ void SettingsPage::drawPage() {
 		};
 		
 		showMenu(menuItems, 1, true, TXT_DISPLAY);
+	}else if(pageData.subPageIndex == SETTINGS_PAGE_STORAGE) {
+		int sizeSpace = Configuration::getSize();
+		int usedSpace = Configuration::usedSpace();
+		
+		mDisplay.setFont(&FreeSansBold9pt7b);
+		drawCentreString("Entries:", 100, 50);
+		drawCentreString(String(usedSpace) + " / " + String(sizeSpace), 100, 70);
+		
+		mDisplay.drawRect(30, 90, 140, 20, FOREGROUND_COLOR);
+		mDisplay.fillRect(30, 90, 140 * (usedSpace / (float) sizeSpace), 20, FOREGROUND_COLOR);
+		drawCentreString(String((usedSpace / (float) sizeSpace) * 100) + " %", 100, 130);
+		
+		drawButtonIcon(BTN_BACK, icon_left);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_TEST) {
 		const char *menuItems[] = {
 			TXT_VIB_MOTOR, TXT_SHOW_ACC

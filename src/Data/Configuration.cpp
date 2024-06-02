@@ -3,6 +3,8 @@
 #include "../UI/WatchfacePage.h"
 #include "../Managers/BluetoothManager.h"
 
+#include <nvs.h>
+
 bool Configuration::initialized = false;
 Preferences Configuration::preferences;
 
@@ -146,4 +148,28 @@ Notification Configuration::loadNotification(uint8_t index) {
 	Configuration::preferences.getString((prefix + "text").c_str(), "---").toCharArray(n.message, NOTIFICATION_MESSAGE_LENGTH);
 	
 	return n;
+}
+
+
+int Configuration::getSize() {
+	nvs_stats_t nvs_stats;
+	esp_err_t err = nvs_get_stats(NULL, &nvs_stats);
+	
+	
+    if(err){
+        return 0;
+    }
+    return nvs_stats.total_entries;
+}
+int Configuration::usedSpace() {
+	nvs_stats_t nvs_stats;
+	esp_err_t err = nvs_get_stats(NULL, &nvs_stats);
+	
+	if(err){
+		return 0;
+	}
+	return nvs_stats.used_entries;
+}
+int Configuration::freeSpace() {
+	return getSize() - usedSpace();
 }

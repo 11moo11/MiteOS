@@ -32,6 +32,10 @@ class Configuration : Preferences {
         
         static void saveSteps();
         static std::array<uint32_t, 7> loadSteps();
+        
+        static int getSize();
+        static int usedSpace();
+        static int freeSpace();
     private:
         static bool initialized;
 };

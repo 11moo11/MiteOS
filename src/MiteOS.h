@@ -1,7 +1,7 @@
 #ifndef MITEOS_H
 #define MITEOS_H
 
-#define MITE_OS_VER "20240601"
+#define MITE_OS_VER "20240602"
 
 #define DEBUG
 
