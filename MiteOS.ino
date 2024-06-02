@@ -2,6 +2,8 @@
 #include "settings.h"
 #include "src/Managers/BluetoothManager.h"
 
+#include <BLEAdvertising.h>
+
 MiteOS miteOS(settings);
 
 void setup() {

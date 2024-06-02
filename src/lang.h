@@ -41,8 +41,17 @@
 
 #define TXT_CHIP "Chip"
 
+#define TXT_BOND "Bond Phone"
+#define TXT_REBOND "Rebond Phone"
+
+#define TXT_SYNCING "Syncing..."
+#define TXT_NO_NOTIFICATION "No Notifications"
+
 #define TXT_DARKMODE "Darkmode"
 #define TXT_LIGHTMODE "Lightmode"
+
+#define TXT_OPTION_LEFT "<"
+#define TXT_OPTION_RIGHT ">"
 
 #define TXT_CHECKBOX_ON "[X]"
 #define TXT_CHECKBOX_OFF "[ ]" 

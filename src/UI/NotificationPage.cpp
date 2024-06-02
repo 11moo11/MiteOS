@@ -9,14 +9,14 @@
 #include "../Images/menu_icons.h"
 
 void NotificationPage::drawPage() {
-	/*
-	mDisplay.setCursor(0, 20);
-	mDisplay.setFont(&FreeSans9pt7b);
-	mDisplay.println("Waiting for Phone...");
-	
-	mDisplay.display(true);
-	*/
-	PhoneConnectionManager::SyncNotifications();
+	if(notificationRequeryCounter <= 0) {
+		mDisplay.setFont(&FreeSansBold9pt7b);
+		drawCentreString(TXT_SYNCING, 100, 100, false);
+		
+		mDisplay.display(true);
+		
+		PhoneConnectionManager::SyncNotifications();
+	}
 	
 	mDisplay.fillScreen(BACKGROUND_COLOR);
 	
@@ -36,6 +36,11 @@ void NotificationPage::drawPage() {
 		drawCentreString(String(pageData.subPageIndex + 1) + " / " + String(cnt), 100, 15, false);
 		
 		drawIcons();
+	}else{
+		mDisplay.setFont(&FreeSansBold9pt7b);
+		drawCentreString(TXT_NO_NOTIFICATION, 100, 100, false);
+		drawButtonIcon(BTN_BACK, icon_home);
+		drawButtonIcon(BTN_CONFIRM, icon_refresh);
 	}
 }
 
@@ -59,7 +64,7 @@ bool NotificationPage::onButtonPressed(uint8_t buttonIndex) {
 		PageManager::showPage(GLOBAL_PAGE_WATCHFACE);
 		return true;
 	} else if(buttonIndex == BTN_CONFIRM) {
-		PhoneConnectionManager::SyncNotifications(true);
+		notificationRequeryCounter = -1;
 		return true;
 	}
 }

@@ -36,10 +36,13 @@ void AlarmPage::drawPage() {
 		const char *menuItems[] = {
 			(alarms[pageData.number2].enableAlarm ? TXT_ENABLE_ON : TXT_ENABLE_OFF),
 			TXT_SET_TIME,
+			TXT_OPTION_LEFT " " +
 			(alarms[pageData.number2].mode == ALARM_MODE_ONCE ? TXT_ONCE
 				: (alarms[pageData.number2].mode == ALARM_MODE_WORKDAY ? TXT_WORKDAY
 					: (alarms[pageData.number2].mode == ALARM_MODE_WEEKEND ? TXT_WEEKEND
-						: TXT_EVERY_DAY)))
+						: TXT_EVERY_DAY))
+			)
+			+ " " TXT_OPTION_RIGHT
 		};
 		showMenu(menuItems, 3, true, TXT_ALARM " " + String(pageData.number2 + 1));
 	}

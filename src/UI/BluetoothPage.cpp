@@ -5,10 +5,10 @@
 
 void BluetoothPage::drawPage() {
 	const char *items[] = { 
-		(btDeviceRegistered ? "Rebond" : "Bond"),
+		(btDeviceRegistered ? TXT_REBOND : TXT_BOND),
 		"Test"
 	};
-	showMenu(items, 2, true, "Bluetooth");
+	showMenu(items, 2, true, TXT_BLUETOOTH);
 }
 
 bool BluetoothPage::onButtonPressed(uint8_t buttonIndex) {

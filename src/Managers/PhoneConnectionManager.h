@@ -7,6 +7,8 @@
 #define NOTIFICATION_TITLE_LENGTH 50
 #define NOTIFICATION_MESSAGE_LENGTH 150
 
+extern RTC_DATA_ATTR int8_t notificationRequeryCounter;
+
 struct Notification {
 	char app_name[NOTIFICATION_APP_NAME_LENGTH];
 	char title[NOTIFICATION_TITLE_LENGTH];
