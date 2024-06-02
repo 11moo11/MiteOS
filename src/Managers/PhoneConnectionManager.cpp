@@ -26,10 +26,10 @@ void PhoneConnectionManager::SyncNotifications(bool force) {
 		if(json.hasOwnProperty("count")) {
 			uint8_t count = uint8_t(json["count"]);
 			
-			if(count > 0) {
-				Notification n;
-				
-				for(uint8_t i = 0; i < count; i++) {
+			Notification n;
+			
+			for(uint8_t i = 0; i < NOTIFICATION_CNT; i++) {
+				if(count > i) {
 					String str = JSONVar::stringify(json["nBundleList"][i]["appName"]);
 					str.substring(1, str.length() - 1).toCharArray(n.app_name, NOTIFICATION_APP_NAME_LENGTH, 0);
 					
@@ -38,9 +38,8 @@ void PhoneConnectionManager::SyncNotifications(bool force) {
 					
 					str = JSONVar::stringify(json["nBundleList"][i]["text"]);
 					str.substring(1, str.length() - 1).toCharArray(n.message, NOTIFICATION_MESSAGE_LENGTH, 0);
-					
-					Configuration::saveNotification(i, n);
 				}
+				Configuration::saveNotification(i, n);
 			}
 			
 			Configuration::preferences.putUInt("notiCnt", count);
@@ -54,5 +53,5 @@ Notification PhoneConnectionManager::GetNotification(uint8_t index) {
 
 uint8_t PhoneConnectionManager::GetNotificationCount() {
 	Configuration::init();
-	return (uint8_t) Configuration::preferences.getUInt("notiCnt", (uint8_t) 0);
+	return min((uint8_t) NOTIFICATION_CNT, (uint8_t) Configuration::preferences.getUInt("notiCnt", (uint8_t) 0));
 }
