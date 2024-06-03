@@ -5,8 +5,6 @@
 #include "../Images/menu_icons.h"
 #include "../Images/app_icons.h"
 
-#include "../lang.h"
-
 #define ALARM_PAGE_OVERVIEW 0
 #define ALARM_PAGE_CONFIGURATION 1
 #define ALARM_PAGE_SET_TIME 2

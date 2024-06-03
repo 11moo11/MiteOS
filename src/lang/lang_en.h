@@ -60,4 +60,49 @@
 #define TXT_ENABLE_ON TXT_CHECKBOX_ON " " TXT_ACTIVE
 #define TXT_ENABLE_OFF TXT_CHECKBOX_OFF " " TXT_ACTIVE
 
+
+
+#define TXT_ERR "Err"
+
+// Month and Day Stuff
+#define TXT_SUNDAY "Sunday"
+#define TXT_SUNDAY_SHORT "Sun"
+#define TXT_MONDAY "Monday"
+#define TXT_MONDAY_SHORT "Mon"
+#define TXT_TUESDAY "Tuesday"
+#define TXT_TUESDAY_SHORT "Tue"
+#define TXT_WEDNESDAY "Wednesday"
+#define TXT_WEDNESDAY_SHORT "Wed"
+#define TXT_THURSDAY "Thursday"
+#define TXT_THURSDAY_SHORT "Thu"
+#define TXT_FRIDAY "Friday"
+#define TXT_FRIDAY_SHORT "Fri"
+#define TXT_SATURDAY "Saturday"
+#define TXT_SATURDAY_SHORT "Sat"
+
+#define TXT_JANUARY "January"
+#define TXT_JANUARY_SHORT "Jan"
+#define TXT_FEBRUARY "February"
+#define TXT_FEBRUARY_SHORT "Feb"
+#define TXT_MARCH "March"
+#define TXT_MARCH_SHORT "Mar"
+#define TXT_APRIL "April"
+#define TXT_APRIL_SHORT "Apr"
+#define TXT_MAY "May"
+#define TXT_MAY_SHORT "May"
+#define TXT_JUNE "June"
+#define TXT_JUNE_SHORT "Jun"
+#define TXT_JULY "July"
+#define TXT_JULY_SHORT "Jul"
+#define TXT_AUGUST "August"
+#define TXT_AUGUST_SHORT "Aug"
+#define TXT_SEPTEMBER "September"
+#define TXT_SEPTEMBER_SHORT "Sep"
+#define TXT_OCTOBER "October"
+#define TXT_OCTOBER_SHORT "Oct"
+#define TXT_NOVEMBER "November"
+#define TXT_NOVEMBER_SHORT "Nov"
+#define TXT_DECEMBER "December"
+#define TXT_DECEMBER_SHORT "Dec"
+
 #endif

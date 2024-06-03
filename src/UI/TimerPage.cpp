@@ -120,7 +120,7 @@ void TimerPage::drawTime() {
 	/*
 	mDisplay.setFont(&DSEG7_Classic_Bold_25);
 	mDisplay.setCursor(10, 30);
-	mDisplay.println(String(MiteOS::getBatteryVoltage()) + "V");
+	mDisplay.println(String(PowerManager::getBatteryVoltage()) + "V");
 	*/
 }
 

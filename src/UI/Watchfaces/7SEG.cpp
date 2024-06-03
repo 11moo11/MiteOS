@@ -54,7 +54,7 @@ void SEG7::drawDate() {
 	int16_t  x1, y1;
 	uint16_t w, h;
 	
-	String dayOfWeek = dayStr(MiteOS::currentTime.Wday);
+	String dayOfWeek = Lang::dayStr(MiteOS::currentTime.Wday);
 	mDisplay.getTextBounds(dayOfWeek, 5, 85, &x1, &y1, &w, &h);
 	if(MiteOS::currentTime.Wday == 4){
 		w = w - 5;
@@ -62,7 +62,7 @@ void SEG7::drawDate() {
 	mDisplay.setCursor(85 - w, 85);
 	mDisplay.println(dayOfWeek);
 	
-	String month = monthShortStr(MiteOS::currentTime.Month);
+	String month = Lang::monthShortStr(MiteOS::currentTime.Month);
 	mDisplay.getTextBounds(month, 60, 110, &x1, &y1, &w, &h);
 	mDisplay.setCursor(85 - w, 110);
 	mDisplay.println(month);
@@ -86,7 +86,7 @@ void SEG7::drawBattery() {
 	mDisplay.drawBitmap(154, 73, battery, 37, 21, FOREGROUND_COLOR);
 	mDisplay.fillRect(159, 78, 27, BATTERY_SEGMENT_HEIGHT, BACKGROUND_COLOR);//clear battery segments
 	int8_t batteryLevel = 0;
-	uint8_t bat_percentage = MiteOS::getBatteryPercentage();
+	uint8_t bat_percentage = PowerManager::getBatteryPercentage();
 	if(bat_percentage > 66){
 		batteryLevel = 3;
 	}

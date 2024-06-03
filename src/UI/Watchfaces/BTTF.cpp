@@ -50,7 +50,7 @@ void BTTF::drawDate(){
 	mDisplay.setFont(&FONT_7_SEG_MEDIUM);
 	mDisplay.setTextColor(BACKGROUND_COLOR);
 
-	String month = monthShortStr(MiteOS::currentTime.Month);
+	String month = Lang::monthShortStr(MiteOS::currentTime.Month);
 	printCentered(35, 103, month);
 
 	String dayStr = String(MiteOS::currentTime.Day);
@@ -72,7 +72,7 @@ void BTTF::drawBattery(){
 	mDisplay.setTextColor(BACKGROUND_COLOR);
 
 	
-	int8_t bat = MiteOS::getBatteryPercentage();
+	int8_t bat = PowerManager::getBatteryPercentage();
 	String batStr = String(bat);
 	batStr = bat < 10 ? "0" + batStr : batStr;
 	batStr = bat < 100 ? "0" + batStr : batStr;

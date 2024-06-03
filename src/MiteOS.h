@@ -15,7 +15,7 @@
 #include "UI/Page.h"
 #include "Data/Configuration.h"
 
-#include "lang.h"
+#include "lang/lang.h"
 
 // Manager
 #include "Managers/PageManager.h"
@@ -23,6 +23,7 @@
 #include "Managers/AlertManager.h"
 #include "Managers/ActivityManager.h"
 #include "Managers/BluetoothManager.h"
+#include "Managers/PowerManager.h"
 
 #define ADDITONAL_BUTTON_CHECK_DURATION 500
 #define BUTTON_PRESS_REPEAT_DELAY 150
@@ -74,11 +75,7 @@ class MiteOS {
 	public:
 		explicit MiteOS(const MiteSettings &s) : settings(s) { } // constructor
 		void init();
-		void deepSleep();
 		void handleButtonPress();
-		
-  		static float getBatteryVoltage();
-		static float getBatteryPercentage();
 		
 		static uint8_t getBoardRevision();
 		

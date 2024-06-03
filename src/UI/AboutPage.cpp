@@ -21,7 +21,7 @@ void AboutPage::drawPage() {
 	mDisplay.println(MiteOS::getBoardRevision());
 
 	mDisplay.print("Batt: ");
-	float voltage = MiteOS::getBatteryVoltage();
+	float voltage = PowerManager::getBatteryVoltage();
 	mDisplay.print(voltage);
 	mDisplay.println("V");
 
