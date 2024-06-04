@@ -24,6 +24,7 @@ bool BluetoothPage::onButtonPressed(uint8_t buttonIndex) {
 				i++;
 				if(BluetoothManager::connected) {
 					BluetoothManager::requestNotifications();
+					PhoneConnectionManager::RequestPlaybackInfo();
 				}
 			}
 			delay(1000);

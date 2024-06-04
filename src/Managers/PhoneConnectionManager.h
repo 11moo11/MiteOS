@@ -22,6 +22,8 @@ class PhoneConnectionManager {
 		static void SyncNotifications(bool force = false);
 		static Notification GetNotification(uint8_t index);
 		static uint8_t GetNotificationCount();
+		
+		static void RequestPlaybackInfo();
 };
 
 #endif

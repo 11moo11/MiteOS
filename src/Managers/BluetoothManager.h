@@ -29,6 +29,7 @@ class BluetoothManager {
 		static void connectDevice();
 		static void parseCommand(String value);
 		static void requestNotifications();
+		static void sendCommand(String str);
 	private:
 		static void startBLEAdvertising();
 		static void waitForResponse();

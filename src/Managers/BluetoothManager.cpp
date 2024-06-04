@@ -218,6 +218,18 @@ void BluetoothManager::requestNotifications() {
 	waitForResponse();
 }
 
+
+void BluetoothManager::sendCommand(String str) {
+	// First try to connect, if its not connected after that, just exit
+	if(!connected) connectDevice();
+	if(!connected) return;
+	
+	notificationUpdateCharacteristic->setValue(str.c_str());
+	notificationUpdateCharacteristic->notify();
+	
+	waitForResponse();
+}
+
 void BluetoothManager::waitForResponse() {
 	waitingForResponse = true;
 	lastResponse = "";	

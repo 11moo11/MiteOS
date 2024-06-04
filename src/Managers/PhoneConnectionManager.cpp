@@ -55,3 +55,10 @@ uint8_t PhoneConnectionManager::GetNotificationCount() {
 	Configuration::init();
 	return min((uint8_t) NOTIFICATION_CNT, (uint8_t) Configuration::preferences.getUInt("notiCnt", (uint8_t) 0));
 }
+
+void PhoneConnectionManager::RequestPlaybackInfo() {
+	BluetoothManager::sendCommand("GET_PLAYBACK_INFO=");
+	
+	Serial.println("Test");
+	Serial.println(BluetoothManager::lastResponse);
+}
