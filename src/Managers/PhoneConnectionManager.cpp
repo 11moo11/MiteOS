@@ -11,12 +11,13 @@ void PhoneConnectionManager::SyncNotifications(bool force) {
 	
 	if(notificationRequeryCounter > 0) {
 		notificationRequeryCounter--;
-		Configuration::init();
 		return;
 	}
 	notificationRequeryCounter = 15;
 	
 	BluetoothManager::requestNotifications();
+	
+	if(!BluetoothManager::connected) return;
 	
 	if(BluetoothManager::lastResponse.length() > 0) {
 		JSONVar json = JSON.parse(BluetoothManager::lastResponse);

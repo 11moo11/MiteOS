@@ -42,6 +42,7 @@ void MiteOS::init() {
 	RTC.init();
 
 	// Init the display since is almost sure we will use it
+	mDisplay.epd2.setDarkBorder(DARKMODE); // Its too early at first start or after changes, but it fill fix it soon after, im too lazy right now to find the correct place for it, i only know it needs to be before init
 	display.epd2.initWatchy();
 	RTC.read(currentTime);
 
@@ -201,7 +202,7 @@ void MiteOS::checkTime() {
 	if(currentTime.Hour == 0 && currentTime.Minute == 0) {
 		ActivityManager::resetSteps();
 	}
-
+	
 	if(AUTO_DARKMODE) {
 		if(MiteOS::currentTime.Hour == settings.darkmodeStartH && MiteOS::currentTime.Minute == settings.darkmodeStartM) {
 			DARKMODE = !settings.inverseDarkMode;

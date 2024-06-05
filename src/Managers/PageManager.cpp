@@ -63,7 +63,6 @@ void PageManager::handleButtonPress(uint8_t buttonIndex) {
 
 
 void PageManager::refreshPage(bool partialRefresh) {
-	mDisplay.setFullWindow();
 	// At this point it is sure we are going to update
 	mDisplay.epd2.asyncPowerOn();
 	
@@ -72,9 +71,7 @@ void PageManager::refreshPage(bool partialRefresh) {
 	if(sizeof(pages) > pageData.pageIndex) {
 		printDebug("Rendering Page " + String(pageData.pageIndex));
 		
-		mDisplay.setFullWindow();
 		mDisplay.fillScreen(BACKGROUND_COLOR);
-		//watchyDisplay.setDarkBorder(DARKMODE);
 		
 		mDisplay.setTextColor(FOREGROUND_COLOR);
 		
