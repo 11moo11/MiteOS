@@ -59,31 +59,41 @@ uint8_t PhoneConnectionManager::GetNotificationCount() {
 
 #include "../../Base64.h"
 
+unsigned char reverse(unsigned char b) {
+   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+   return b;
+}
+
 void PhoneConnectionManager::RequestPlaybackInfo() {
 	BluetoothManager::sendCommand("GET_PLAYBACK_INFO=");
-	
-	Serial.println("Test");
-	Serial.println(BluetoothManager::lastResponse);
 	
 	if(BluetoothManager::lastResponse.length() > 0) {
 		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
 		
 		//if(json.hasOwnProperty("art")) {
-			Serial.println("MEEP");
-			Serial.println(json["art"]);
-			
 			String str = JSON.stringify(json["art"]);
 			str = str.substring(1, str.length() - 1);
+			Serial.println(str);
 			
-			uint8_t* buf = new uint8_t[base64::decodeLength(str.c_str())];
+			size_t size = base64::decodeLength(str.c_str());
+			uint8_t* buf = new uint8_t[size];
 			base64::decode(str.c_str(), buf);
+			
+			Serial.print("Size: ");
+			Serial.println(size);
+			for(int i = 0; i < size; i++) {
+				buf[i] = reverse(buf[i]);
+			}
+			
 			
 			mDisplay.epd2.asyncPowerOn();
 			mDisplay.setFullWindow();
 			mDisplay.fillScreen(BACKGROUND_COLOR);
 			mDisplay.setTextColor(FOREGROUND_COLOR);
 			mDisplay.clearScreen();
-			mDisplay.drawBitmap(50, 50, (uint8_t*) buf, 100, 100, FOREGROUND_COLOR);
+			mDisplay.drawBitmap(50, 50, buf, 100, 100, FOREGROUND_COLOR);
 			
 			mDisplay.display(true);
 			

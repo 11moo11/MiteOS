@@ -201,10 +201,10 @@ void BluetoothManager::parseCommand(String value) {
 		free(inputString);
 		*/
 	} else {
-		Serial.print("Unknown command: ");
-		printDebug(value);
+		Serial.print("Unknown command");
+		//printDebug(value);
 		
-		Serial.println(value.length());
+		//Serial.println(value.length());
 	}
 }
 
