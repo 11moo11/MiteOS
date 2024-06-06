@@ -57,9 +57,38 @@ uint8_t PhoneConnectionManager::GetNotificationCount() {
 	return min((uint8_t) NOTIFICATION_CNT, (uint8_t) Configuration::preferences.getUInt("notiCnt", (uint8_t) 0));
 }
 
+#include "../../Base64.h"
+
 void PhoneConnectionManager::RequestPlaybackInfo() {
 	BluetoothManager::sendCommand("GET_PLAYBACK_INFO=");
 	
 	Serial.println("Test");
 	Serial.println(BluetoothManager::lastResponse);
+	
+	if(BluetoothManager::lastResponse.length() > 0) {
+		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
+		
+		//if(json.hasOwnProperty("art")) {
+			Serial.println("MEEP");
+			Serial.println(json["art"]);
+			
+			String str = JSON.stringify(json["art"]);
+			str = str.substring(1, str.length() - 1);
+			
+			uint8_t* buf = new uint8_t[base64::decodeLength(str.c_str())];
+			base64::decode(str.c_str(), buf);
+			
+			mDisplay.epd2.asyncPowerOn();
+			mDisplay.setFullWindow();
+			mDisplay.fillScreen(BACKGROUND_COLOR);
+			mDisplay.setTextColor(FOREGROUND_COLOR);
+			mDisplay.clearScreen();
+			mDisplay.drawBitmap(50, 50, (uint8_t*) buf, 100, 100, FOREGROUND_COLOR);
+			
+			mDisplay.display(true);
+			
+			delay(5000);
+		//}
+	}
+	
 }
