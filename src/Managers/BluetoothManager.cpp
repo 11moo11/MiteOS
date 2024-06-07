@@ -33,15 +33,14 @@ class ccb : public BLECharacteristicCallbacks {
 		
 		if (rxValue.length() > 0) {
 			
-			//for (int i = 0; i < rxValue.length(); i++) {
-			//	Serial.print(rxValue[i]);
-			//}
-			//Serial.println(" ");
+			/*
+			for (int i = 0; i < rxValue.length(); i++) {
+				Serial.print(rxValue[i]);
+			}
+			Serial.println(" ");
+			*/
 			
 			String value = rxValue.c_str();
-			
-			BluetoothManager::lastResponse = value;
-			BluetoothManager::waitingForResponse = false;
 			
 			BluetoothManager::parseCommand(value);
 		}
@@ -201,11 +200,14 @@ void BluetoothManager::parseCommand(String value) {
 		free(inputString);
 		*/
 	} else {
-		Serial.print("Unknown command");
+		printDebug("Unknown command");
 		//printDebug(value);
 		
 		//Serial.println(value.length());
 	}
+	
+	BluetoothManager::lastResponse = value;
+	BluetoothManager::waitingForResponse = false;
 }
 
 void BluetoothManager::requestNotifications() {
@@ -239,7 +241,7 @@ void BluetoothManager::waitForResponse() {
 	lastResponse = "";	
 	
 	uint8_t wait = 0;
-	while(waitingForResponse && wait < 60) { // Wait for response or 5 seconds, whatever comes first
+	while(waitingForResponse && wait < 50) { // Wait for response or 5 seconds, whatever comes first
 		wait++;
 		delay(100);
 	}

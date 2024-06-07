@@ -59,34 +59,30 @@ uint8_t PhoneConnectionManager::GetNotificationCount() {
 
 #include "../../Base64.h"
 
-unsigned char reverse(unsigned char b) {
-   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
-   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
-   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
-   return b;
-}
-
 void PhoneConnectionManager::RequestPlaybackInfo() {
 	BluetoothManager::sendCommand("GET_PLAYBACK_INFO=");
 	
 	if(BluetoothManager::lastResponse.length() > 0) {
-		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
+		int index = BluetoothManager::lastResponse.indexOf("art\":");
+		String art = BluetoothManager::lastResponse.substring(index + 6, art.indexOf("\"", index + 7) - 1);
 		
-		//if(json.hasOwnProperty("art")) {
-			String str = JSON.stringify(json["art"]);
-			str = str.substring(1, str.length() - 1);
-			Serial.println(str);
+		if(art.length() > 0) {
+			Serial.println(art);
 			
-			size_t size = base64::decodeLength(str.c_str());
+			Serial.print("Str Size: ");
+			Serial.println(art.length());
+			
+			size_t size = base64::decodeLength(art.c_str());
 			uint8_t* buf = new uint8_t[size];
-			base64::decode(str.c_str(), buf);
+			base64::decode(art.c_str(), buf);
 			
 			Serial.print("Size: ");
 			Serial.println(size);
-			for(int i = 0; i < size; i++) {
-				buf[i] = reverse(buf[i]);
-			}
 			
+			for(int i = 0; i < 50; i++) {
+				Serial.print(buf[i], HEX);
+			}
+			Serial.println();
 			
 			mDisplay.epd2.asyncPowerOn();
 			mDisplay.setFullWindow();
@@ -98,7 +94,7 @@ void PhoneConnectionManager::RequestPlaybackInfo() {
 			mDisplay.display(true);
 			
 			delay(5000);
-		//}
+		}
 	}
 	
 }
