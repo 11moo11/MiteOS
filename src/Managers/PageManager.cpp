@@ -37,6 +37,10 @@ Page* pages[] = {
 
 
 void PageManager::handleButtonPress(uint8_t buttonIndex) {
+	if(buttonIndex == BTN_DOUBLE_TAP) { // TODO: Remove, Temp fix because my menu button is broken
+		buttonIndex = BTN_MENU;
+	}
+	
 	// Check if the page is available to handle the input
 	if(sizeof(pages) > pageData.pageIndex) {
 		if(pages[pageData.pageIndex]->onButtonPressed(buttonIndex)) { // If the page handled the input, no need for the main OS to handle it

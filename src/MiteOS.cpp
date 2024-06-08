@@ -40,6 +40,8 @@ void MiteOS::init() {
 	wakeup_reason = esp_sleep_get_wakeup_cause(); // get wake up reason
 	Wire.begin(SDA, SCL);                         // init i2c
 	RTC.init();
+	
+	printDebug(wakeup_reason);
 
 	// Init the display since is almost sure we will use it
 	mDisplay.epd2.setDarkBorder(DARKMODE); // Its too early at first start or after changes, but it fill fix it soon after, im too lazy right now to find the correct place for it, i only know it needs to be before init
@@ -56,19 +58,31 @@ void MiteOS::init() {
 			//vibMotor(75, 4);
 			PageManager::refreshPage();
 			break;
-		case ESP_SLEEP_WAKEUP_EXT1: // button Press			
+		case ESP_SLEEP_WAKEUP_EXT1: // button Press or Accelerometer
 			if (esp_sleep_get_ext1_wakeup_status() & ACC_INT_MASK) { // Woken up by accelerator
 				printDebug("Accelerator");
+				
+				accSensor.getINT(); // Seems like this needs to be done to clear the interrupt :/
+				
+				/*
 				if(accSensor.isTilt()) {
 					printDebug("Tilt");
-					// TODO: Future low power mode (maybe only at night)
+					// TODO: Future low power mode? (maybe only at night)
+				}else if(accSensor.isActivity()) {
+					printDebug("Activity");
+				}else if(accSensor.isAnyNoMotion()) {
+					printDebug("No Motion");
+				}else if(accSensor.isStepCounter()) {
+					printDebug("Step Counter");
 				}
+				*/
 				
 				if(accSensor.isDoubleClick()) {
 					PageManager::handleButtonPress(BTN_DOUBLE_TAP);
 				}else{
-					PageManager::handleButtonPress(BTN_SINGLE_TAP);
+					//PageManager::handleButtonPress(BTN_SINGLE_TAP);
 				}
+				
 				break;
 			}
 			printDebug("Button Press");
@@ -77,6 +91,20 @@ void MiteOS::init() {
 			handleButtonPress();
 			waitForAdditionalButtons();
 			break;
+		
+		
+		// Just to figure out why random rebooting, not really used
+		// Also to prevent not handled wakeup interrupts to cause the watchy to reset
+		case ESP_SLEEP_WAKEUP_TIMER:
+			printDebug("Wakeup caused by timer");
+			break;
+		case ESP_SLEEP_WAKEUP_TOUCHPAD:
+			printDebug("Wakeup caused by touchpad");
+			break;
+		case ESP_SLEEP_WAKEUP_ULP:
+			Serial.println("Wakeup caused by ULP program");
+			break;
+		
 		default: // reset
 			printDebug("Reset Boot");
 			// Initial configuration
@@ -121,6 +149,16 @@ void MiteOS::waitForAdditionalButtons() {
 		if (millis() - lastTimeout > ADDITONAL_BUTTON_CHECK_DURATION) {
       		timeout = true;
     	} else {
+			if(accSensor.getINT()) {
+				if(accSensor.isDoubleClick()) {
+					lastTimeout = millis();
+					PageManager::handleButtonPress(BTN_DOUBLE_TAP);
+				}else{
+					//lastTimeout = millis();
+					//PageManager::handleButtonPress(BTN_SINGLE_TAP);
+				}
+			}
+			
 			if (digitalRead(MENU_BTN_PIN) == 1) {
 				lastTimeout = millis();
 				handleAdditionalButtonPress(BTN_MENU, &MenuBtnPressedSince);
@@ -370,10 +408,15 @@ void MiteOS::_bmaConfig() {
 	
 	// Enable BMA423 isStepCounter feature
 	accSensor.enableFeature(BMA423_STEP_CNTR, true);
-	// Enable BMA423 isTilt feature
-	accSensor.enableFeature(BMA423_TILT, false);
+	
 	// Enable BMA423 isDoubleClick feature
 	accSensor.enableFeature(BMA423_WAKEUP, true);
+	
+	// Enable BMA423 isTilt feature
+	accSensor.enableFeature(BMA423_TILT, false);
+	accSensor.enableFeature(BMA423_ACTIVITY, false);
+	accSensor.enableFeature(BMA423_ANY_MOTION, false);
+	accSensor.enableFeature(BMA423_NO_MOTION, false);
 	
 	// Reset steps
 	//accSensor.resetStepCounter();

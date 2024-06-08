@@ -13,7 +13,7 @@
 #define BTN_CONFIRM BTN_MENU
 #define BTN_HOME BTN_BACK
 
-#define BTN_SINGLE_TAP 5
+#define BTN_SINGLE_TAP 5 // Currently not used, maybe in the future
 #define BTN_DOUBLE_TAP 6
 
 typedef struct PageData {

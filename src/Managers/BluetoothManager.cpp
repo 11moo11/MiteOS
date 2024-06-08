@@ -32,7 +32,7 @@ class ccb : public BLECharacteristicCallbacks {
 		std::string rxValue = pCharacteristic->getValue();
 		
 		if (rxValue.length() > 0) {
-			
+			//Serial.println(rxValue.length());
 			/*
 			for (int i = 0; i < rxValue.length(); i++) {
 				Serial.print(rxValue[i]);
@@ -211,25 +211,18 @@ void BluetoothManager::parseCommand(String value) {
 }
 
 void BluetoothManager::requestNotifications() {
-	// First try to connect, if its not connected after that, just exit
-	if(!connected) connectDevice();
-	if(!connected) return;
-	
 	printDebug("Requesting notification list...");
 	int notificationType = 0;  //All notifications
 	sprintf(tmp_buffer, "GET_NOTIF_LIST=%d", notificationType);
-	notificationUpdateCharacteristic->setValue(tmp_buffer);
-	notificationUpdateCharacteristic->notify();
-	
-	waitForResponse();
+	sendCommand(tmp_buffer);
 }
-
 
 void BluetoothManager::sendCommand(String str) {
 	// First try to connect, if its not connected after that, just exit
 	if(!connected) connectDevice();
 	if(!connected) return;
 	
+	commandCharacteristic->setValue("");
 	notificationUpdateCharacteristic->setValue(str.c_str());
 	notificationUpdateCharacteristic->notify();
 	
@@ -243,8 +236,11 @@ void BluetoothManager::waitForResponse() {
 	uint8_t wait = 0;
 	while(waitingForResponse && wait < 50) { // Wait for response or 5 seconds, whatever comes first
 		wait++;
+		//Serial.println(commandCharacteristic->getLength());
 		delay(100);
 	}
+	//Serial.println(wait);
+	//Serial.println(commandCharacteristic->getLength());
 	
 	waitingForResponse = false;
 }

@@ -3,6 +3,7 @@
 #include "BluetoothManager.h"
 #include "../Data/Configuration.h"
 #include <JSON.h>
+#include "../Data/Base64.hpp"
 
 RTC_DATA_ATTR int8_t notificationRequeryCounter = -1;
 
@@ -57,43 +58,48 @@ uint8_t PhoneConnectionManager::GetNotificationCount() {
 	return min((uint8_t) NOTIFICATION_CNT, (uint8_t) Configuration::preferences.getUInt("notiCnt", (uint8_t) 0));
 }
 
-#include "../../Base64.h"
-
 void PhoneConnectionManager::RequestPlaybackInfo() {
 	BluetoothManager::sendCommand("GET_PLAYBACK_INFO=");
 	
 	if(BluetoothManager::lastResponse.length() > 0) {
-		int index = BluetoothManager::lastResponse.indexOf("art\":");
-		String art = BluetoothManager::lastResponse.substring(index + 6, art.indexOf("\"", index + 7) - 1);
+		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
 		
-		if(art.length() > 0) {
-			Serial.println(art);
+		if(json.hasOwnProperty("art")) {
+			String art = JSONVar::stringify(json["art"]);
+			art = art.substring(1, art.length() - 1);
 			
-			Serial.print("Str Size: ");
-			Serial.println(art.length());
+			// Ineffiecient but works i guess
+			int size = decode_base64_length((const unsigned char*) art.c_str());
+			unsigned char binary[size];
+			int binary_length = decode_base64((const unsigned char*) art.c_str(), binary);
 			
-			size_t size = base64::decodeLength(art.c_str());
-			uint8_t* buf = new uint8_t[size];
-			base64::decode(art.c_str(), buf);
-			
-			Serial.print("Size: ");
-			Serial.println(size);
-			
-			for(int i = 0; i < 50; i++) {
-				Serial.print(buf[i], HEX);
-			}
-			Serial.println();
 			
 			mDisplay.epd2.asyncPowerOn();
 			mDisplay.setFullWindow();
 			mDisplay.fillScreen(BACKGROUND_COLOR);
 			mDisplay.setTextColor(FOREGROUND_COLOR);
-			mDisplay.clearScreen();
-			mDisplay.drawBitmap(50, 50, buf, 100, 100, FOREGROUND_COLOR);
+			
+			int16_t byteWidth = (48 + 7) / 8; // Bitmap scanline pad = whole byte
+			uint8_t b = 0;
+			
+			mDisplay.startWrite();
+			for (int16_t j = 0; j < 48; j++) {
+				for (int16_t i = 0; i < 48; i++) {
+					if (i & 7)
+						b <<= 1;
+					else
+						b = binary[j * byteWidth + i / 8];
+					
+					if(b & 0x80) {
+						mDisplay.fillRect(4 + (i * 4), 4 + (j * 4), 4, 4, FOREGROUND_COLOR);
+					}
+				}
+			}
+			mDisplay.endWrite();
 			
 			mDisplay.display(true);
 			
-			delay(5000);
+			delay(15000);
 		}
 	}
 	
