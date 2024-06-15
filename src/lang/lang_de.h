@@ -2,6 +2,7 @@
 #define LANG_FILE
 
 #define TXT_OS_NAME "MiteOS"
+#define TXT_DEVICE_NAME "MiteWatch"
 
 #define TXT_ENABLE "Aktivieren"
 #define TXT_DISABLE "Deaktivieren"

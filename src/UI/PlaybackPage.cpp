@@ -5,6 +5,7 @@
 
 #include <Fonts/FreeSans9pt7b.h>
 #include <Fonts/FreeSansBold9pt7b.h>
+#include "../Fonts/FreeSans6pt7b.h"
 
 #include "../Images/menu_icons.h"
 
@@ -35,8 +36,10 @@ void PlaybackPage::drawPage() {
 				else
 					b = pbi.image[j * byteWidth + i / 8];
 				
-				if(!(b & 0x80)) {
-					mDisplay.fillRect(IMAGE_BORDER + (i * IMAGE_SCALE), 5 + (j * IMAGE_SCALE), IMAGE_SCALE, IMAGE_SCALE, FOREGROUND_COLOR);
+				if((b & 0x80)) {
+					mDisplay.fillRect(IMAGE_BORDER + (i * IMAGE_SCALE), 5 + (j * IMAGE_SCALE), IMAGE_SCALE, IMAGE_SCALE, GxEPD_WHITE);
+				}else{
+					mDisplay.fillRect(IMAGE_BORDER + (i * IMAGE_SCALE), 5 + (j * IMAGE_SCALE), IMAGE_SCALE, IMAGE_SCALE, GxEPD_BLACK);
 				}
 			}
 		}
@@ -69,9 +72,9 @@ void PlaybackPage::drawPage() {
 		mDisplay.setCursor(163, 117);
 		mDisplay.print(durationStr);
 		
-		
 		// Song Info
 		drawCentreString(pbi.title, 100, 140, true);
+		mDisplay.setFont(&FreeSans6pt7b);
 		drawCentreString(pbi.album, 100, 155, true);
 		drawCentreString(pbi.artist, 100, 170, true);
 	}else{

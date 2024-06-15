@@ -29,6 +29,9 @@ RTC_DATA_ATTR bool hourVibrate = true;
 
 void MiteOS::init() {
 	#ifdef DEBUG
+	// This might cause a double reset, causing the esp to fully reset steps and stuff
+	// So this should only be enabled when debugging
+	// But: Thats just a theory at the moment and i will test it some more
 	Serial.begin(115200);
   	if(!Serial) delay(1000);
 	printDebug("Booting up");
@@ -106,7 +109,7 @@ void MiteOS::init() {
 			Serial.println("Wakeup caused by ULP program");
 			break;
 		
-		default: // reset
+		case ESP_SLEEP_WAKEUP_UNDEFINED: // reset
 			printDebug("Reset Boot");
 			// Initial configuration
 			_bmaConfig();
@@ -128,6 +131,8 @@ void MiteOS::init() {
 			// For some reason, seems to be enabled on first boot
 			esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
 			break;
+		
+		default: break;
 	}
 	PowerManager::deepSleep();
 }
