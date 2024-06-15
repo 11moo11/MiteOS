@@ -13,8 +13,9 @@
 #define GLOBAL_PAGE_ACTIVITY 7
 #define GLOBAL_PAGE_BLUETOOTH 8
 #define GLOBAL_PAGE_NOTIFICATIONS 9
+#define GLOBAL_PAGE_PLAYBACK 10
 
-#define PAGE_COUNT 10
+#define PAGE_COUNT 11
 
 class PageManager {
 	public:

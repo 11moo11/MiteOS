@@ -5,7 +5,7 @@
 
 void BluetoothPage::drawPage() {
 	const char *items[] = { 
-		(btDeviceRegistered ? TXT_REBOND : TXT_BOND),
+		(btDeviceRegistered ? TXT_UNBOND : TXT_BOND),
 		"Test"
 	};
 	showMenu(items, 2, true, TXT_BLUETOOTH);
@@ -16,7 +16,11 @@ bool BluetoothPage::onButtonPressed(uint8_t buttonIndex) {
 	
 	if(buttonIndex == BTN_CONFIRM) {
 		if(pageData.menuIndex == 0) {
-			BluetoothManager::bondDevice();
+			if(btDeviceRegistered) {
+				BluetoothManager::unbondDevice();
+			}else{
+				BluetoothManager::bondDevice();
+			}
 		}else if(pageData.menuIndex == 1 || pageData.menuIndex == 0) {
 			BluetoothManager::connectDevice();
 			uint8_t i = 0;

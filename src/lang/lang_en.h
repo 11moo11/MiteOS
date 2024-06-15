@@ -43,7 +43,7 @@
 #define TXT_CHIP "Chip"
 
 #define TXT_BOND "Bond Phone"
-#define TXT_REBOND "Rebond Phone"
+#define TXT_REBOND "Unbond Phone"
 
 #define TXT_SYNCING "Syncing..."
 #define TXT_NO_NOTIFICATION "No Notifications"

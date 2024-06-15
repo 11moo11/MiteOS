@@ -88,6 +88,15 @@ void BluetoothManager::init() {
 	initialized = true;
 }
 
+void BluetoothManager::unbondDevice() {
+	printDebug("Unbonding current device...");
+	
+	btDeviceRegistered = false;
+	btLastDevice = BLEAddress("0");
+	
+	Configuration::saveBluetooth();
+}
+
 void BluetoothManager::bondDevice() {
 	init();
 	
@@ -200,7 +209,7 @@ void BluetoothManager::parseCommand(String value) {
 		free(inputString);
 		*/
 	} else {
-		printDebug("Unknown command");
+		//printDebug("Unknown command");
 		//printDebug(value);
 		
 		//Serial.println(value.length());
@@ -234,7 +243,7 @@ void BluetoothManager::waitForResponse() {
 	lastResponse = "";	
 	
 	uint8_t wait = 0;
-	while(waitingForResponse && wait < 50) { // Wait for response or 5 seconds, whatever comes first
+	while(waitingForResponse && wait < 50 && connected) { // Wait for response or 5 seconds, whatever comes first
 		wait++;
 		//Serial.println(commandCharacteristic->getLength());
 		delay(100);
@@ -243,4 +252,10 @@ void BluetoothManager::waitForResponse() {
 	//Serial.println(commandCharacteristic->getLength());
 	
 	waitingForResponse = false;
+}
+
+void BluetoothManager::powerOff() {
+	if(!initialized) return;
+	
+	btStop();
 }

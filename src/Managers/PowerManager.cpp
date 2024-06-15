@@ -3,7 +3,11 @@
 #include "../MiteOS.h"
 
 void PowerManager::deepSleep() {
-	mDisplay.hibernate();
+	//mDisplay.hibernate();
+	mDisplay.powerOff();
+	
+	BluetoothManager::powerOff();
+	
 	mRTC.clearAlarm();        // resets the alarm flag in the RTC
 	
 	// Set GPIOs 0-39 to input to avoid power leaking out

@@ -58,11 +58,34 @@ uint8_t PhoneConnectionManager::GetNotificationCount() {
 	return min((uint8_t) NOTIFICATION_CNT, (uint8_t) Configuration::preferences.getUInt("notiCnt", (uint8_t) 0));
 }
 
-void PhoneConnectionManager::RequestPlaybackInfo() {
+PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo() {
 	BluetoothManager::sendCommand("GET_PLAYBACK_INFO=");
+	
+	PlaybackInfo pbi;
 	
 	if(BluetoothManager::lastResponse.length() > 0) {
 		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
+		
+		
+		if(json.hasOwnProperty("title")) {
+			String str = JSONVar::stringify(json["title"]);
+			str.substring(1, str.length() - 1).toCharArray(pbi.title, PLAYBACK_TEXT_LENGTH, 0);
+		}
+		if(json.hasOwnProperty("album")) {
+			String str = JSONVar::stringify(json["album"]);
+			str.substring(1, str.length() - 1).toCharArray(pbi.album, PLAYBACK_TEXT_LENGTH, 0);
+		}
+		if(json.hasOwnProperty("artist")) {
+			String str = JSONVar::stringify(json["artist"]);
+			str.substring(1, str.length() - 1).toCharArray(pbi.artist, PLAYBACK_TEXT_LENGTH, 0);
+		}
+		
+		if(json.hasOwnProperty("position")) {
+			pbi.position = long(json["position"]);
+		}
+		if(json.hasOwnProperty("duration")) {
+			pbi.duration = long(json["duration"]);
+		}
 		
 		if(json.hasOwnProperty("art")) {
 			String art = JSONVar::stringify(json["art"]);
@@ -70,37 +93,8 @@ void PhoneConnectionManager::RequestPlaybackInfo() {
 			
 			// Ineffiecient but works i guess
 			int size = decode_base64_length((const unsigned char*) art.c_str());
-			unsigned char binary[size];
-			int binary_length = decode_base64((const unsigned char*) art.c_str(), binary);
-			
-			
-			mDisplay.epd2.asyncPowerOn();
-			mDisplay.setFullWindow();
-			mDisplay.fillScreen(BACKGROUND_COLOR);
-			mDisplay.setTextColor(FOREGROUND_COLOR);
-			
-			int16_t byteWidth = (48 + 7) / 8; // Bitmap scanline pad = whole byte
-			uint8_t b = 0;
-			
-			mDisplay.startWrite();
-			for (int16_t j = 0; j < 48; j++) {
-				for (int16_t i = 0; i < 48; i++) {
-					if (i & 7)
-						b <<= 1;
-					else
-						b = binary[j * byteWidth + i / 8];
-					
-					if(b & 0x80) {
-						mDisplay.fillRect(4 + (i * 4), 4 + (j * 4), 4, 4, FOREGROUND_COLOR);
-					}
-				}
-			}
-			mDisplay.endWrite();
-			
-			mDisplay.display(true);
-			
-			delay(15000);
+			int binary_length = decode_base64((const unsigned char*) art.c_str(), pbi.image);
 		}
 	}
-	
+	return pbi;
 }

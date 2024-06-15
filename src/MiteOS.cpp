@@ -406,6 +406,19 @@ void MiteOS::_bmaConfig() {
 
 	accSensor.setRemapAxes(&remap_data);
 	
+	
+	// Quick and Dirty fix to access the sensitivity
+	bma4_dev __devFptr;
+	__devFptr.dev_addr       = BMA4_I2C_ADDR_PRIMARY;
+	__devFptr.interface      = BMA4_I2C_INTERFACE;
+	__devFptr.bus_read       = _readRegister;
+	__devFptr.bus_write      = _writeRegister;
+	__devFptr.delay          = delay;
+	__devFptr.read_write_len = 8;
+	__devFptr.resolution     = 12;
+	__devFptr.feature_len    = BMA423_FEATURE_SIZE;
+	Serial.println(bma423_wakeup_set_sensitivity(7, &__devFptr) == BMA4_OK);
+	
 	// Enable BMA423 isStepCounter feature
 	accSensor.enableFeature(BMA423_STEP_CNTR, true);
 	

@@ -11,18 +11,20 @@
 #include "../UI/ActivityPage.h"
 #include "../UI/BluetoothPage.h"
 #include "../UI/NotificationPage.h"
+#include "../UI/PlaybackPage.h"
 
-WatchfacePage watchfacePage;
-TimerPage timerPage;
-SettingsPage settingsPage;
-AboutPage aboutPage;
-WeatherPage weatherPage;
-AlarmPage alarmPage;
-AppPage appPage;
-ActivityPage activityPage;
-BluetoothPage bluetoothPage;
-NotificationPage notificationPage;
-Page* pages[] = {
+PROGMEM WatchfacePage watchfacePage;
+PROGMEM TimerPage timerPage;
+PROGMEM SettingsPage settingsPage;
+PROGMEM AboutPage aboutPage;
+PROGMEM WeatherPage weatherPage;
+PROGMEM AlarmPage alarmPage;
+PROGMEM AppPage appPage;
+PROGMEM ActivityPage activityPage;
+PROGMEM BluetoothPage bluetoothPage;
+PROGMEM NotificationPage notificationPage;
+PROGMEM PlaybackPage playbackPage;
+PROGMEM Page* pages[] = {
 	&watchfacePage,
 	&timerPage,
 	&alarmPage,
@@ -32,7 +34,8 @@ Page* pages[] = {
 	&appPage,
 	&activityPage,
 	&bluetoothPage,
-	&notificationPage
+	&notificationPage,
+	&playbackPage
 };
 
 
@@ -40,6 +43,8 @@ void PageManager::handleButtonPress(uint8_t buttonIndex) {
 	if(buttonIndex == BTN_DOUBLE_TAP) { // TODO: Remove, Temp fix because my menu button is broken
 		buttonIndex = BTN_MENU;
 	}
+	
+	AlertManager::vibMotor(30, 2);
 	
 	// Check if the page is available to handle the input
 	if(sizeof(pages) > pageData.pageIndex) {
