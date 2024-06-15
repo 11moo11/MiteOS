@@ -44,6 +44,8 @@ class Page {
 		static void drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]);
     static void drawCentreString(String buf, int x, int y, bool textWrap = true);
 		static void drawCentreString(const char *buf, int x, int y, bool textWrap = true);
+		static void printString(const char *buf);
+		static void printString(const char *buf, uint16_t fgc, uint16_t bgc);
 };
 
 #endif

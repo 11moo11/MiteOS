@@ -46,6 +46,7 @@ void MiteOS::init() {
 	// Init the display since is almost sure we will use it
 	mDisplay.epd2.setDarkBorder(DARKMODE); // Its too early at first start or after changes, but it fill fix it soon after, im too lazy right now to find the correct place for it, i only know it needs to be before init
 	display.epd2.initWatchy();
+	mDisplay.cp437(true);
 	RTC.read(currentTime);
 
 	switch (wakeup_reason) {
@@ -417,7 +418,8 @@ void MiteOS::_bmaConfig() {
 	__devFptr.read_write_len = 8;
 	__devFptr.resolution     = 12;
 	__devFptr.feature_len    = BMA423_FEATURE_SIZE;
-	Serial.println(bma423_wakeup_set_sensitivity(7, &__devFptr) == BMA4_OK);
+	bma423_wakeup_set_sensitivity(7, &__devFptr);
+	bma423_tap_selection(0x01, &__devFptr);
 	
 	// Enable BMA423 isStepCounter feature
 	accSensor.enableFeature(BMA423_STEP_CNTR, true);

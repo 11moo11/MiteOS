@@ -3,8 +3,7 @@
 #include "../MiteOS.h"
 
 void PowerManager::deepSleep() {
-	//mDisplay.hibernate();
-	mDisplay.powerOff();
+	mDisplay.hibernate();
 	
 	BluetoothManager::powerOff();
 	
@@ -26,7 +25,9 @@ void PowerManager::deepSleep() {
 		BTN_PIN_MASK | ACC_INT_MASK,
 		ESP_EXT1_WAKEUP_ANY_HIGH
 	); // enable deep sleep wake on button press
-
+	
+	printDebug("Going to sleep...");
+	
 	esp_deep_sleep_start();
 }
 

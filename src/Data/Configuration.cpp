@@ -84,7 +84,11 @@ void Configuration::loadSettings() {
 void Configuration::saveBluetooth() {
 	if(!initialized) init();
 	
-	preferences.putString("btLastDevice", btLastDevice.toString().c_str());
+	if(strcmp(btLastDevice.toString().c_str(), BLEAddress("0").toString().c_str()) == 0) {
+		preferences.remove("btLastDevice");
+	}else{
+		preferences.putString("btLastDevice", btLastDevice.toString().c_str());
+	}
 	
 	printDebug("Saved Bluetooth");
 }
