@@ -31,10 +31,10 @@ void Page::showMenu(const char *menuItems[], uint8_t itemCount, bool partialRefr
 			mDisplay.getTextBounds(menuItems[i], 25, yPos, &x1, &y1, &w, &h);
 			mDisplay.fillRect(x1 - 1, y1 - 10, 150, h + 15, FOREGROUND_COLOR);
 			mDisplay.setTextColor(BACKGROUND_COLOR);
-			printString(menuItems[i], BACKGROUND_COLOR, FOREGROUND_COLOR);
+			print(menuItems[i], BACKGROUND_COLOR, FOREGROUND_COLOR);
 		} else {
 			mDisplay.setTextColor(FOREGROUND_COLOR);
-			printString(menuItems[i]);
+			print(menuItems[i]);
 		}
 	}
 	
@@ -87,7 +87,7 @@ void Page::drawCentreString(const char *buf, int x, int y, bool textWrap) {
 	mDisplay.getTextBounds(buf, x, y, &x1, &y1, &w, &h); //calc width of new string
 	mDisplay.setCursor(x - w / 2, y);
 	
-	printString(buf);
+	print(buf);
 }
 
 size_t utf8_strlen(const char * str) {
@@ -96,15 +96,25 @@ size_t utf8_strlen(const char * str) {
 	return len;
 }
 
-void Page::printString(const char *buf) {
-	printString(buf, FOREGROUND_COLOR, BACKGROUND_COLOR);
+
+void Page::println(const char *buf) {
+	println(buf, FOREGROUND_COLOR, BACKGROUND_COLOR);
+}
+
+void Page::println(const char *buf, uint16_t fgc, uint16_t bgc) {
+	print(buf, fgc, bgc);
+	mDisplay.println();
+}
+
+void Page::print(const char *buf) {
+	print(buf, FOREGROUND_COLOR, BACKGROUND_COLOR);
 }
 /*
 Function to print a String with UTF8 encoding
 Replaces umlauts if possible otherwise just uses the non Umlaut Character as replacement
 There is probably an easier and more performant way to do it, but i couldnt find it :/
 */
-void Page::printString(const char *buf, uint16_t fgc, uint16_t bgc) {
+void Page::print(const char *buf, uint16_t fgc, uint16_t bgc) {
 	if(utf8_strlen(buf) == strlen(buf)) { // No need to loop through each character if there is no utf8 involved
 		mDisplay.print(buf);
 		return;

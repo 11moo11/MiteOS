@@ -109,9 +109,11 @@ void BluetoothManager::bondDevice() {
 	BLEDevice::setCustomGapHandler(my_gap_event_handler);
 
 	startBLEAdvertising();
-
-	while(!btDeviceRegistered) {
+	
+	uint16_t wait = 0;
+	while(!btDeviceRegistered && wait < 300) { // Wait for bonding or half a minute, whatever comes first
 		delay(100);
+		wait++;
 	}
 	
 	connected = pServer->getConnectedCount() > 0;

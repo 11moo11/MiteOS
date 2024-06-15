@@ -1,8 +1,16 @@
 #ifndef LANG_H
 #define LANG_H
 
-//#include "lang_en.h"
+
+#define LANG_EN
+
+
+
+#ifdef LANG_DE
 #include "lang_de.h"
+#else
+#include "lang_en.h"
+#endif
 
 /* Reimplementation with defines from:
 

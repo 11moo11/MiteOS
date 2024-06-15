@@ -43,10 +43,12 @@
 #define TXT_CHIP "Chip"
 
 #define TXT_BOND "Bond Phone"
-#define TXT_REBOND "Unbond Phone"
+#define TXT_UNBOND "Unbond Phone"
+#define TXT_BOND_WAIT "Waiting to bond"
 
 #define TXT_SYNCING "Syncing..."
 #define TXT_NO_NOTIFICATION "No Notifications"
+#define TXT_NO_PLAYBACK "No Playback"
 
 #define TXT_DARKMODE "Darkmode"
 #define TXT_LIGHTMODE "Lightmode"

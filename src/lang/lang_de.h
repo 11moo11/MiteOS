@@ -44,6 +44,7 @@
 
 #define TXT_BOND "Handy verb."
 #define TXT_UNBOND "Verb. aufheben"
+#define TXT_BOND_WAIT "Warten auf Koppeln"
 
 #define TXT_SYNCING "Lade..."
 #define TXT_NO_NOTIFICATION "Keine Benachrichtigungen"

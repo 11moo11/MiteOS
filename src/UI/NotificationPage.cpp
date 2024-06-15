@@ -28,11 +28,12 @@ void NotificationPage::drawPage() {
 		Notification n = PhoneConnectionManager::GetNotification(pageData.subPageIndex);
 		mDisplay.setTextWrap(true);
 		mDisplay.setFont(&FreeSansBold9pt7b);
-		mDisplay.println(n.app_name);
-		mDisplay.println(n.title);
+		println(n.app_name);
+		println(n.title);
 		
 		mDisplay.setFont(&FreeSans9pt7b);
-		mDisplay.println(n.message);
+		println(n.message);
+		
 		drawCentreString(String(pageData.subPageIndex + 1) + " / " + String(cnt), 100, 15, false);
 		
 		drawIcons();
