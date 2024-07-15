@@ -24,6 +24,8 @@ RTC_DATA_ATTR AlarmData alarms[ALARM_COUNT];
 tmElements_t MiteOS::currentTime;
 
 RTC_DATA_ATTR bool hourVibrate = true;
+RTC_DATA_ATTR bool btnFeedbackVibrate = true;
+RTC_DATA_ATTR u_int8_t doubleTapBtn = 1;
 
 #include "esp32-hal-cpu.h"
 
@@ -61,6 +63,8 @@ void MiteOS::init() {
 			
 			//vibMotor(75, 4);
 			PageManager::refreshPage();
+	
+			PhoneConnectionManager::SyncNotifications();
 			break;
 		case ESP_SLEEP_WAKEUP_EXT1: // button Press or Accelerometer
 			if (esp_sleep_get_ext1_wakeup_status() & ACC_INT_MASK) { // Woken up by accelerator
@@ -111,6 +115,7 @@ void MiteOS::init() {
 		
 		case ESP_SLEEP_WAKEUP_UNDEFINED: // reset
 			printDebug("Reset Boot");
+			printDebug(esp_reset_reason());
 			// Initial configuration
 			_bmaConfig();
 			pageData.pageIndex = 0; // Set Page to Watchface
@@ -283,8 +288,6 @@ void MiteOS::checkTime() {
 			pageData.pageIndex = GLOBAL_PAGE_ALARM;
 		}
 	}
-	
-	PhoneConnectionManager::SyncNotifications();
 }
 
 void MiteOS::initDarkmode() {

@@ -34,7 +34,7 @@ void WeatherPage::drawWeather() {
 	
 	const unsigned char* weatherIcon;
 	
-	mDisplay.setFont(&Seven_Seg18pt7b);
+	mDisplay.setFont(&Seven_Segment10pt7b);
 	drawCentreString(currentWeatherData.weatherDescription, 100, 90);
 	
 	if(currentWeather.external) {

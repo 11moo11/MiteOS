@@ -14,8 +14,9 @@
 #define GLOBAL_PAGE_BLUETOOTH 8
 #define GLOBAL_PAGE_NOTIFICATIONS 9
 #define GLOBAL_PAGE_PLAYBACK 10
+#define GLOBAL_PAGE_HASS 11
 
-#define PAGE_COUNT 11
+#define PAGE_COUNT 12
 
 class PageManager {
 	public:
@@ -25,6 +26,8 @@ class PageManager {
 		
 		static void refreshPage(bool partialRefresh = true);
 		static void handleButtonPress(uint8_t buttonIndex);
+		
+		static void showConnectionIcon(const unsigned char* icon);
 };
 
 #endif

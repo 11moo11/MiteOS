@@ -62,12 +62,12 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 				currentWeatherData.temperature = int(responseObject["main"]["temp"]);
 				currentWeatherData.weatherConditionCode = int(responseObject["weather"][0]["id"]);
 				String desc = JSONVar::stringify(responseObject["weather"][0]["description"]);
-				desc.replace("Ü", "U");
+				/*desc.replace("Ü", "U");
 				desc.replace("ü", "u");
 				desc.replace("Ö", "O");
 				desc.replace("ö", "o");
 				desc.replace("Ä", "A");
-				desc.replace("ä", "A");
+				desc.replace("ä", "A");*/
 				desc.substring(1, desc.length() - 1).toCharArray(currentWeatherData.weatherDescription, 30);
 				currentWeatherData.external = true;
 				

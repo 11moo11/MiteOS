@@ -83,8 +83,11 @@ void Page::drawCentreString(String buf, int x, int y, bool textWrap) {
 void Page::drawCentreString(const char *buf, int x, int y, bool textWrap) {
 	int16_t x1, y1;
 	uint16_t w, h;
+	
+	String str = buf; str.replace("ä", "a"); str.replace("Ä", "A"); str.replace("ö", "Ö"); str.replace("o", "O"); str.replace("ü", "u"); str.replace("Ü", "U");
+	
 	mDisplay.setTextWrap(false);
-	mDisplay.getTextBounds(buf, x, y, &x1, &y1, &w, &h); //calc width of new string
+	mDisplay.getTextBounds(str, x, y, &x1, &y1, &w, &h); //calc width of new string
 	mDisplay.setCursor(x - w / 2, y);
 	
 	print(buf);
@@ -134,7 +137,7 @@ void Page::print(const char *buf, uint16_t fgc, uint16_t bgc) {
 			case 'Ä': replaceChar = 0x8E; break;
 			case 'ä': replaceChar = 0x84; break;
 			case 'Ö': replaceChar = 0x99; break;
-			case 'ö': replaceChar = 0x84; break;
+			case 'ö': replaceChar = 0x94; break;
 			case 'Ü': replaceChar = 0x9A; break;
 			case 'ü': replaceChar = 0x81; break;
 			default: break;
@@ -151,7 +154,7 @@ void Page::print(const char *buf, uint16_t fgc, uint16_t bgc) {
 			} else { // Otherwise fallback to the default font
 				mDisplay.getTextBounds("O", (int16_t) 50, (int16_t) 50, &x1, &y1, &w, &h); // Get the current font's size and resize the default one to match somewhat, using O as a big character to better match the size
 				
-				uint8_t size_x = w / 5, size_y = w / 5;
+				uint8_t size_x = h / 7, size_y = h / 7;
 				uint8_t x = mDisplay.getCursorX();
 				uint8_t y = mDisplay.getCursorY() - size_y * 8 + 3;
 				

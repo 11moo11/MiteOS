@@ -3,12 +3,15 @@
 #include "settings.h"
 #include <NTPClient.h>
 #include "WeatherManager.h"
+#include "../Images/menu_icons.h"
 
 RTC_DATA_ATTR bool WifiConfigured;
 RTC_DATA_ATTR uint32_t lastWifiIPAddress;
 RTC_DATA_ATTR char lastWifiSSID[30];
 
 bool NetworkManager::connectWifi() {
+	PageManager::showConnectionIcon(icon_wifi);
+	
 	if (WL_CONNECT_FAILED == WiFi.begin()) { // WiFi not setup, you can also use hard coded credentials
 											 // with WiFi.begin(SSID,PASS);
 		WifiConfigured = false;

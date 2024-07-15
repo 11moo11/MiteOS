@@ -19,11 +19,13 @@
 #define TXT_ALARM "Alarm"
 #define TXT_TIMER "Timer"
 #define TXT_BLUETOOTH "Bluetooth"
+#define TXT_MEDIA "Media"
 
 #define TXT_ABOUT "About"
 #define TXT_TIME "Time"
 #define TXT_NETWORK "Network"
 #define TXT_DISPLAY "Display"
+#define TXT_INTERACTION "Interaction"
 #define TXT_STORAGE "Storage"
 #define TXT_TEST "Test"
 #define TXT_SYNC_NTP "Sync NTP"
@@ -34,6 +36,13 @@
 #define TXT_SHOW_ACC "Accelerometer"
 #define TXT_TIMED "Timed"
 #define TXT_STATIC "Static"
+#define TXT_INTERACT_VIBRATE_ON_BTN "Button Vib."
+#define TXT_INTERACT_DBL_TAP "Double Tap"
+
+#define TXT_BTN_1 "Back"
+#define TXT_BTN_2 "Forward"
+#define TXT_BTN_3 "Up"
+#define TXT_BTN_4 "Down"
 
 #define TXT_PRESET "Preset"
 #define TXT_ALARM_CAPS "ALARM"
@@ -48,8 +57,14 @@
 #define TXT_BOND_WAIT "Waiting to bond"
 
 #define TXT_SYNCING "Syncing..."
+#define TXT_NOTIFICATION "Notifications"
 #define TXT_NO_NOTIFICATION "No Notifications"
 #define TXT_NO_PLAYBACK "No Playback"
+
+#define TXT_HASS "HASS"
+#define TXT_WAIT "Waiting..."
+#define TXT_SUCCESS "Success"
+#define TXT_FAILED "Failed"
 
 #define TXT_DARKMODE "Darkmode"
 #define TXT_LIGHTMODE "Lightmode"

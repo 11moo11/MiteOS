@@ -16,12 +16,12 @@ void ActivityPage::drawPage() {
 	}else if(pageData.subPageIndex == PAGE_ACTIVITY_DAYS) {
 		drawStepList();
 	}
-	drawButtonIcon(BTN_TOGGLE_BTN, icon_right);
+	drawButtonIcon(BTN_CONFIRM, icon_right);
 }
 
 
 bool ActivityPage::onButtonPressed(uint8_t buttonIndex) {
-	if(buttonIndex == BTN_TOGGLE_BTN) {
+	if(buttonIndex == BTN_CONFIRM) {
 		pageData.subPageIndex++;
 		if(pageData.subPageIndex > 1) pageData.subPageIndex = 0;
 		return true;

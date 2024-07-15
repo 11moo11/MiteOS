@@ -1,7 +1,7 @@
 #ifndef MITEOS_H
 #define MITEOS_H
 
-#define MITE_OS_VER "20240602"
+#define MITE_OS_VER "20240714"
 
 #define DEBUG
 
@@ -25,8 +25,10 @@
 #include "Managers/BluetoothManager.h"
 #include "Managers/PowerManager.h"
 
-#define ADDITONAL_BUTTON_CHECK_DURATION 500
+#define ADDITONAL_BUTTON_CHECK_DURATION 2000
 #define BUTTON_PRESS_REPEAT_DELAY 150
+
+static bool displayPoweredOn = false;
 
 typedef struct MiteSettings {
 	// Weather Settings
@@ -105,6 +107,8 @@ extern RTC_DATA_ATTR AlarmData timer;
 extern RTC_DATA_ATTR AlarmData alarms[ALARM_COUNT];
 
 extern RTC_DATA_ATTR bool hourVibrate;
+extern RTC_DATA_ATTR bool btnFeedbackVibrate;
+extern RTC_DATA_ATTR u_int8_t doubleTapBtn;
 
 #define BACKGROUND_COLOR (DARKMODE ? GxEPD_BLACK : GxEPD_WHITE)
 #define FOREGROUND_COLOR (DARKMODE ? GxEPD_WHITE : GxEPD_BLACK)

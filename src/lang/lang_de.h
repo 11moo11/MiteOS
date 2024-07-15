@@ -19,11 +19,13 @@
 #define TXT_ALARM "Wecker"
 #define TXT_TIMER "Timer"
 #define TXT_BLUETOOTH "Bluetooth"
+#define TXT_MEDIA "Medien"
 
 #define TXT_ABOUT "Über"
 #define TXT_TIME "Zeit"
 #define TXT_NETWORK "Netzwerk"
 #define TXT_DISPLAY "Display"
+#define TXT_INTERACTION "Interaktion"
 #define TXT_STORAGE "Speicher"
 #define TXT_TEST "Test"
 #define TXT_SYNC_NTP "Sync NTP"
@@ -34,6 +36,8 @@
 #define TXT_SHOW_ACC "Accelerometer"
 #define TXT_TIMED "Zeit spez."
 #define TXT_STATIC "Statisch"
+#define TXT_INTERACT_VIBRATE_ON_BTN "Tasten Vib."
+#define TXT_INTERACT_DBL_TAP "Double Tap"
 
 #define TXT_PRESET "Minuten"
 #define TXT_ALARM_CAPS "WECKER"
@@ -48,8 +52,14 @@
 #define TXT_BOND_WAIT "Warten auf Koppeln"
 
 #define TXT_SYNCING "Lade..."
+#define TXT_NOTIFICATION "Nachrichten"
 #define TXT_NO_NOTIFICATION "Keine Benachrichtigungen"
 #define TXT_NO_PLAYBACK "Keine Wiedergabe"
+
+#define TXT_HASS "HASS"
+#define TXT_WAIT "Warte..."
+#define TXT_SUCCESS "Erfolgreich"
+#define TXT_FAILED "Fehlgeschlagen"
 
 #define TXT_DARKMODE "Darkmode"
 #define TXT_LIGHTMODE "Lightmode"

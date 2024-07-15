@@ -11,18 +11,20 @@
 #define SETTINGS_PAGE_TIME 1
 #define SETTINGS_PAGE_NETWORK 2
 #define SETTINGS_PAGE_DISPLAY 3
-#define SETTINGS_PAGE_STORAGE 4
-#define SETTINGS_PAGE_TEST 5
+#define SETTINGS_PAGE_INTERACT 4
+#define SETTINGS_PAGE_STORAGE 5
+#define SETTINGS_PAGE_TEST 6
 
 #define SETTINGS_PAGE_DARKMODE 11
+#define SETTINGS_PAGE_DBL_TAP 12
 
 void SettingsPage::drawPage() {
 	if(pageData.subPageIndex == SETTINGS_PAGE_OVERVIEW) {
 		const char *menuItems[] = {
-			TXT_ABOUT " " TXT_OS_NAME, TXT_TIME, TXT_NETWORK, TXT_DISPLAY, TXT_STORAGE, TXT_TEST
+			TXT_ABOUT " " TXT_OS_NAME, TXT_TIME, TXT_NETWORK, TXT_DISPLAY, TXT_INTERACTION, TXT_STORAGE, TXT_TEST
 		};
 		
-		showMenu(menuItems, 6, true, TXT_SETTINGS);
+		showMenu(menuItems, 7, true, TXT_SETTINGS);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_TIME) {
 		const char *menuItems[] = {
 			TXT_SET_TIME, TXT_SYNC_NTP, 
@@ -42,6 +44,13 @@ void SettingsPage::drawPage() {
 		};
 		
 		showMenu(menuItems, 1, true, TXT_DISPLAY);
+	}else if(pageData.subPageIndex == SETTINGS_PAGE_INTERACT) {
+		const char *menuItems[] = {
+			(btnFeedbackVibrate ? TXT_CHECKBOX_ON " " TXT_INTERACT_VIBRATE_ON_BTN : TXT_CHECKBOX_OFF " " TXT_INTERACT_VIBRATE_ON_BTN),
+			TXT_INTERACT_DBL_TAP
+		};
+		
+		showMenu(menuItems, 2, true, TXT_INTERACTION);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_STORAGE) {
 		int sizeSpace = Configuration::getSize();
 		int usedSpace = Configuration::usedSpace();
@@ -73,6 +82,16 @@ void SettingsPage::drawPage() {
 		};
 		
 		showMenu(menuItems, AUTO_DARKMODE ? 1 : 2, true, TXT_COLOR_SCHEME);
+	} else if(pageData.subPageIndex == SETTINGS_PAGE_DBL_TAP) {
+		const char *menuItems[] = {
+			(doubleTapBtn == 0 ? TXT_CHECKBOX_ON " " TXT_DISABLE : TXT_CHECKBOX_OFF " " TXT_DISABLE),
+			(doubleTapBtn == 1 ? TXT_CHECKBOX_ON " " TXT_BTN_1   : TXT_CHECKBOX_OFF " " TXT_BTN_1),
+			(doubleTapBtn == 2 ? TXT_CHECKBOX_ON " " TXT_BTN_2   : TXT_CHECKBOX_OFF " " TXT_BTN_2),
+			(doubleTapBtn == 3 ? TXT_CHECKBOX_ON " " TXT_BTN_3   : TXT_CHECKBOX_OFF " " TXT_BTN_3),
+			(doubleTapBtn == 4 ? TXT_CHECKBOX_ON " " TXT_BTN_4   : TXT_CHECKBOX_OFF " " TXT_BTN_4),
+		};
+		
+		showMenu(menuItems, 5, true, TXT_INTERACT_DBL_TAP);
 	}
 }
 
@@ -81,8 +100,10 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 		return true;
 	
 	if(buttonIndex == BTN_BACK) {
-		if(pageData.subPageIndex == 11) { // Darkmode
+		if(pageData.subPageIndex == SETTINGS_PAGE_DARKMODE) { // Darkmode
 			pageData.subPageIndex = SETTINGS_PAGE_DISPLAY;
+		} else if(pageData.subPageIndex == SETTINGS_PAGE_DBL_TAP) { // Darkmode
+			pageData.subPageIndex = SETTINGS_PAGE_INTERACT;
 		} else if(pageData.subPageIndex > 0) {
 			pageData.subPageIndex = 0;
 		}else{
@@ -142,7 +163,20 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 				}
 				break;
 			
-			
+			case SETTINGS_PAGE_INTERACT:
+				switch(pageData.menuIndex) {
+					case 0:
+						btnFeedbackVibrate = !btnFeedbackVibrate;
+						Configuration::saveSettings();
+						return true;
+					
+					case 1:
+						pageData.subPageIndex = SETTINGS_PAGE_DBL_TAP;
+						return true;
+					
+					default: break;
+				}
+				break;
 			
 			
 			
@@ -163,6 +197,11 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 					default: break;
 				}
 				break;
+			
+			case SETTINGS_PAGE_DBL_TAP:
+				doubleTapBtn = pageData.menuIndex;
+				Configuration::saveSettings();
+				return true;
 			
 			case SETTINGS_PAGE_TEST:
 				switch(pageData.menuIndex) {

@@ -12,6 +12,7 @@
 #include "../UI/BluetoothPage.h"
 #include "../UI/NotificationPage.h"
 #include "../UI/PlaybackPage.h"
+#include "../UI/HassPage.h"
 
 PROGMEM WatchfacePage watchfacePage;
 PROGMEM TimerPage timerPage;
@@ -24,6 +25,7 @@ PROGMEM ActivityPage activityPage;
 PROGMEM BluetoothPage bluetoothPage;
 PROGMEM NotificationPage notificationPage;
 PROGMEM PlaybackPage playbackPage;
+PROGMEM HassPage hassPage;
 PROGMEM Page* pages[] = {
 	&watchfacePage,
 	&timerPage,
@@ -35,16 +37,18 @@ PROGMEM Page* pages[] = {
 	&activityPage,
 	&bluetoothPage,
 	&notificationPage,
-	&playbackPage
+	&playbackPage,
+	&hassPage
 };
 
 
 void PageManager::handleButtonPress(uint8_t buttonIndex) {
-	if(buttonIndex == BTN_DOUBLE_TAP) { // TODO: Remove, Temp fix because my menu button is broken
-		buttonIndex = BTN_MENU;
+	if(buttonIndex == BTN_DOUBLE_TAP) {
+		if(doubleTapBtn == 0) return;
+		buttonIndex = doubleTapBtn;
 	}
 	
-	AlertManager::vibMotor(30, 2);
+	if(btnFeedbackVibrate) AlertManager::vibMotor(30, 2);
 	
 	// Check if the page is available to handle the input
 	if(sizeof(pages) > pageData.pageIndex) {
@@ -76,6 +80,8 @@ void PageManager::refreshPage(bool partialRefresh) {
 	mDisplay.epd2.asyncPowerOn();
 	
 	printDebug("Power On Display");
+	
+	displayPoweredOn = true;
 	
 	if(sizeof(pages) > pageData.pageIndex) {
 		printDebug("Rendering Page " + String(pageData.pageIndex));
@@ -124,4 +130,16 @@ void PageManager::previousPage() {
 	} while(! pages[newIndex]->isPageable());
 	
 	showPage(newIndex);
+}
+
+void PageManager::showConnectionIcon(const unsigned char* icon) {
+	if(!displayPoweredOn) {
+		mDisplay.epd2.asyncPowerOn();
+		mDisplay.fillScreen(BACKGROUND_COLOR);
+		mDisplay.setTextColor(FOREGROUND_COLOR);
+		displayPoweredOn = true;
+	}
+	
+	mDisplay.drawBitmap(90, 0, icon, 20, 20, FOREGROUND_COLOR);
+	mDisplay.display(true);
 }

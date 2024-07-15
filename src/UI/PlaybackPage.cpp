@@ -87,27 +87,27 @@ void PlaybackPage::drawPage() {
 
 void PlaybackPage::drawIcons() {
 	if(pageData.number1 == 1) {
-		drawButtonIcon(BTN_UP, icon_next);
-		drawButtonIcon(BTN_BACK, icon_previous);
-		drawButtonIcon(BTN_CONFIRM, icon_play);
+		drawButtonIcon(BTN_DOWN, icon_next);
+		drawButtonIcon(BTN_MENU, icon_previous);
+		drawButtonIcon(BTN_UP, icon_play);
 	}else{
 		drawButtonIcon(BTN_CONFIRM, icon_refresh);
 	}
 	
-	drawButtonIcon(BTN_DOWN, icon_down);
+	drawButtonIcon(BTN_BACK, icon_home);
 }
 
 bool PlaybackPage::onButtonPressed(uint8_t buttonIndex) {
 	if(pageData.number1 == 1) {
-		if(buttonIndex == BTN_UP) {
+		if(buttonIndex == BTN_DOWN) {
 			BluetoothManager::sendCommand("NEXT_PLAYBACK=");
 			delay(500);
 			return true;
-		} else if(buttonIndex == BTN_BACK) {
+		} else if(buttonIndex == BTN_MENU) {
 			BluetoothManager::sendCommand("PREVIOUS_PLAYBACK=");
 			delay(500);
 			return true;
-		} else if(buttonIndex == BTN_CONFIRM) {
+		} else if(buttonIndex == BTN_UP) {
 			BluetoothManager::sendCommand("TOGGLE_PLAYBACK=");
 			delay(500);
 			return true;
@@ -116,6 +116,10 @@ bool PlaybackPage::onButtonPressed(uint8_t buttonIndex) {
 		if(buttonIndex == BTN_CONFIRM) {
 			return true; // Just refresh the page
 		}
+	}
+	if(buttonIndex == BTN_BACK) {
+		PageManager::showPage(GLOBAL_PAGE_APPS);
+		return true;
 	}
 	return false;
 }

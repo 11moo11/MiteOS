@@ -5,7 +5,7 @@
 #include "../Managers/PageManager.h"
 #include <Fonts/FreeSans9pt7b.h>
 
-#define APP_PAGE_COUNT 1
+#define APP_PAGE_COUNT 2
 
 RTC_DATA_ATTR uint8_t currentAppPage;
 RTC_DATA_ATTR uint8_t currentAppIndex;
@@ -14,20 +14,35 @@ static const unsigned char* const pageIcons[] = {
 	app_icon_gear,
 	app_icon_alarm,
 	app_icon_stopwatch,
-	app_icon_bluetooth
+	app_icon_bluetooth,
+	
+	app_icon_music,
+	app_icon_messages,
+	app_icon_hass,
+	app_icon_empty
 };
 
 static const String pageTitles[] = {
 	TXT_SETTINGS,
 	TXT_ALARM,
 	TXT_TIMER,
-	TXT_BLUETOOTH
+	TXT_BLUETOOTH,
+	
+	TXT_MEDIA,
+	TXT_NOTIFICATION,
+	TXT_HASS,
+	""
 };
 static const uint8_t pageTarget[] = {
 	GLOBAL_PAGE_SETTINGS,
 	GLOBAL_PAGE_ALARM,
 	GLOBAL_PAGE_TIMER,
-	GLOBAL_PAGE_BLUETOOTH
+	GLOBAL_PAGE_BLUETOOTH,
+	
+	GLOBAL_PAGE_PLAYBACK,
+	GLOBAL_PAGE_NOTIFICATIONS,
+	GLOBAL_PAGE_HASS,
+	255
 };
 
 void AppPage::drawPage() {
@@ -38,7 +53,7 @@ void AppPage::drawPage() {
 	drawButtonIcon(BTN_DOWN, icon_down);
 
 	if(APP_PAGE_COUNT > 1) {
-		drawCentreString(String(currentAppPage + 1) + " / " + String(APP_PAGE_COUNT + 1), 100, 190, false);
+		drawCentreString(String(currentAppPage + 1) + " / " + String(APP_PAGE_COUNT), 100, 190, false);
 	}
 	displayPage();
 }
@@ -87,12 +102,13 @@ void AppPage::displayPage() {
 	for(uint8_t i = 0; i < 4; i++) {
 		uint8_t x = 25 + (i >= 2 ? 80 : 0);
 		uint8_t y = 25 + (i % 2 == 1 ? 70 : 0);
-		mDisplay.drawBitmap(x + 10, y + 10, pageIcons[i + (currentAppPage * 4)], 40, 40, FOREGROUND_COLOR);
 		drawCentreString(pageTitles[i + (currentAppPage * 4)], x + 30, y + 68);
 		
 		if(currentAppIndex == i) {
-			mDisplay.drawRect(x + 8, y + 8, 44, 44, FOREGROUND_COLOR);
-			mDisplay.drawRect(x + 9, y + 9, 42, 42, FOREGROUND_COLOR);
+			mDisplay.fillRect(x + 8, y + 8, 44, 44, FOREGROUND_COLOR);
+			mDisplay.drawBitmap(x + 10, y + 10, pageIcons[i + (currentAppPage * 4)], 40, 40, BACKGROUND_COLOR);
+		}else{
+			mDisplay.drawBitmap(x + 10, y + 10, pageIcons[i + (currentAppPage * 4)], 40, 40, FOREGROUND_COLOR);
 		}
 	}
 }

@@ -63,9 +63,11 @@ void Configuration::loadAlarms() {
 void Configuration::saveSettings() {
 	if(!initialized) init();
 
-	preferences.putBool("autodark", AUTO_DARKMODE);
-	preferences.putBool("darkmode", PREF_DARKMODE);
-	preferences.putBool("hourvib", hourVibrate);
+	preferences.putBool("autodark",  AUTO_DARKMODE);
+	preferences.putBool("darkmode",  PREF_DARKMODE);
+	preferences.putBool("hourvib",   hourVibrate);
+	preferences.putBool("btnvib",    btnFeedbackVibrate);
+	preferences.putUInt("dblTapBtn", doubleTapBtn);
 	preferences.putUInt("watchface", watchFaceId);
 	
 	printDebug("Saved Settings");
@@ -76,6 +78,8 @@ void Configuration::loadSettings() {
 	AUTO_DARKMODE = preferences.getBool("autodark", AUTO_DARKMODE);
 	PREF_DARKMODE = preferences.getBool("darkmode", PREF_DARKMODE);
 	hourVibrate   = preferences.getBool("hourvib", hourVibrate);
+	btnFeedbackVibrate = preferences.getBool("btnvib", btnFeedbackVibrate);
+	doubleTapBtn  = preferences.getUInt("dblTapBtn", doubleTapBtn);
 	watchFaceId   = preferences.getUInt("watchface", watchFaceId);
 	
 	printDebug("Loaded Settings");

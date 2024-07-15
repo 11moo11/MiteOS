@@ -1,6 +1,7 @@
 #include "BluetoothManager.h"
 #include "../MiteOS.h"
 #include <BLE2902.h>
+#include "../Images/menu_icons.h"
 
 BLECharacteristic *BluetoothManager::commandCharacteristic;
 BLECharacteristic *BluetoothManager::notificationUpdateCharacteristic;
@@ -123,6 +124,9 @@ void BluetoothManager::bondDevice() {
 
 void BluetoothManager::connectDevice() {
 	if(!btDeviceRegistered) return;
+	
+	PageManager::showConnectionIcon(icon_bluetooth);
+	
 	if(connected) return;
 	
 	init();
@@ -242,7 +246,7 @@ void BluetoothManager::sendCommand(String str) {
 
 void BluetoothManager::waitForResponse() {
 	waitingForResponse = true;
-	lastResponse = "";	
+	lastResponse = "";
 	
 	uint8_t wait = 0;
 	while(waitingForResponse && wait < 50 && connected) { // Wait for response or 5 seconds, whatever comes first
