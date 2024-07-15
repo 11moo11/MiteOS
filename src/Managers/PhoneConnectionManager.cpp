@@ -1,6 +1,7 @@
 #include "PhoneConnectionManager.h"
 
 #include "BluetoothManager.h"
+#include "HassManager.h"
 #include "../Data/Configuration.h"
 #include <JSON.h>
 #include "../Data/Base64.hpp"
@@ -97,4 +98,23 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo() {
 		}
 	}
 	return pbi;
+}
+
+void PhoneConnectionManager::SyncConfiguration() {
+	BluetoothManager::sendCommand("GET_CONFIGURATION=");
+	
+	PlaybackInfo pbi;
+	
+	if(BluetoothManager::lastResponse.length() > 0) {
+		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
+		
+		if(json.hasOwnProperty("hassUrl")) {
+			if(json.hasOwnProperty("hassTkn")) {
+				HassManager::setURL(json["hassUrl"]);
+				HassManager::setToken(json["hassTkn"]);
+				
+				Configuration::saveHassConfig();
+			}
+		}
+	}
 }

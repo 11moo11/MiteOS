@@ -8,13 +8,15 @@ Features
 ✅ Multiple Watchfaces (easy to add your own)  
 ✅ Timer  
 ✅ Alarm (up to 3 at a time)  
-✅ Weather Information (Temperature / Moon Phase)  
+✅ Weather Information (Temperature / Moon Phase) **  
 ✅ Step Tracking (Remembers the Last 7 days)  
 ✅ Check Phone Notifications*  
 ✅ Media-Playback Info*  
+✅ Home Assistant Integration (Lights / Switches) */**  
 ✅ Dark-/Lightmode (Static or Timed)  
 
 \(*) Requires the Phone Companion App (see Phone Companion for Restrictions)
+\(**) Requires a WiFi Connection
 
 **Other Features**  
 ✅ App-Menu  
@@ -25,7 +27,6 @@ Features
 
 Planned Features
 -----
-- Home Assistant Integration (Lights / Switches)
 - Weather Information through Phone instead of WiFi
 - Activity Tracking
 - TOTP

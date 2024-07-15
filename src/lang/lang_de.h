@@ -39,6 +39,11 @@
 #define TXT_INTERACT_VIBRATE_ON_BTN "Tasten Vib."
 #define TXT_INTERACT_DBL_TAP "Double Tap"
 
+#define TXT_BTN_1 "Zurück"
+#define TXT_BTN_2 "Vor"
+#define TXT_BTN_3 "Hoch"
+#define TXT_BTN_4 "Runter"
+
 #define TXT_PRESET "Minuten"
 #define TXT_ALARM_CAPS "WECKER"
 #define TXT_TIMER_CAPS "TIMER"

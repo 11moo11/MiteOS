@@ -27,6 +27,9 @@ class Configuration : Preferences {
         static void saveBluetooth();
         static void loadBluetooth();
         
+        static void saveHassConfig();
+        static void loadHassConfig();
+        
         static void saveNotification(uint8_t index, Notification n);
         static Notification loadNotification(uint8_t index);
         

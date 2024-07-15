@@ -78,8 +78,6 @@
 #define TXT_ENABLE_ON TXT_CHECKBOX_ON " " TXT_ACTIVE
 #define TXT_ENABLE_OFF TXT_CHECKBOX_OFF " " TXT_ACTIVE
 
-
-
 #define TXT_ERR "Err"
 
 // Month and Day Stuff

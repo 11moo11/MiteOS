@@ -2,6 +2,7 @@
 
 #include "../UI/WatchfacePage.h"
 #include "../Managers/BluetoothManager.h"
+#include "../Managers/HassManager.h"
 
 #include <nvs.h>
 
@@ -158,6 +159,16 @@ Notification Configuration::loadNotification(uint8_t index) {
 	return n;
 }
 
+void Configuration::saveHassConfig() {
+	Configuration::preferences.putString("hassUrl", HassManager::getURL());
+	Configuration::preferences.putString("hassTkn", HassManager::getToken());
+}
+
+void Configuration::loadHassConfig() {
+	HassManager::setURL(Configuration::preferences.getString("hassUrl"));
+	HassManager::setToken(Configuration::preferences.getString("hassTkn"));
+}
+
 
 int Configuration::getSize() {
 	nvs_stats_t nvs_stats;
@@ -169,6 +180,7 @@ int Configuration::getSize() {
     }
     return nvs_stats.total_entries;
 }
+
 int Configuration::usedSpace() {
 	nvs_stats_t nvs_stats;
 	esp_err_t err = nvs_get_stats(NULL, &nvs_stats);
@@ -178,6 +190,7 @@ int Configuration::usedSpace() {
 	}
 	return nvs_stats.used_entries;
 }
+
 int Configuration::freeSpace() {
 	return getSize() - usedSpace();
 }

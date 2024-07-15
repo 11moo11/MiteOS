@@ -11,6 +11,8 @@ class HassManager {
 	public:
 		static void setURL(String url) { HassManager::url = url; }
 		static void setToken(String token) { HassManager::token = token; }
+		static String getURL() { return HassManager::url; }
+		static String getToken() { return HassManager::token; }
 		
 		static bool toggleLight(String entity);
 		static bool toggleSwitch(String entity);

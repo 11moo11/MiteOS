@@ -1,6 +1,7 @@
 #include "HassManager.h"
 #include <HTTPClient.h>
 #include "NetworkManager.h"
+#include "../Data/Configuration.h"
 
 String HassManager::url = "";
 String HassManager::token = "";
@@ -23,6 +24,11 @@ bool HassManager::toggle(String entity) {
 }
 
 bool HassManager::toggle(String type, String entity) {
+	if(HassManager::url.length() == 0) {
+		Configuration::loadHassConfig();
+	}
+	if(HassManager::url.length() == 0) return false;
+	
 	if (NetworkManager::connectWifi()) {
 		HTTPClient http;
 

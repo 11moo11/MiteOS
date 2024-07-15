@@ -36,6 +36,8 @@ class PhoneConnectionManager {
 		static uint8_t GetNotificationCount();
 		
 		static PlaybackInfo RequestPlaybackInfo();
+		
+		static void SyncConfiguration();
 };
 
 #endif
