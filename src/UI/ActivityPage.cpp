@@ -2,16 +2,25 @@
 
 #include "../MiteOS.h"
 #include "../Fonts/Seven_Seg18pt7b.h"
-#include <Fonts/FreeMonoBold12pt7b.h>
+#include <Fonts/FreeMono9pt7b.h>
 #include "../Fonts/icons.h"
 #include "../Images/menu_icons.h"
 
 #define PAGE_ACTIVITY_OVERVIEW 0
 #define PAGE_ACTIVITY_DAYS 1
 
+#define TARGET_STEP_COUNT 8000
+
 void ActivityPage::drawPage() {
 	if(pageData.subPageIndex == PAGE_ACTIVITY_OVERVIEW) {
-		drawCircle();
+		int lineThickness = 10;
+		int diameter = 160;
+		int percentage = (ActivityManager::getStepCount() / (float) TARGET_STEP_COUNT) * 100;
+		int centerX = 20;
+		int centerY = 20;
+		
+		drawCircle(centerX, centerY, diameter, lineThickness, percentage);
+		
 		drawText();
 	}else if(pageData.subPageIndex == PAGE_ACTIVITY_DAYS) {
 		drawStepList();
@@ -30,39 +39,6 @@ bool ActivityPage::onButtonPressed(uint8_t buttonIndex) {
 	return false;
 }
 
-void ActivityPage::drawCircle() {
-	int lineThickness = 10;
-	int diameter = 160;
-	int percentage = (ActivityManager::getStepCount() / 8000.0) * 100;
-	int centerX = 20;
-	int centerY = 20;
-	
-	percentage = max(0, min(100, percentage));
-	
-	int radius = diameter / 2;
-	double angleStep = 0.007; // Schrittweite für 1 Grad in Bogenmaß
-	double endAngle = 2 * M_PI * (percentage / 100.0); // Endwinkel basierend auf dem Prozentsatz
-	
-	if(percentage > 0) {
-		// Generierung der Kreislinie
-		for (double angle = 0; angle <= endAngle; angle += angleStep) {
-			for (int r = radius - lineThickness; r <= radius; ++r) {
-				int x = static_cast<int>(radius + r * cos(angle));
-				int y = static_cast<int>(radius + r * sin(angle));
-				mDisplay.drawPixel(centerX + y, centerY + diameter - x, FOREGROUND_COLOR);
-			}
-		}
-	}
-	
-	for(double angle = 0; angle <= 2 * M_PI; angle += M_PI / 10) {
-		for (int r = radius - lineThickness; r <= radius; ++r) {
-			int x = static_cast<int>(radius + r * cos(angle));
-			int y = static_cast<int>(radius + r * sin(angle));
-			mDisplay.drawPixel(centerX + y, centerY + diameter - x, FOREGROUND_COLOR);
-		}
-	}
-}
-
 void ActivityPage::drawText() {
 	mDisplay.setFont(&Seven_Seg18pt7b);
 	drawCentreString(String(ActivityManager::getStepCount()), 100, 100, false);
@@ -73,13 +49,32 @@ void ActivityPage::drawText() {
 void ActivityPage::drawStepList() {
 	std::array<uint32_t, 7> steps = Configuration::loadSteps();
 	
-	mDisplay.setFont(&FreeMonoBold12pt7b);
+	mDisplay.setFont(&FreeMono9pt7b);
 	
 	uint8_t row = 0;
 	for(int i = 6; i >= 0; i--) {
+		uint8_t row = i / 3;
+		uint8_t col = i % 3;
+		if(row == 2) col++;
+		
 		int dow = MiteOS::currentTime.Wday - i;
 		if(dow < 1) dow = 7 + dow;
 		
+		int stepCount = steps[dow - 1];
+		int percentage = (stepCount / (float) TARGET_STEP_COUNT) * 100;
+		
+		if(i == 0) {
+			mDisplay.setTextColor(BACKGROUND_COLOR);
+			mDisplay.fillRect(0, 0, 66, 69, FOREGROUND_COLOR);
+			drawCircle(16 + (66 * col), 4 + (66 * row), 35, 4, percentage, BACKGROUND_COLOR);
+		}else{
+			drawCircle(16 + (66 * col), 4 + (66 * row), 35, 4, percentage);
+		}
+		
+		drawCentreString(String(dayShortStr(dow)), 33 + (66 * col), 33 + (66 * row) + 18, false);
+		drawCentreString(String(steps[dow - 1]), 33 + (66 * col), 33 + (66 * row) + 32, false);
+		
+		/*
 		if(i == 0) {
 			mDisplay.setTextColor(BACKGROUND_COLOR);
 			mDisplay.fillRect(20, 47 + (22 * (row - 1)), 160, 20, FOREGROUND_COLOR);
@@ -89,5 +84,6 @@ void ActivityPage::drawStepList() {
 		mDisplay.print(String(dayShortStr(dow)));
 		mDisplay.print(": ");
 		mDisplay.println(steps[dow - 1]);
+		*/
 	}
 }

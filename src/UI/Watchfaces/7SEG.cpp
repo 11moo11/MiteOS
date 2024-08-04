@@ -11,9 +11,10 @@
 #include "../../Managers/WeatherManager.h"
 #include "../../Images/weather_icons.h"
 
-const uint8_t BATTERY_SEGMENT_WIDTH = 7;
-const uint8_t BATTERY_SEGMENT_HEIGHT = 11;
-const uint8_t BATTERY_SEGMENT_SPACING = 9;
+const uint8_t BATTERY_SEGMENT_COUNT = 5;
+const uint8_t BATTERY_SEGMENT_SPACING = 2;
+const uint8_t BATTERY_SEGMENTS_HEIGHT = 11;
+const uint8_t BATTERY_SEGMENTS_WIDTH = 27; // Total available width
 
 void SEG7::draw() {
 	drawTime();
@@ -84,23 +85,21 @@ void SEG7::drawSteps() {
 }
 void SEG7::drawBattery() {
 	mDisplay.drawBitmap(154, 73, battery, 37, 21, FOREGROUND_COLOR);
-	mDisplay.fillRect(159, 78, 27, BATTERY_SEGMENT_HEIGHT, BACKGROUND_COLOR);//clear battery segments
-	int8_t batteryLevel = 0;
-	uint8_t bat_percentage = PowerManager::getBatteryPercentage();
-	if(bat_percentage > 66){
-		batteryLevel = 3;
-	}
-	else if(bat_percentage > 33){
-		batteryLevel = 2;
-	}
-	else if(bat_percentage > 1){
-		batteryLevel = 1;
-	}else{
-		batteryLevel = 0;
-	}
+	mDisplay.fillRect(159, 78, 28, BATTERY_SEGMENTS_HEIGHT, BACKGROUND_COLOR);//clear battery segments
 	
-	for(int8_t batterySegments = 0; batterySegments < batteryLevel; batterySegments++){
-		mDisplay.fillRect(159 + (batterySegments * BATTERY_SEGMENT_SPACING), 78, BATTERY_SEGMENT_WIDTH, BATTERY_SEGMENT_HEIGHT, FOREGROUND_COLOR);
+	uint8_t bat_percentage = PowerManager::getBatteryPercentage();
+	
+	if(bat_percentage > 98) {
+		mDisplay.fillRect(159, 78, BATTERY_SEGMENTS_WIDTH, BATTERY_SEGMENTS_HEIGHT, FOREGROUND_COLOR);
+	}else{
+		uint8_t segments = bat_percentage / (100 / BATTERY_SEGMENT_COUNT);
+		if(segments < BATTERY_SEGMENT_COUNT && bat_percentage % (100 / BATTERY_SEGMENT_COUNT) > (100 / BATTERY_SEGMENT_COUNT) / 2) segments++;
+		
+		uint8_t width = (BATTERY_SEGMENTS_WIDTH - (BATTERY_SEGMENT_SPACING * (BATTERY_SEGMENT_COUNT - 1))) / BATTERY_SEGMENT_COUNT;
+		
+		for(uint8_t i = 0; i < segments; i++){
+			mDisplay.fillRect(159 + (i * (width + BATTERY_SEGMENT_SPACING)), 78, width, BATTERY_SEGMENTS_HEIGHT, FOREGROUND_COLOR);
+		}
 	}
 }
 

@@ -8,7 +8,6 @@ class ActivityPage : public Page {
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;
 	private:
-		void drawCircle();
 		void drawText();
 		void drawStepList();
 };

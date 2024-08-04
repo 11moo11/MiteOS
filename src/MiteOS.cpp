@@ -120,7 +120,7 @@ void MiteOS::init() {
 			_bmaConfig();
 			pageData.pageIndex = 0; // Set Page to Watchface
 			gmtTimeOffset = settings.gmtOffset;
-
+			
 			RTC.read(osBootTime);
 			
 			printDebug("Restoring Settings File");

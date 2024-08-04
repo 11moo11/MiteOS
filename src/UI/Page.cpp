@@ -184,3 +184,34 @@ void Page::print(const char *buf, uint16_t fgc, uint16_t bgc) {
 		character = 0;
 	}
 }
+
+void Page::drawCircle(int centerX, int centerY, int diameter, int lineThickness, int percentage) {
+	Page::drawCircle(centerX, centerY, diameter, lineThickness, percentage, FOREGROUND_COLOR);
+}
+
+void Page::drawCircle(int centerX, int centerY, int diameter, int lineThickness, int percentage, uint16_t color) {
+	percentage = max(0, min(100, percentage));
+	
+	int radius = diameter / 2;
+	double angleStep = 0.007; // Schrittweite für 1 Grad in Bogenmaß
+	double endAngle = 2 * M_PI * (percentage / 100.0); // Endwinkel basierend auf dem Prozentsatz
+	
+	if(percentage > 0) {
+		// Generierung der Kreislinie
+		for (double angle = 0; angle <= endAngle; angle += angleStep) {
+			for (int r = radius - lineThickness; r <= radius; ++r) {
+				int x = static_cast<int>(radius + r * cos(angle));
+				int y = static_cast<int>(radius + r * sin(angle));
+				mDisplay.drawPixel(centerX + y, centerY + diameter - x, color);
+			}
+		}
+	}
+	
+	for(double angle = 0; angle <= 2 * M_PI; angle += M_PI / 10) {
+		for (int r = radius - lineThickness; r <= radius; ++r) {
+			int x = static_cast<int>(radius + r * cos(angle));
+			int y = static_cast<int>(radius + r * sin(angle));
+			mDisplay.drawPixel(centerX + y, centerY + diameter - x, color);
+		}
+	}
+}

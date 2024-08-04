@@ -48,6 +48,9 @@ class Page {
 		static void print(const char *buf, uint16_t fgc, uint16_t bgc);
 		static void println(const char *buf);
 		static void println(const char *buf, uint16_t fgc, uint16_t bgc);
+    
+    static void drawCircle(int centerX, int centerY, int diameter, int lineThickness, int percentage);
+    static void drawCircle(int centerX, int centerY, int diameter, int lineThickness, int percentage, uint16_t color);
 };
 
 #endif

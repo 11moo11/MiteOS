@@ -53,9 +53,9 @@ void Configuration::loadAlarms() {
 	
 	for(int i = 0; i < ALARM_COUNT; i++) {
 		alarms[i].enableAlarm = preferences.getBool(("alr" + String(i) + "en").c_str(), alarms[i].enableAlarm);
-		alarms[i].hour		  = preferences.getUInt(("alr" + String(i) + "hr").c_str(), alarms[i].hour);
-		alarms[i].minute 	  = preferences.getUInt(("alr" + String(i) + "min").c_str(), alarms[i].minute);
-		alarms[i].mode 		  = preferences.getUInt(("alr" + String(i) + "mode").c_str(), alarms[i].mode);
+		alarms[i].hour        = preferences.getUInt(("alr" + String(i) + "hr").c_str(), alarms[i].hour);
+		alarms[i].minute      = preferences.getUInt(("alr" + String(i) + "min").c_str(), alarms[i].minute);
+		alarms[i].mode        = preferences.getUInt(("alr" + String(i) + "mode").c_str(), alarms[i].mode);
 	}
 	printDebug("Loaded Alarms");
 }
@@ -76,12 +76,12 @@ void Configuration::saveSettings() {
 void Configuration::loadSettings() {
 	if(!initialized) init();
 	
-	AUTO_DARKMODE = preferences.getBool("autodark", AUTO_DARKMODE);
-	PREF_DARKMODE = preferences.getBool("darkmode", PREF_DARKMODE);
-	hourVibrate   = preferences.getBool("hourvib", hourVibrate);
+	AUTO_DARKMODE      = preferences.getBool("autodark", AUTO_DARKMODE);
+	PREF_DARKMODE      = preferences.getBool("darkmode", PREF_DARKMODE);
+	hourVibrate        = preferences.getBool("hourvib", hourVibrate);
 	btnFeedbackVibrate = preferences.getBool("btnvib", btnFeedbackVibrate);
-	doubleTapBtn  = preferences.getUInt("dblTapBtn", doubleTapBtn);
-	watchFaceId   = preferences.getUInt("watchface", watchFaceId);
+	doubleTapBtn       = preferences.getUInt("dblTapBtn", doubleTapBtn);
+	watchFaceId        = preferences.getUInt("watchface", watchFaceId);
 	
 	printDebug("Loaded Settings");
 }
@@ -160,12 +160,12 @@ Notification Configuration::loadNotification(uint8_t index) {
 }
 
 void Configuration::saveHassConfig() {
-	Configuration::preferences.putString("hassUrl", HassManager::getURL());
+	Configuration::preferences.putString("hassUrl", HassManager::  getURL());
 	Configuration::preferences.putString("hassTkn", HassManager::getToken());
 }
 
 void Configuration::loadHassConfig() {
-	HassManager::setURL(Configuration::preferences.getString("hassUrl"));
+	HassManager::  setURL(Configuration::preferences.getString("hassUrl"));
 	HassManager::setToken(Configuration::preferences.getString("hassTkn"));
 }
 
@@ -174,11 +174,10 @@ int Configuration::getSize() {
 	nvs_stats_t nvs_stats;
 	esp_err_t err = nvs_get_stats(NULL, &nvs_stats);
 	
-	
-    if(err){
-        return 0;
-    }
-    return nvs_stats.total_entries;
+	if(err){
+		return 0;
+	}
+	return nvs_stats.total_entries;
 }
 
 int Configuration::usedSpace() {

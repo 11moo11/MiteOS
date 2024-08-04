@@ -5,6 +5,9 @@
 
 #define DEBUG
 
+#define BACKGROUND_COLOR (DARKMODE ? GxEPD_BLACK : GxEPD_WHITE)
+#define FOREGROUND_COLOR (DARKMODE ? GxEPD_WHITE : GxEPD_BLACK)
+
 #include <Arduino.h>
 #include <bma.h>
 #include <GxEPD2_BW.h>
@@ -109,9 +112,6 @@ extern RTC_DATA_ATTR AlarmData alarms[ALARM_COUNT];
 extern RTC_DATA_ATTR bool hourVibrate;
 extern RTC_DATA_ATTR bool btnFeedbackVibrate;
 extern RTC_DATA_ATTR u_int8_t doubleTapBtn;
-
-#define BACKGROUND_COLOR (DARKMODE ? GxEPD_BLACK : GxEPD_WHITE)
-#define FOREGROUND_COLOR (DARKMODE ? GxEPD_WHITE : GxEPD_BLACK)
 
 #define mDisplay MiteOS::display
 #define mRTC MiteOS::RTC
