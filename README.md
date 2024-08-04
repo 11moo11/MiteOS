@@ -46,7 +46,13 @@ App can be found here: **Link coming soon**
 
 Battery-Life
 -----
-With WiFi and the Phone Companion active i measured about 5-7 days of battery life with a 200mAh Battery.  
+
+| Battery | Offline  | Wifi + Phone Connection (15 minute interval) |
+|---------|----------|----------------------------------------------|
+| 200mAh  | ~10 days | ~7 days                                      |
+| 320mAh* | -        | -                                            |
+
+(*) Requires a case that can hold that battery  
 I use a modified version of https://github.com/yik3z/Watchy-CAD/tree/main/CAD/Cases/SlimV5 that allows for a 320mAh battery. But i haven't ordered one yet.
 
 Screenshots
