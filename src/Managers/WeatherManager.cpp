@@ -127,6 +127,8 @@ float WeatherManager::getMoonPhase() {
 }
 
 
+// Phase from 0 - 0.5 = Increasing Moon
+// Phase from 0.5 - 1 = Decreasing Moon
 float WeatherManager::getMoonPhase(uint8_t year, uint8_t month, uint8_t day, uint8_t hour) {
 	double j = _Julian(((int32_t) year) + 1970, month, (double) day + (hour / 24.0));
 

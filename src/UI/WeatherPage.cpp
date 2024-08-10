@@ -67,56 +67,66 @@ void WeatherPage::drawWeather() {
 	mDisplay.drawBitmap(130, 20, weatherIcon, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, FOREGROUND_COLOR);
 }
 
+void drawPartialBitmap(int16_t x, int16_t y, const uint8_t* bitmap, int16_t w, int16_t h, int16_t start_w, int16_t end_w, uint16_t color) {
+	int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
+	uint8_t b = 0;
+	
+	if(start_w < 0) start_w = 0;
+	if(end_w > w) end_w = w;
+	
+	mDisplay.startWrite();
+	for (int16_t j = 0; j < h; j++, y++) {
+		for (int16_t i = 0; i < end_w; i++) {
+			if (i & 7)
+				b <<= 1;
+			else
+				b = pgm_read_byte(&bitmap[j * byteWidth + i / 8]);
+			
+			if(i < start_w) continue;
+			
+			if (b & 0x80)
+				mDisplay.writePixel(x + i, y, color);
+		}
+	}
+	mDisplay.endWrite();
+}
+
 void WeatherPage::drawMoonPhase() {
 	mDisplay.fillRect(0, 120, 200, 80, GxEPD_BLACK);
 	
-	float phase = WeatherManager::getMoonPhase(MiteOS::currentTime.Year, MiteOS::currentTime.Month, MiteOS::currentTime.Day, MiteOS::currentTime.Hour);
-	
 	mDisplay.drawBitmap(90, 183, icon_up, 20, 20, GxEPD_WHITE);
 	
-	for(int i = -1; i <= 1; i++) {
-		int displayPhase = round(phase * 7) + i;
+	for(int i = -2; i <= 2; i++) {
+		// Get current moon phase
+		// Phase from 0 - 0.5 = Increasing Moon
+		// Phase from 0.5 - 1 = Decreasing Moon
+		float phase = WeatherManager::getMoonPhase(MiteOS::currentTime.Year, MiteOS::currentTime.Month, MiteOS::currentTime.Day + i, MiteOS::currentTime.Hour);
 		
-		const unsigned char* moonIcon;
-		switch(displayPhase) {
-			case 7:
-				moonIcon = icon_moon_new;
-				break;
-			case 6:
-				moonIcon = icon_moon_waning3;
-				break;
-			case 5:
-				moonIcon = icon_moon_waning2;
-				break;
-			case 4:
-				moonIcon = icon_moon_waning1;
-				break;
-			case 3:
-				moonIcon = icon_moon_full;
-				break;
-			case 2:
-				moonIcon = icon_moon_crescent1;
-				break;
-			case 1:
-				moonIcon = icon_moon_crescent2;
-				break;
-			case 0:
-			default:
-				moonIcon = icon_moon_crescent3;
-				break;
+		// Calculate what icon needs to be on the left and right, also make non current moons smaller
+		uint8_t size = (i == 0 ? 40 : 30);
+		const uint8_t* icon_left = (phase > 0.5 ? (i == 0 ? icon_moon_full : icon_moon_full_small) : (i == 0 ? icon_moon_new : icon_moon_new_small));
+		const uint8_t* icon_right = (phase > 0.5 ? (i == 0 ? icon_moon_new : icon_moon_new_small) : (i == 0 ? icon_moon_full : icon_moon_full_small));
+		
+		// Make sure phase is between 0 and 1 to calculate size
+		uint8_t value = (phase > 0.5 ? size * ((phase - 0.5) * 2) : size * phase * 2);
+		
+		// Draw the moons
+		drawPartialBitmap(80 - (-35 * i + (i > 0 ? -10 : 0)), 145 - (i != 0 ? -10 + abs(i) * 5 : 0), icon_left, size, size,   0, size - value, GxEPD_WHITE);
+		drawPartialBitmap(80 - (-35 * i + (i > 0 ? -10 : 0)), 145 - (i != 0 ? -10 + abs(i) * 5 : 0), icon_right, size, size, size - value, size, GxEPD_WHITE);
+		
+		// If its the current day, draw the percentages and indicator
+		if(i == 0) {
+			int fraction = ((1.0 - cos(2 * M_PI * phase)) * 0.5) * 100;
+			
+			mDisplay.setTextColor(GxEPD_WHITE);
+			
+			mDisplay.setFont(&DSEG7_Classic_Regular_15);
+			String str = String(fraction);
+			mDisplay.setCursor(80, 142);
+			mDisplay.print(str.c_str());
+			
+			mDisplay.setFont(&Seven_Segment10pt7b);
+			mDisplay.print("%");
 		}
-		mDisplay.drawBitmap(80 - (-50 * i), 145, moonIcon, 40, 40, GxEPD_WHITE);
 	}
-	
-	int fraction = ((1.0 - cos(2 * M_PI * phase)) * 0.5) * 100;
-	
-	mDisplay.setTextColor(GxEPD_WHITE);
-	
-	mDisplay.setFont(&DSEG7_Classic_Regular_15);
-	String str = String(fraction);
-	mDisplay.setCursor(80, 142);
-	mDisplay.print(str.c_str());
-	
-	mDisplay.setFont(&Seven_Segment10pt7b);
-	mDisplay.print("%");
 }
