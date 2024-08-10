@@ -126,7 +126,7 @@ void Configuration::saveSteps() {
 	}
 	preferences.putUInt(("steps" + String(dow)).c_str(), ActivityManager::getStepCount());
 }
-std::array<uint32_t, 7> Configuration::loadSteps() {
+std::array<uint32_t, 7> Configuration::loadSteps(bool useCurrentData) {
 	if(!initialized) init();
 	
 	std::array<uint32_t, 7> steps;
@@ -134,7 +134,9 @@ std::array<uint32_t, 7> Configuration::loadSteps() {
 	for(uint8_t dow = 1; dow <= 7; dow++) {
 		steps[dow - 1] = preferences.getUInt(("steps" + String(dow)).c_str(), 0);
 	}
-	steps[MiteOS::currentTime.Wday - 1] = ActivityManager::getStepCount();
+	
+	if(useCurrentData)
+		steps[MiteOS::currentTime.Wday - 1] = ActivityManager::getStepCount();
 	
 	return steps;
 }

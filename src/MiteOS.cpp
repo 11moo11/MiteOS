@@ -125,6 +125,7 @@ void MiteOS::init() {
 			
 			printDebug("Restoring Settings File");
 			Configuration::loadAll();
+			ActivityManager::restoreSteps();
 			
 			initDarkmode();
 			
@@ -250,6 +251,8 @@ void MiteOS::checkTime() {
 	
 	if(currentTime.Hour == 0 && currentTime.Minute == 0) {
 		ActivityManager::resetSteps();
+	}else if(currentTime.Minute % 10 == 0) { // Saving steps each 10 minutes to make sure when the clock crashes its not loosing all progress
+		ActivityManager::saveSteps();
 	}
 	
 	if(AUTO_DARKMODE) {

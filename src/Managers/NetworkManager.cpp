@@ -153,3 +153,7 @@ bool NetworkManager::syncNTP(long gmt, String ntpServer) {
 	mRTC.set(tm);
 	return true;
 }
+
+void NetworkManager::powerOff() {
+	WiFi.mode(WIFI_OFF);
+}

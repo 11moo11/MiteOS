@@ -18,6 +18,8 @@ class NetworkManager {
         static bool syncNTP();
         static bool syncNTP(long gmt);
         static bool syncNTP(long gmt, String ntpServer);
+        
+        static void powerOff();
     private:
 		static void _configModeCallback(WiFiManager *myWiFiManager);
 };

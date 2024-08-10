@@ -51,9 +51,11 @@ Battery-Life
 |---------|----------|----------------------------------------------|
 | 200mAh  | ~10 days | ~7 days                                      |
 | 320mAh* | -        | -                                            |
+| 500mAh** | -        | -                                            |
 
 (*) Requires a case that can hold that battery  
-I use a modified version of https://github.com/yik3z/Watchy-CAD/tree/main/CAD/Cases/SlimV5 that allows for a 320mAh battery. But i haven't ordered one yet.
+(**) Requires a case that can hold that battery / Its ordered but not here yet. (also not quite sure if im getting scammed on the real capacity :D)
+I use a modified version of https://github.com/yik3z/Watchy-CAD/tree/main/CAD/Cases/SlimV5 that allows for a 320mAh battery.
 
 Screenshots
 -----

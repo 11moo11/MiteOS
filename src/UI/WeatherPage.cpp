@@ -75,7 +75,7 @@ void WeatherPage::drawMoonPhase() {
 	mDisplay.drawBitmap(90, 183, icon_up, 20, 20, GxEPD_WHITE);
 	
 	for(int i = -1; i <= 1; i++) {
-		int displayPhase = (phase * 7) + i;
+		int displayPhase = round(phase * 7) + i;
 		
 		const unsigned char* moonIcon;
 		switch(displayPhase) {

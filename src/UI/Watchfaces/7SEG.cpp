@@ -11,10 +11,11 @@
 #include "../../Managers/WeatherManager.h"
 #include "../../Images/weather_icons.h"
 
+#define USE_SEGMENTS false
 const uint8_t BATTERY_SEGMENT_COUNT = 5;
 const uint8_t BATTERY_SEGMENT_SPACING = 2;
 const uint8_t BATTERY_SEGMENTS_HEIGHT = 11;
-const uint8_t BATTERY_SEGMENTS_WIDTH = 27; // Total available width
+const uint8_t BATTERY_SEGMENTS_WIDTH = 26; // Total available width
 
 void SEG7::draw() {
 	drawTime();
@@ -87,20 +88,32 @@ void SEG7::drawBattery() {
 	mDisplay.drawBitmap(154, 73, battery, 37, 21, FOREGROUND_COLOR);
 	mDisplay.fillRect(159, 78, 28, BATTERY_SEGMENTS_HEIGHT, BACKGROUND_COLOR);//clear battery segments
 	
-	uint8_t bat_percentage = PowerManager::getBatteryPercentage();
+	float bat_percentage = PowerManager::getBatteryPercentage();
 	
-	if(bat_percentage > 98) {
-		mDisplay.fillRect(159, 78, BATTERY_SEGMENTS_WIDTH, BATTERY_SEGMENTS_HEIGHT, FOREGROUND_COLOR);
-	}else{
-		uint8_t segments = bat_percentage / (100 / BATTERY_SEGMENT_COUNT);
-		if(segments < BATTERY_SEGMENT_COUNT && bat_percentage % (100 / BATTERY_SEGMENT_COUNT) > (100 / BATTERY_SEGMENT_COUNT) / 2) segments++;
-		
-		uint8_t width = (BATTERY_SEGMENTS_WIDTH - (BATTERY_SEGMENT_SPACING * (BATTERY_SEGMENT_COUNT - 1))) / BATTERY_SEGMENT_COUNT;
-		
-		for(uint8_t i = 0; i < segments; i++){
-			mDisplay.fillRect(159 + (i * (width + BATTERY_SEGMENT_SPACING)), 78, width, BATTERY_SEGMENTS_HEIGHT, FOREGROUND_COLOR);
+	if(USE_SEGMENTS) {
+		if(bat_percentage > 98) {
+			mDisplay.fillRect(159, 78, BATTERY_SEGMENTS_WIDTH, BATTERY_SEGMENTS_HEIGHT, FOREGROUND_COLOR);
+		}else{
+			uint8_t segments = bat_percentage / (100 / BATTERY_SEGMENT_COUNT);
+			if(segments < BATTERY_SEGMENT_COUNT && ((int) bat_percentage) % (100 / BATTERY_SEGMENT_COUNT) > (100 / BATTERY_SEGMENT_COUNT) / 2) segments++;
+			
+			uint8_t width = (BATTERY_SEGMENTS_WIDTH - (BATTERY_SEGMENT_SPACING * (BATTERY_SEGMENT_COUNT - 1))) / BATTERY_SEGMENT_COUNT;
+			
+			for(uint8_t i = 0; i < segments; i++){
+				mDisplay.fillRect(159 + (i * (width + BATTERY_SEGMENT_SPACING)), 78, width, BATTERY_SEGMENTS_HEIGHT, FOREGROUND_COLOR);
+			}
 		}
+	}else{
+		mDisplay.fillRect(159, 78, BATTERY_SEGMENTS_WIDTH * (bat_percentage / 100), BATTERY_SEGMENTS_HEIGHT, FOREGROUND_COLOR);
+		mDisplay.drawRect(159, 78, BATTERY_SEGMENTS_WIDTH, BATTERY_SEGMENTS_HEIGHT, FOREGROUND_COLOR);
 	}
+	/*
+	for(float i = 0; i <= 100; i++) {
+		Serial.print((uint8_t) i);
+		Serial.print(" - ");
+		Serial.println((int16_t) (BATTERY_SEGMENTS_WIDTH * (i / 100)));
+	}
+	*/
 }
 
 void SEG7::drawWeather(){

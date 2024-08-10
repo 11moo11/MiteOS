@@ -2,15 +2,30 @@
 
 #include "../MiteOS.h"
 
+RTC_DATA_ATTR uint32_t stepOffset = 0;
+
+void ActivityManager::restoreSteps() {
+	uint8_t dow = MiteOS::currentTime.Wday;
+	stepOffset = Configuration::loadSteps(false)[dow - 1];
+	printDebug("Restored Steps: " + String(stepOffset));
+}
+
 void ActivityManager::resetSteps(bool save) {
 	if(save) {
-		Configuration::saveSteps();
+		saveSteps();
 	}
+	stepOffset = 0;
 	accSensor.resetStepCounter(); // TODO Save to config for tracking
 }
 
+void ActivityManager::saveSteps() {
+	Configuration::saveSteps();
+}
+
 uint32_t ActivityManager::getStepCount() {
-	return accSensor.getCounter();
+	uint32_t stepCount = accSensor.getCounter();
+	stepCount += stepOffset;
+	return stepCount;
 }
 
 float ActivityManager::getWalkedDistance() {

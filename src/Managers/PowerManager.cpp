@@ -6,6 +6,7 @@ void PowerManager::deepSleep() {
 	mDisplay.hibernate();
 	
 	BluetoothManager::powerOff();
+	NetworkManager::powerOff();
 	
 	mRTC.clearAlarm();        // resets the alarm flag in the RTC
 	
@@ -46,9 +47,10 @@ float PowerManager::getBatteryVoltage() {
 float PowerManager::getBatteryPercentage() {
 	long voltage = getBatteryVoltage() * 1000;
 	
-	uint8_t percentage = map(voltage, 3600, 4200, 0, 100);
+	double percentage = map(voltage, 3700, 4200, 0, 100);
 	
-	percentage = min((uint8_t) 100, percentage);
-	percentage = max((uint8_t)   0, percentage);
+	percentage = min(100.0, percentage);
+	percentage = max(  0.0, percentage);
+	
 	return percentage;
 }

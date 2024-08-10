@@ -25,6 +25,10 @@ void AlarmPage::drawPage() {
 			
 			AlertManager::showPermanentAlert(TXT_ALARM " " + String(i + 1), app_icon_alarm, item);
 			alarms[i].triggered = false;
+			
+			PageManager::showPage(GLOBAL_PAGE_WATCHFACE);
+			PageManager::refreshPage();
+			return;
 		}
 	}
 	

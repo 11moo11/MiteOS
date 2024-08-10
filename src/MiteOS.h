@@ -26,6 +26,7 @@
 #include "Managers/AlertManager.h"
 #include "Managers/ActivityManager.h"
 #include "Managers/BluetoothManager.h"
+#include "Managers/NetworkManager.h"
 #include "Managers/PowerManager.h"
 
 #define ADDITONAL_BUTTON_CHECK_DURATION 2000

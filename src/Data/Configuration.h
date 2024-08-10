@@ -34,7 +34,7 @@ class Configuration : Preferences {
         static Notification loadNotification(uint8_t index);
         
         static void saveSteps();
-        static std::array<uint32_t, 7> loadSteps();
+        static std::array<uint32_t, 7> loadSteps(bool useCurrentData = true);
         
         static int getSize();
         static int usedSpace();
