@@ -12,10 +12,10 @@ Features
 ✅ Step Tracking (Remembers the Last 7 days)  
 ✅ Check Phone Notifications*  
 ✅ Media-Playback Info*  
-✅ Home Assistant Integration (Lights / Switches) */**  
+✅ Home Assistant Integration (Lights / Switches) \*/*\*  
 ✅ Dark-/Lightmode (Static or Timed)  
 
-\(*) Requires the Phone Companion App (see Phone Companion for Restrictions)
+\(*) Requires the Phone Companion App (see Phone Companion for Restrictions)  
 \(**) Requires a WiFi Connection
 
 **Other Features**  
@@ -54,7 +54,8 @@ Battery-Life
 | 500mAh** | -        | -                                            |
 
 (*) Requires a case that can hold that battery  
-(**) Requires a case that can hold that battery / Its ordered but not here yet. (also not quite sure if im getting scammed on the real capacity :D)
+(**) Requires a case that can hold that battery / Its ordered but not here yet. (also not quite sure if im getting scammed on the real capacity :D)  
+  
 I use a modified version of https://github.com/yik3z/Watchy-CAD/tree/main/CAD/Cases/SlimV5 that allows for a 320mAh battery.
 
 Screenshots
