@@ -153,9 +153,9 @@ void Page::print(const char *buf, uint16_t fgc, uint16_t bgc) {
 			if(w > 0) { // If the character is available in the font, use it
 				mDisplay.print(replaceChar);
 			} else { // Otherwise fallback to the default font
-				mDisplay.getTextBounds("O", (int16_t) 50, (int16_t) 50, &x1, &y1, &w, &h); // Get the current font's size and resize the default one to match somewhat, using O as a big character to better match the size
+				mDisplay.getTextBounds("O", (int16_t) 50, (int16_t) 200, &x1, &y1, &w, &h); // Get the current font's size and resize the default one to match somewhat, using O as a big character to better match the size
 				
-				uint8_t size_x = h / 7, size_y = h / 7;
+				uint8_t size_x = round(h / 7.0), size_y = round(h / 7.0);
 				uint8_t x = mDisplay.getCursorX();
 				uint8_t y = mDisplay.getCursorY() - size_y * 8 + 3;
 				
@@ -169,6 +169,7 @@ void Page::print(const char *buf, uint16_t fgc, uint16_t bgc) {
 							mDisplay.writeFillRect(x + i * size_x, y + j * size_y, size_x, size_y, (line & 1 ? fgc : bgc));
 					}
 				}
+				
 				if (size_x == 1 && size_y == 1)
 					mDisplay.writeFastVLine(x + 5, y, 8, bgc);
 				else

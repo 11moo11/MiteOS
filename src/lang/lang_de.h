@@ -81,6 +81,8 @@
 #define TXT_ERR "Err"
 
 // Month and Day Stuff
+#define TXT_DAYS "Tage"
+
 #define TXT_SUNDAY "Sonntag"
 #define TXT_SUNDAY_SHORT "Son"
 #define TXT_MONDAY "Montag"

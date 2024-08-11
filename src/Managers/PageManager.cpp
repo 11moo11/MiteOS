@@ -38,7 +38,7 @@ PROGMEM Page* pages[] = {
 	&bluetoothPage,
 	&notificationPage,
 	&playbackPage,
-	&hassPage
+	&hassPage,
 };
 
 

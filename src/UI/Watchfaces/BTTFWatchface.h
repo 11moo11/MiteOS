@@ -2,8 +2,9 @@
 #define WATCHY_BTTF_H
 
 #include "../../Images/bttf.h"
+#include "Watchface.h"
 
-class BTTF {
+class BTTFWatchface : public Watchface {
 
     public:
         void draw();

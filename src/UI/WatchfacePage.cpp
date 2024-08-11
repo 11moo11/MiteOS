@@ -1,12 +1,27 @@
 #include "WatchfacePage.h"
 #include "../MiteOS.h"
 
-#include "Watchfaces/7SEG.h"
-#include "Watchfaces/BTTF.h"
+#include "Watchfaces/Watchface.h"
+#include "Watchfaces/SEG7Watchface.h"
+#include "Watchfaces/BTTFWatchface.h"
+#include "Watchfaces/PokemonWatchface.h"
+#include "Watchfaces/MachPaintWatchface.h"
 
 RTC_DATA_ATTR uint8_t watchFaceId = 0;
 
-#define WATCHFACE_COUNT 2
+PROGMEM SEG7Watchface seg7Watchface;
+PROGMEM BTTFWatchface bttfWatchface;
+PROGMEM PokemonWatchface pokemonWatchface;
+PROGMEM MacPaintWatchface macPaintWatchface;
+PROGMEM Watchface* watchfaces[] = {
+	&seg7Watchface,
+	&bttfWatchface,
+	&pokemonWatchface,
+	&macPaintWatchface,
+};
+
+
+#define WATCHFACE_COUNT 4
 
 void WatchfacePage::drawPage() {
 	printDebug("Drawing Watchface");
@@ -14,11 +29,7 @@ void WatchfacePage::drawPage() {
 	mDisplay.fillScreen(BACKGROUND_COLOR);
 	mDisplay.setTextColor(FOREGROUND_COLOR);
 	
-	if(watchFaceId == 0) {
-		SEG7().draw();
-	}else if(watchFaceId == 1) {
-		BTTF().draw();
-	}
+	watchfaces[watchFaceId]->draw();
 }
 
 bool WatchfacePage::onButtonPressed(uint8_t buttonIndex) {

@@ -1,7 +1,9 @@
 #ifndef WATCH_7_SEG_H
 #define WATCH_7_SEG_H
 
-class SEG7 {
+#include "Watchface.h"
+
+class SEG7Watchface : public Watchface {
     public:
         void draw();
         void drawTime();

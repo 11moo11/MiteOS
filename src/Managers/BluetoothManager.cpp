@@ -216,7 +216,7 @@ void BluetoothManager::parseCommand(String value) {
 		*/
 	} else {
 		//printDebug("Unknown command");
-		//printDebug(value);
+		printDebug(value);
 		
 		//Serial.println(value.length());
 	}

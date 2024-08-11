@@ -1,4 +1,4 @@
-#include "BTTF.h"
+#include "BTTFWatchface.h"
 #include "../../MiteOS.h"
 
 #include "../../Fonts/DSEG7_Classic_Bold_25.h"
@@ -13,7 +13,7 @@
 
 #define YEAR_OFFSET 10
 
-void BTTF::draw(){
+void BTTFWatchface::draw(){
 	mDisplay.drawBitmap(0, 0, bttf, 200, 200, FOREGROUND_COLOR);
 	drawTime();
 	drawDate();
@@ -22,7 +22,7 @@ void BTTF::draw(){
 }
 
 
-void BTTF::printCentered(uint16_t x, uint16_t y, String text){
+void BTTFWatchface::printCentered(uint16_t x, uint16_t y, String text){
 	int16_t  x1, y1;
 	uint16_t w, h;
 
@@ -32,7 +32,7 @@ void BTTF::printCentered(uint16_t x, uint16_t y, String text){
 }
 
 
-void BTTF::drawTime(){
+void BTTFWatchface::drawTime(){
 	mDisplay.setFont(&FONT_7_SEG_LARGE);
 	mDisplay.setTextColor(BACKGROUND_COLOR);
 
@@ -46,7 +46,7 @@ void BTTF::drawTime(){
 }
 
 
-void BTTF::drawDate(){
+void BTTFWatchface::drawDate(){
 	mDisplay.setFont(&FONT_7_SEG_MEDIUM);
 	mDisplay.setTextColor(BACKGROUND_COLOR);
 
@@ -67,7 +67,7 @@ void BTTF::drawDate(){
 }
 
 
-void BTTF::drawBattery(){
+void BTTFWatchface::drawBattery(){
 	mDisplay.setFont(&FONT_7_SEG_MEDIUM);
 	mDisplay.setTextColor(BACKGROUND_COLOR);
 
@@ -80,7 +80,7 @@ void BTTF::drawBattery(){
 }
 
 
-void BTTF::drawSteps(){
+void BTTFWatchface::drawSteps(){
 	mDisplay.setFont(&FONT_7_SEG_MEDIUM);
 	mDisplay.setTextColor(BACKGROUND_COLOR);
 

@@ -1,4 +1,4 @@
-#include "7SEG.h"
+#include "SEG7Watchface.h"
 
 #include "../../MiteOS.h"
 #include "../../Fonts/DSEG7_Classic_Regular_15.h"
@@ -17,7 +17,7 @@ const uint8_t BATTERY_SEGMENT_SPACING = 2;
 const uint8_t BATTERY_SEGMENTS_HEIGHT = 11;
 const uint8_t BATTERY_SEGMENTS_WIDTH = 26; // Total available width
 
-void SEG7::draw() {
+void SEG7Watchface::draw() {
 	drawTime();
 	drawDate();
 	drawSteps();
@@ -30,7 +30,7 @@ void SEG7::draw() {
 	//}
 }
 
-void SEG7::drawTime() {
+void SEG7Watchface::drawTime() {
 	mDisplay.setFont(&DSEG7_Classic_Bold_53);
 	mDisplay.setCursor(5, 53+5);
 	int mDisplayHour;
@@ -50,7 +50,7 @@ void SEG7::drawTime() {
 	mDisplay.println(MiteOS::currentTime.Minute);
 }
 
-void SEG7::drawDate() {
+void SEG7Watchface::drawDate() {
 	mDisplay.setFont(&Seven_Segment10pt7b);
 	
 	int16_t  x1, y1;
@@ -78,13 +78,13 @@ void SEG7::drawDate() {
 	mDisplay.setCursor(5, 150);
 	mDisplay.println(tmYearToCalendar(MiteOS::currentTime.Year));// offset from 1970, since year is stored in uint8_t
 }
-void SEG7::drawSteps() {
+void SEG7Watchface::drawSteps() {
 	uint32_t stepCount = ActivityManager::getStepCount();
 	mDisplay.drawBitmap(10, 165, steps, 19, 23, FOREGROUND_COLOR);
 	mDisplay.setCursor(35, 190);
 	mDisplay.println(stepCount);
 }
-void SEG7::drawBattery() {
+void SEG7Watchface::drawBattery() {
 	mDisplay.drawBitmap(154, 73, battery, 37, 21, FOREGROUND_COLOR);
 	mDisplay.fillRect(159, 78, 28, BATTERY_SEGMENTS_HEIGHT, BACKGROUND_COLOR);//clear battery segments
 	
@@ -116,7 +116,7 @@ void SEG7::drawBattery() {
 	*/
 }
 
-void SEG7::drawWeather(){
+void SEG7Watchface::drawWeather(){
 	WeatherData currentWeather = WeatherManager::getWeatherData();
 	
 	int8_t temperature = currentWeather.temperature;

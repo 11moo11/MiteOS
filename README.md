@@ -47,10 +47,10 @@ App can be found here: **Link coming soon**
 Battery-Life
 -----
 
-| Battery | Offline  | Wifi + Phone Connection (15 minute interval) |
-|---------|----------|----------------------------------------------|
-| 200mAh  | ~10 days | ~7 days                                      |
-| 320mAh* | -        | -                                            |
+| Battery  | Offline  | Wifi + Phone Connection (15 minute interval) |
+|----------|----------|----------------------------------------------|
+| 200mAh   | ~10 days | ~7 days                                      |
+| 320mAh*  | -        | -                                            |
 | 500mAh** | -        | -                                            |
 
 (*) Requires a case that can hold that battery  

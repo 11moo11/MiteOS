@@ -127,6 +127,33 @@ void WeatherPage::drawMoonPhase() {
 			
 			mDisplay.setFont(&Seven_Segment10pt7b);
 			mDisplay.print("%");
+			
+			bool wasBelowHalf = false;
+			if(phase < 0.5) {
+				wasBelowHalf = true;
+			}
+			for(uint8_t d = 0; d < 30; d++) {
+				float p = WeatherManager::getMoonPhase(MiteOS::currentTime.Year, MiteOS::currentTime.Month, MiteOS::currentTime.Day + d, 23);
+				if(p >= 0.5 && wasBelowHalf) {
+					mDisplay.setCursor(130, 138);
+					mDisplay.print(String(d) + " " + TXT_DAYS);
+					
+  					time_t base = makeTime(MiteOS::currentTime);
+					struct tm* tm = localtime(&base);
+					tm->tm_mday += d;
+					time_t next = mktime(tm);
+					
+					mDisplay.setCursor(155, 195);
+					mDisplay.print(day(next));
+					mDisplay.print(".");
+					mDisplay.print(month(next));
+					mDisplay.print(".");
+					
+					break;
+				}else if(p < 0.5){
+					wasBelowHalf = true;
+				}
+			}
 		}
 	}
 }
