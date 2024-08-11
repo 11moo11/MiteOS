@@ -140,6 +140,7 @@ void Page::print(const char *buf, uint16_t fgc, uint16_t bgc) {
 			case 'ö': replaceChar = 0x94; break;
 			case 'Ü': replaceChar = 0x9A; break;
 			case 'ü': replaceChar = 0x81; break;
+			case 'ß': replaceChar = 0xE1; break;
 			default: break;
 		}
 		
