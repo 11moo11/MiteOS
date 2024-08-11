@@ -6,6 +6,9 @@
 #include "Watchfaces/BTTFWatchface.h"
 #include "Watchfaces/PokemonWatchface.h"
 #include "Watchfaces/MachPaintWatchface.h"
+#include "Watchfaces/AnalogWatchface.h"
+#include "Watchfaces/HobbitTimeWatchface.h"
+#include "Watchfaces/CalendarWatchface.h"
 
 RTC_DATA_ATTR uint8_t watchFaceId = 0;
 
@@ -13,15 +16,20 @@ PROGMEM SEG7Watchface seg7Watchface;
 PROGMEM BTTFWatchface bttfWatchface;
 PROGMEM PokemonWatchface pokemonWatchface;
 PROGMEM MacPaintWatchface macPaintWatchface;
+PROGMEM AnalogWatchface analogWatchface;
+PROGMEM HobbitTimeWatchface hobbitTimeWatchface;
+PROGMEM CalendarWatchface calendarWatchface;
 PROGMEM Watchface* watchfaces[] = {
 	&seg7Watchface,
 	&bttfWatchface,
 	&pokemonWatchface,
 	&macPaintWatchface,
+	&analogWatchface,
+	&hobbitTimeWatchface,
+	&calendarWatchface,
 };
 
-
-#define WATCHFACE_COUNT 4
+#define WATCHFACE_COUNT 7
 
 void WatchfacePage::drawPage() {
 	printDebug("Drawing Watchface");

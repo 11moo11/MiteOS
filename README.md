@@ -5,7 +5,7 @@ A Watchy OS
 Features
 -----
 
-✅ Multiple Watchfaces (easy to add your own)  
+✅ Multiple Watchfaces (relatively easy to add your own)  
 ✅ Timer  
 ✅ Alarm (up to 3 at a time)  
 ✅ Weather Information (Temperature / Moon Phase) **  

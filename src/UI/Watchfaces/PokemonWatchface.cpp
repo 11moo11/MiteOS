@@ -45,7 +45,7 @@ void PokemonWatchface::draw() {
     uint32_t bat_level = PowerManager::getBatteryPercentage();
     
     mDisplay.setFont(&FreeMonoBold7pt7b);
-    mDisplay.setTextColor(GxEPD_BLACK);
+    mDisplay.setTextColor(FOREGROUND_COLOR);
 
     int pkm1_id = int(randomHour(0) * 151);
     bool pkm1_shiny = int(randomHour(8231) * 4096) == 0;
@@ -53,8 +53,8 @@ void PokemonWatchface::draw() {
     bool pkm2_shiny = int(randomDay(3872) * 4096) == 0;
 
     // PKM
-    mDisplay.drawBitmap(PKM2_X, PKM2_Y, pokemon_back[pkm2_id], SPRITE_W, SPRITE_W, GxEPD_BLACK);
-    mDisplay.drawBitmap(PKM2_UI_X, PKM2_UI_Y, pokemon_2, PKM2_UI_W, PKM2_UI_H, GxEPD_BLACK);
+    mDisplay.drawBitmap(PKM2_X, PKM2_Y, pokemon_back[pkm2_id], SPRITE_W, SPRITE_W, FOREGROUND_COLOR);
+    mDisplay.drawBitmap(PKM2_UI_X, PKM2_UI_Y, pokemon_2, PKM2_UI_W, PKM2_UI_H, FOREGROUND_COLOR);
 
     mDisplay.setCursor(PKM2_UI_X + 10, PKM2_UI_Y - 11);
     mDisplay.print(pokemon_names[pkm2_id]);
@@ -69,26 +69,25 @@ void PokemonWatchface::draw() {
 
     // TODO change "color" of bar
 
-    for (int8_t i = 0; i < int(60 - (MiteOS::currentTime.Hour * 60 + MiteOS::currentTime.Minute) / 24); i++)
-    {
-        mDisplay.drawBitmap(PKM2_UI_X + 30 + i, PKM2_UI_Y + 3, bar[i % 2], 8, 4, GxEPD_BLACK);
+    for (int8_t i = 0; i < int(60 - (MiteOS::currentTime.Hour * 60 + MiteOS::currentTime.Minute) / 24); i++) {
+        mDisplay.drawBitmap(PKM2_UI_X + 30 + i, PKM2_UI_Y + 3, bar[i % 2], 8, 4, FOREGROUND_COLOR);
     }
 
     // DATE = PV
     mDisplay.setCursor(PKM2_UI_X + 40, PKM2_UI_Y + 19);
-    if(MiteOS::currentTime.Day < 10){
+    if(MiteOS::currentTime.Day < 10) {
         mDisplay.print(' ');
     }
     mDisplay.print(MiteOS::currentTime.Day);
     mDisplay.print("/ ");
-    if(MiteOS::currentTime.Month < 10){
+    if(MiteOS::currentTime.Month < 10) {
         mDisplay.print(' ');
     }
     mDisplay.print(MiteOS::currentTime.Month);
 
     // ENEMY
-    mDisplay.drawBitmap(PKM1_X, PKM1_Y, pokemon_front[pkm1_id] , SPRITE_W, SPRITE_W, GxEPD_BLACK);
-    mDisplay.drawBitmap(PKM1_UI_X, PKM1_UI_Y, pokemon_1, PKM1_UI_W, PKM1_UI_H, GxEPD_BLACK);
+    mDisplay.drawBitmap(PKM1_X, PKM1_Y, pokemon_front[pkm1_id] , SPRITE_W, SPRITE_W, FOREGROUND_COLOR);
+    mDisplay.drawBitmap(PKM1_UI_X, PKM1_UI_Y, pokemon_1, PKM1_UI_W, PKM1_UI_H, FOREGROUND_COLOR);
 
     mDisplay.setCursor(PKM1_UI_X + 6, PKM1_UI_Y - 11);
     mDisplay.print(pokemon_names[pkm1_id]);
@@ -101,21 +100,21 @@ void PokemonWatchface::draw() {
     mDisplay.print(stepCount);
 
     for (int8_t i = 0; i < (60 - MiteOS::currentTime.Minute); i++) {
-        mDisplay.drawBitmap(PKM1_UI_X + 26 + i, PKM1_UI_Y + 3, bar[i % 2], 8, 4, GxEPD_BLACK);
+        mDisplay.drawBitmap(PKM1_UI_X + 26 + i, PKM1_UI_Y + 3, bar[i % 2], 8, 4, FOREGROUND_COLOR);
     }
 
     // BOTTOM
-    mDisplay.drawBitmap(PKM3_UI_X, PKM3_UI_Y, pokemon_3, PKM3_UI_W, PKM3_UI_H, GxEPD_BLACK);
+    mDisplay.drawBitmap(PKM3_UI_X, PKM3_UI_Y, pokemon_3, PKM3_UI_W, PKM3_UI_H, FOREGROUND_COLOR);
 
     // HOUR
     mDisplay.setFont(&FreeMonoBold10pt7b);
     mDisplay.setCursor(PKM3_UI_X + 13, PKM3_UI_Y + 34);
-    if(MiteOS::currentTime.Hour < 10){
+    if(MiteOS::currentTime.Hour < 10) {
         mDisplay.print('0');
     }
     mDisplay.print(MiteOS::currentTime.Hour);
     mDisplay.print(':');
-    if(MiteOS::currentTime.Minute < 10){
+    if(MiteOS::currentTime.Minute < 10) {
         mDisplay.print('0');
     }
     mDisplay.print(MiteOS::currentTime.Minute);
@@ -125,9 +124,9 @@ void PokemonWatchface::draw() {
     int posX = pos % 2;
     int posY = int(pos / 2);
     #ifdef FR
-    mDisplay.drawBitmap(PKM3_UI_X + 85 + posX * 59, PKM3_UI_Y + 16 + posY * 20, cursor, 8, 9, GxEPD_BLACK);
+    mDisplay.drawBitmap(PKM3_UI_X + 85 + posX * 59, PKM3_UI_Y + 16 + posY * 20, cursor, 8, 9, FOREGROUND_COLOR);
     #else
-    mDisplay.drawBitmap(PKM3_UI_X + 89 + posX * 61, PKM3_UI_Y + 16 + posY * 20, cursor, 8, 9, GxEPD_BLACK);
+    mDisplay.drawBitmap(PKM3_UI_X + 89 + posX * 61, PKM3_UI_Y + 16 + posY * 20, cursor, 8, 9, FOREGROUND_COLOR);
     #endif
 }
 

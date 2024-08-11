@@ -7,8 +7,8 @@
 #include "MacPaint/macpaint.h"
 
 class MacPaintWatchface : public Watchface {
-    public:
-        void draw();
+	public:
+		void draw();
 };
 
 #endif
