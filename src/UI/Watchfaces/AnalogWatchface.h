@@ -41,11 +41,10 @@ class AnalogWatchface : public Watchface {
 			//weekday
 			String wDay = dayShortStr(MiteOS::currentTime.Wday);
 			wDay = wDay.substring(0,wDay.length() - 1);
-			mDisplay.fillRect(86, 140, 29, 22, FOREGROUND_COLOR);
+			mDisplay.fillRect(79, 140, 42, 22, FOREGROUND_COLOR);
 			mDisplay.setFont(&FreeSerifBold12pt7b);
 			mDisplay.setTextColor(BACKGROUND_COLOR);
-			mDisplay.setCursor(87, 158);
-			mDisplay.print(wDay);
+			Page::drawCentreString(wDay, 100, 158);
 			
 			// draw battery
 			mDisplay.drawCircleHelper(45, 100, 20, 2, FOREGROUND_COLOR);
