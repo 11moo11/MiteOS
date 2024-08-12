@@ -60,4 +60,7 @@ I use a modified version of https://github.com/yik3z/Watchy-CAD/tree/main/CAD/Ca
 
 Screenshots
 -----
-Coming soon
+<img src="img/default_watchface.jpg"  width="120" height="120">
+<img src="img/pokemon_watchface.jpg"  width="120" height="120">
+<img src="img/step_tracker.jpg"  width="120" height="120">
+<img src="img/weather.jpg"  width="120" height="120">
