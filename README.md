@@ -15,7 +15,7 @@ Features
 ✅ Home Assistant Integration (Lights / Switches) \*/*\*  
 ✅ Dark-/Lightmode (Static or Timed)  
 
-\(*) Requires the Phone Companion App (see Phone Companion for Restrictions)  
+\(*) Requires the Phone Companion App (see [Phone Companion](#phone-companion) for Restrictions)  
 \(**) Requires a WiFi Connection
 
 **Other Features**  
