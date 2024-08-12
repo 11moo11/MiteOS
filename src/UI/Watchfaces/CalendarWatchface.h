@@ -38,7 +38,7 @@ class CalendarWatchface : public Watchface {
 				
 				if(time->tm_mon != elem.Month - 1) break; // Check if the day is still in the current month, otherwise abort
 				
-				uint8_t x = 3 + (200 / 7) * time->tm_wday + (200 / 14);
+				uint8_t x = 1 + (200 / 7) * time->tm_wday + (200 / 14);
 				if(y_offset > 200) {
 					// If the day is off the calendar, we remove the last row elements that are affected and put both dates in the same field
 					mDisplay.setFont(&Teko_Regular8pt7b);
