@@ -3,8 +3,6 @@
 #include "../MiteOS.h"
 
 void PowerManager::deepSleep() {
-	mDisplay.screenshot();
-	
 	mDisplay.hibernate();
 	
 	BluetoothManager::powerOff();

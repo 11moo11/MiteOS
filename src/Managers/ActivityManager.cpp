@@ -42,6 +42,8 @@ String ActivityManager::getWalkedDistanceStr() {
 	return String(getWalkedDistance(), 2) + "km";
 }
 
+
+
 float ActivityManager::getTotalWalkedDistance() {
 	uint32_t steps = getTotalStepCount();
 	float dist = steps * 1.0 / STEPS_PER_KM;
@@ -50,7 +52,7 @@ float ActivityManager::getTotalWalkedDistance() {
 	
 	return dist;
 }
-String ActivityManager::getTotalDistanceStr() {
+String ActivityManager::getTotalWalkedDistanceStr() {
 	return String(getTotalWalkedDistance(), 2) + "km";
 }
 uint32_t ActivityManager::getTotalStepCount() {

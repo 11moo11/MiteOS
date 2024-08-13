@@ -15,7 +15,7 @@ class ActivityManager {
 		
 		static uint32_t getTotalStepCount();
 		static float getTotalWalkedDistance();
-		static String ActivityManager::getTotalDistanceStr();
+		static String getTotalWalkedDistanceStr();
 };
 
 #endif

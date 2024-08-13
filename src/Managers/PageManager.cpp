@@ -97,6 +97,7 @@ void PageManager::refreshPage(bool partialRefresh) {
 	}
 	
 	mDisplay.display(partialRefresh);
+	mDisplay.screenshot();
 }
 
 void PageManager::showPage(uint8_t pageIndex) {

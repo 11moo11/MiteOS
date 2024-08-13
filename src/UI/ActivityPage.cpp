@@ -27,10 +27,10 @@ void ActivityPage::drawPage() {
 		drawStepList();
 	}else if(pageData.subPageIndex == PAGE_ACTIVITY_TOTAL) {
 		mDisplay.setFont(&Seven_Seg18pt7b);
-		drawCentreString(String("Total:"), 100, 60, false);
-		drawCentreString(String(ActivityManager::getTotalStepCount()), 100, 100, false);
-		drawCentreString(ActivityManager::getTotalWalkedDistanceStr(), 100, 130, false);
-		mDisplay.drawBitmap(90, 50, steps, 19, 23, FOREGROUND_COLOR);
+		drawCentreString(String("Total:"), 100, 50, false);
+		drawCentreString(String(ActivityManager::getTotalStepCount()), 100, 120, false);
+		drawCentreString(ActivityManager::getTotalWalkedDistanceStr(), 100, 150, false);
+		mDisplay.drawBitmap(90, 70, steps, 19, 23, FOREGROUND_COLOR);
 	}
 	drawButtonIcon(BTN_CONFIRM, icon_right);
 }
