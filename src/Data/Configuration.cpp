@@ -140,6 +140,16 @@ std::array<uint32_t, 7> Configuration::loadSteps(bool useCurrentData) {
 	
 	return steps;
 }
+void Configuration::saveTotalSteps() {
+	if(!initialized) init();
+	
+	preferences.putUInt("totalsteps", ActivityManager::getTotalStepCount());
+}
+uint32_t Configuration::loadTotalSteps() {
+	if(!initialized) init();
+	
+	return preferences.getUInt("totalsteps");
+}
 
 
 void Configuration::saveNotification(uint8_t index, Notification n) {

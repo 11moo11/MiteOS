@@ -2,7 +2,7 @@
 
 WatchyRTC MiteOS::RTC;
 WatchyDisplay MiteOS::watchyDisplay {};
-GxEPD2_BW<WatchyDisplay, WatchyDisplay::HEIGHT> MiteOS::display(watchyDisplay);
+MiteDisplay<WatchyDisplay, WatchyDisplay::HEIGHT> MiteOS::display(watchyDisplay);
 MiteOS *MiteOS::instance;
 
 RTC_DATA_ATTR BMA423 accSensor;

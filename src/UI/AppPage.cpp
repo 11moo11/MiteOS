@@ -31,7 +31,7 @@ static const String pageTitles[] = {
 	TXT_MEDIA,
 	TXT_NOTIFICATION,
 	TXT_HASS,
-	""
+	TXT_WOOLY,
 };
 static const uint8_t pageTarget[] = {
 	GLOBAL_PAGE_SETTINGS,
@@ -42,7 +42,7 @@ static const uint8_t pageTarget[] = {
 	GLOBAL_PAGE_PLAYBACK,
 	GLOBAL_PAGE_NOTIFICATIONS,
 	GLOBAL_PAGE_HASS,
-	255
+	GLOBAL_PAGE_WOOLY,
 };
 
 void AppPage::drawPage() {

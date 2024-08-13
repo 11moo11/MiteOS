@@ -29,6 +29,8 @@
 #include "Managers/NetworkManager.h"
 #include "Managers/PowerManager.h"
 
+#include "Display/MiteDisplay.h"
+
 #define ADDITONAL_BUTTON_CHECK_DURATION 2000
 #define BUTTON_PRESS_REPEAT_DELAY 150
 
@@ -73,7 +75,7 @@ class MiteOS {
 	public:
 		MiteSettings settings;
 		static WatchyDisplay watchyDisplay;
-		static GxEPD2_BW<WatchyDisplay, WatchyDisplay::HEIGHT> display;
+		static MiteDisplay<WatchyDisplay, WatchyDisplay::HEIGHT> display;
 		static WatchyRTC RTC;
 		static tmElements_t currentTime;
 		static MiteOS *instance;

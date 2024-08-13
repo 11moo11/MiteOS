@@ -13,6 +13,7 @@
 #include "../UI/NotificationPage.h"
 #include "../UI/PlaybackPage.h"
 #include "../UI/HassPage.h"
+#include "../UI/WoolyPage.h"
 
 PROGMEM WatchfacePage watchfacePage;
 PROGMEM TimerPage timerPage;
@@ -26,6 +27,7 @@ PROGMEM BluetoothPage bluetoothPage;
 PROGMEM NotificationPage notificationPage;
 PROGMEM PlaybackPage playbackPage;
 PROGMEM HassPage hassPage;
+PROGMEM WoolyPage woolyPage;
 PROGMEM Page* pages[] = {
 	&watchfacePage,
 	&timerPage,
@@ -39,6 +41,7 @@ PROGMEM Page* pages[] = {
 	&notificationPage,
 	&playbackPage,
 	&hassPage,
+	&woolyPage,
 };
 
 

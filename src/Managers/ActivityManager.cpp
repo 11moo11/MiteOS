@@ -13,9 +13,10 @@ void ActivityManager::restoreSteps() {
 void ActivityManager::resetSteps(bool save) {
 	if(save) {
 		saveSteps();
+		Configuration::saveTotalSteps();
 	}
 	stepOffset = 0;
-	accSensor.resetStepCounter(); // TODO Save to config for tracking
+	accSensor.resetStepCounter();
 }
 
 void ActivityManager::saveSteps() {
@@ -38,5 +39,20 @@ float ActivityManager::getWalkedDistance() {
 }
 
 String ActivityManager::getWalkedDistanceStr() {
-	return String(getWalkedDistance(), 2) + "km";;
+	return String(getWalkedDistance(), 2) + "km";
+}
+
+float ActivityManager::getTotalWalkedDistance() {
+	uint32_t steps = getTotalStepCount();
+	float dist = steps * 1.0 / STEPS_PER_KM;
+	
+	// TODO km -> mile
+	
+	return dist;
+}
+String ActivityManager::getTotalDistanceStr() {
+	return String(getTotalWalkedDistance(), 2) + "km";
+}
+uint32_t ActivityManager::getTotalStepCount() {
+	return getStepCount() + Configuration::loadTotalSteps();
 }

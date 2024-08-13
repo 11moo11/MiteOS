@@ -8,6 +8,7 @@
 
 #define PAGE_ACTIVITY_OVERVIEW 0
 #define PAGE_ACTIVITY_DAYS 1
+#define PAGE_ACTIVITY_TOTAL 2
 
 #define TARGET_STEP_COUNT 8000
 
@@ -24,6 +25,12 @@ void ActivityPage::drawPage() {
 		drawText();
 	}else if(pageData.subPageIndex == PAGE_ACTIVITY_DAYS) {
 		drawStepList();
+	}else if(pageData.subPageIndex == PAGE_ACTIVITY_TOTAL) {
+		mDisplay.setFont(&Seven_Seg18pt7b);
+		drawCentreString(String("Total:"), 100, 60, false);
+		drawCentreString(String(ActivityManager::getTotalStepCount()), 100, 100, false);
+		drawCentreString(ActivityManager::getTotalWalkedDistanceStr(), 100, 130, false);
+		mDisplay.drawBitmap(90, 50, steps, 19, 23, FOREGROUND_COLOR);
 	}
 	drawButtonIcon(BTN_CONFIRM, icon_right);
 }
@@ -32,7 +39,7 @@ void ActivityPage::drawPage() {
 bool ActivityPage::onButtonPressed(uint8_t buttonIndex) {
 	if(buttonIndex == BTN_CONFIRM) {
 		pageData.subPageIndex++;
-		if(pageData.subPageIndex > 1) pageData.subPageIndex = 0;
+		if(pageData.subPageIndex > 2) pageData.subPageIndex = 0;
 		return true;
 	}
 	

@@ -15,8 +15,9 @@
 #define GLOBAL_PAGE_NOTIFICATIONS 9
 #define GLOBAL_PAGE_PLAYBACK 10
 #define GLOBAL_PAGE_HASS 11
+#define GLOBAL_PAGE_WOOLY 12
 
-#define PAGE_COUNT 12
+#define PAGE_COUNT 13
 
 class PageManager {
 	public:

@@ -8,9 +8,14 @@ class ActivityManager {
 		static void restoreSteps();
 		static void resetSteps(bool save = true);
 		static void saveSteps();
+		
 		static uint32_t getStepCount();
 		static float getWalkedDistance();
 		static String getWalkedDistanceStr();
+		
+		static uint32_t getTotalStepCount();
+		static float getTotalWalkedDistance();
+		static String ActivityManager::getTotalDistanceStr();
 };
 
 #endif

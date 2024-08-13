@@ -35,6 +35,8 @@ class Configuration : Preferences {
         
         static void saveSteps();
         static std::array<uint32_t, 7> loadSteps(bool useCurrentData = true);
+        static void saveTotalSteps();
+        static uint32_t loadTotalSteps();
         
         static int getSize();
         static int usedSpace();
