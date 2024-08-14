@@ -17,9 +17,10 @@
 #define BTN_DOUBLE_TAP 6
 
 typedef struct PageData {
-  uint8_t pageIndex;
-  uint8_t menuIndex;
+  uint8_t pageIndex; // Is used by the os
+  uint8_t menuIndex; // Is used by the os
   
+  // All these can be used by custom implementations, they are just here to have a central spot for the page that gets saved
   uint8_t subPageIndex;
   
   String string1;
@@ -27,7 +28,13 @@ typedef struct PageData {
 
   uint8_t number1;
   uint8_t number2;
-  uint32_t number3;
+  uint8_t number3;
+  uint8_t number4;
+  uint8_t number5;
+  
+  uint32_t largenumber1;
+  uint32_t largenumber2;
+  uint32_t largenumber3;
 } PageData;
 
 

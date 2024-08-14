@@ -13,7 +13,7 @@
 
 void TimerPage::initPage() {
 	pageData.subPageIndex = PAGE_START_MENU;
-	pageData.number3 = 5;
+	pageData.largenumber1 = 5;
 }
 
 void TimerPage::drawPage() {
@@ -32,7 +32,7 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 		
 		if(buttonIndex == BTN_CONFIRM) {
 			int data[] = { 10, 15, 20, 30, 45, 60, 120 };
-			pageData.number3 = data[pageData.menuIndex];
+			pageData.largenumber1 = data[pageData.menuIndex];
 			startTimer();
 			return true;
 		}
@@ -46,7 +46,7 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 	
 	if(timer.enableAlarm) {
 		if(buttonIndex == BTN_UP) {
-			pageData.number3 = (timer.hour - MiteOS::currentTime.Hour) * 60 + (timer.minute - MiteOS::currentTime.Minute);
+			pageData.largenumber1 = (timer.hour - MiteOS::currentTime.Hour) * 60 + (timer.minute - MiteOS::currentTime.Minute);
 			timer.enableAlarm = false;
 			pageData.subPageIndex = PAGE_START_MENU;
 			return true;
@@ -54,11 +54,11 @@ bool TimerPage::onButtonPressed(uint8_t buttonIndex) {
 	}else{
 		if(pageData.subPageIndex <= PAGE_MINUTES) {
 			if(buttonIndex == BTN_UP) {
-				pageData.number3 += (pageData.subPageIndex == PAGE_5MINUTES ? 5 : 1);
+				pageData.largenumber1 += (pageData.subPageIndex == PAGE_5MINUTES ? 5 : 1);
 				return true;
 			}else if(buttonIndex == BTN_DOWN) {
-				pageData.number3 -= (pageData.subPageIndex == PAGE_5MINUTES ? 5 : 1);
-				if(pageData.number3 < 1) pageData.number3 = 1;
+				pageData.largenumber1 -= (pageData.subPageIndex == PAGE_5MINUTES ? 5 : 1);
+				if(pageData.largenumber1 < 1) pageData.largenumber1 = 1;
 				return true;
 			}else if(buttonIndex == BTN_MENU) {
 				pageData.subPageIndex += 1;
@@ -89,13 +89,13 @@ void TimerPage::drawTime() {
 		
 		timer.triggered = false;
 		timer.enableAlarm = false;
-		pageData.number3 = 5;
+		pageData.largenumber1 = 5;
 		pageData.subPageIndex = PAGE_START_MENU;
 	}
 	
 	mDisplay.setFont(&DSEG7_Classic_Regular_39);
 	
-	uint32_t minutes = pageData.number3;
+	uint32_t minutes = pageData.largenumber1;
 	if(timer.enableAlarm) {
 		minutes = (timer.hour - MiteOS::currentTime.Hour) * 60 + (timer.minute - MiteOS::currentTime.Minute);
 	}
@@ -141,7 +141,7 @@ void TimerPage::drawIcons() {
 }
 
 void TimerPage::startTimer() {
-	int32_t hour = pageData.number3 / 60, minute = pageData.number3 % 60;
+	int32_t hour = pageData.largenumber1 / 60, minute = pageData.largenumber1 % 60;
 	
 	timer.hour = MiteOS::currentTime.Hour + hour;
 	timer.minute = MiteOS::currentTime.Minute + minute;

@@ -82,7 +82,7 @@
 #define TXT_ERR "Err"
 
 // Tamagotchi App
-#define TXT_WOOLY "Fellknäul"
+#define TXT_FURLY "Fellknäul"
 
 // Month and Day Stuff
 #define TXT_DAYS "Tage"

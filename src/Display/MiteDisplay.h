@@ -17,7 +17,7 @@
 // uncomment next line to use class GFX of library GFX_Root instead of Adafruit_GFX
 //#include <GFX.h>
 
-#define ENABLE_SCREENSHOTS true
+#define ENABLE_SCREENSHOTS false
 
 #ifndef ENABLE_GxEPD2_GFX
 // default is off
@@ -776,6 +776,29 @@ class MiteDisplay : public GxEPD2_GFX_BASE_CLASS
     void hibernate()
     {
       epd2.hibernate();
+    }
+    
+    
+    void drawBitmapFlippedH(int16_t x, int16_t y, const uint8_t bitmap[],
+                              int16_t w, int16_t h, uint16_t color) {
+
+      int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
+      uint8_t b = 0;
+      
+      x += w;
+      
+      startWrite();
+      for (int16_t j = 0; j < h; j++, y++) {
+        for (int16_t i = 0; i < w; i++) {
+          if (i & 7)
+            b <<= 1;
+          else
+            b = pgm_read_byte(&bitmap[j * byteWidth + i / 8]);
+          if (b & 0x80)
+            writePixel(x - i, y, color);
+        }
+      }
+      endWrite();
     }
   private:
     template <typename T> static inline void
