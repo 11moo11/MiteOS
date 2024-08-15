@@ -217,3 +217,28 @@ void Page::drawCircle(int centerX, int centerY, int diameter, int lineThickness,
 		}
 	}
 }
+
+void Page::drawProgressBar(int x, int y, int w, int h, float progress) {
+	drawProgressBar(x, y, w, h, progress, FOREGROUND_COLOR);
+}
+void Page::drawProgressBar(int x, int y, int w, int h, float progress, uint16_t color) {
+	mDisplay.drawRect(x, y, w, h, color);
+	drawDitherBox(x + 1, y + 1, (w - 2) * progress, h - 2, 1, 1, color);
+}
+
+
+void Page::drawDitherBox(int x, int y, int w, int h) {
+	drawDitherBox(x, y, w, h, 1, 1, FOREGROUND_COLOR);
+}
+void Page::drawDitherBox(int x, int y, int w, int h, uint8_t fillVal, uint8_t emptyVal) {
+	drawDitherBox(x, y, w, h, fillVal, emptyVal, FOREGROUND_COLOR);
+}
+void Page::drawDitherBox(int x, int y, int w, int h, uint8_t fillVal, uint8_t emptyVal, uint16_t color) {
+	for(int posX = 0; posX < w; posX++) {
+		for(int posY = 0; posY < h; posY++) {
+			if(((posX + posY) % (fillVal + emptyVal)) < fillVal) {
+				mDisplay.drawPixel(x + posX, y + posY, color);
+			}
+		}
+	}
+}

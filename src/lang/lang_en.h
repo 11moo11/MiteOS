@@ -83,6 +83,13 @@
 
 // Tamagotchi App
 #define TXT_FURLY "Furly"
+#define TXT_WARMTH "Warmth"
+#define TXT_HUNGER "Hunger"
+#define TXT_THIRST "Thirst"
+#define TXT_FUN "Fun"
+#define TXT_EDUCATION "Education"
+#define TXT_SICK "Sick"
+
 
 // Month and Day Stuff
 #define TXT_DAYS "Days"
@@ -157,5 +164,6 @@ PROGMEM static char *pokemon_names[151] = {
 	"ZAPDOS", "MOLTRES", "DRATINI", "DRAGONAIR", "DRAGONITE", "MEWTWO",
 	"MEW"
 };
+
 #endif
 #endif

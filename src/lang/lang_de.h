@@ -82,7 +82,13 @@
 #define TXT_ERR "Err"
 
 // Tamagotchi App
-#define TXT_FURLY "Fellknäul"
+#define TXT_FURLY "Furly"
+#define TXT_WARMTH "Wärme"
+#define TXT_HUNGER "Hunger"
+#define TXT_THIRST "Durst"
+#define TXT_FUN "Spaß"
+#define TXT_EDUCATION "Bildung"
+#define TXT_SICK "Krank"
 
 // Month and Day Stuff
 #define TXT_DAYS "Tage"

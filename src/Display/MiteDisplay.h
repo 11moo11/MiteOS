@@ -17,7 +17,7 @@
 // uncomment next line to use class GFX of library GFX_Root instead of Adafruit_GFX
 //#include <GFX.h>
 
-#define ENABLE_SCREENSHOTS false
+#define ENABLE_SCREENSHOTS true
 
 #ifndef ENABLE_GxEPD2_GFX
 // default is off
@@ -397,23 +397,19 @@ class MiteDisplay : public GxEPD2_GFX_BASE_CLASS
     String booleanArrayToHexString(boolean* boolArray, int length) {
       String hexString = "";
 
-      // Sicherstellen, dass die Länge des Arrays ein Vielfaches von 4 ist
       if (length % 4 != 0) {
         Serial.println("Fehler: Array-Länge muss ein Vielfaches von 4 sein.");
         return hexString;
       }
 
-      // Jeden Block von 4 Bits in ein Hex-Zeichen konvertieren
       for (int i = 0; i < length; i += 4) {
-        int value = 0;
+        uint8_t value = 0;
 
-        // 4 Bits zu einem Nibble zusammenfügen
         for (int j = 0; j < 4; j++) {
-          value <<= 1;                 // Nach links verschieben
-          value |= boolArray[i + j];   // Aktuelles Bit hinzufügen
+          value <<= 1;
+          value |= boolArray[i + j];
         }
-
-        // Nibble zu Hexadezimal-Zeichen konvertieren
+        
         if (value < 10) {
           hexString += char('0' + value);
         } else {

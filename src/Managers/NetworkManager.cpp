@@ -10,6 +10,8 @@ RTC_DATA_ATTR uint32_t lastWifiIPAddress;
 RTC_DATA_ATTR char lastWifiSSID[30];
 
 bool NetworkManager::connectWifi() {
+	BluetoothManager::powerOff();
+	
 	PageManager::showConnectionIcon(icon_wifi);
 	
 	if (WL_CONNECT_FAILED == WiFi.begin()) { // WiFi not setup, you can also use hard coded credentials
@@ -156,4 +158,6 @@ bool NetworkManager::syncNTP(long gmt, String ntpServer) {
 
 void NetworkManager::powerOff() {
 	WiFi.mode(WIFI_OFF);
+	
+	WifiConfigured = false;
 }

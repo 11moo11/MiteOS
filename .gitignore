@@ -1,2 +1,4 @@
 build/
 .vscode/
+watcher/buf.png
+watcher/buf*.png

@@ -19,7 +19,7 @@ static const unsigned char* const pageIcons[] = {
 	app_icon_music,
 	app_icon_messages,
 	app_icon_hass,
-	app_icon_empty
+	app_icon_egg,
 };
 
 static const String pageTitles[] = {
@@ -100,7 +100,7 @@ bool AppPage::onButtonPressed(uint8_t buttonIndex) {
 
 void AppPage::displayPage() {
 	for(uint8_t i = 0; i < 4; i++) {
-		uint8_t x = 25 + (i >= 2 ? 80 : 0);
+		uint8_t x = 25 + (i >= 2 ? 90 : 0);
 		uint8_t y = 25 + (i % 2 == 1 ? 70 : 0);
 		drawCentreString(pageTitles[i + (currentAppPage * 4)], x + 30, y + 68);
 		

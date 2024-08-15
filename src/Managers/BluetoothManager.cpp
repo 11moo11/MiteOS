@@ -71,6 +71,9 @@ static void my_gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_pa
 */
 void BluetoothManager::init() {
 	if(initialized) return;
+	
+	NetworkManager::powerOff();
+	
 	printDebug("Initializing BT Device");
 	BLEDevice::init(TXT_DEVICE_NAME);
 	esp_err_t err = esp_ble_gatt_set_local_mtu(256);
@@ -261,7 +264,6 @@ void BluetoothManager::waitForResponse() {
 }
 
 void BluetoothManager::powerOff() {
-	if(!initialized) return;
-	
 	btStop();
+	initialized = false;
 }

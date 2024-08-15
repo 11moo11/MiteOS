@@ -23,18 +23,31 @@ typedef struct PageData {
   // All these can be used by custom implementations, they are just here to have a central spot for the page that gets saved
   uint8_t subPageIndex;
   
+  String string0;
   String string1;
   String string2;
 
+  uint8_t number0;
   uint8_t number1;
   uint8_t number2;
   uint8_t number3;
   uint8_t number4;
   uint8_t number5;
+  uint8_t number6;
+  uint8_t number7;
+  uint8_t number8;
+  uint8_t number9;
   
+  uint32_t largenumber0;
   uint32_t largenumber1;
   uint32_t largenumber2;
   uint32_t largenumber3;
+  uint32_t largenumber4;
+  uint32_t largenumber5;
+  uint32_t largenumber6;
+  uint32_t largenumber7;
+  uint32_t largenumber8;
+  uint32_t largenumber9;
 } PageData;
 
 
@@ -58,6 +71,13 @@ class Page {
     
     static void drawCircle(int centerX, int centerY, int diameter, int lineThickness, int percentage);
     static void drawCircle(int centerX, int centerY, int diameter, int lineThickness, int percentage, uint16_t color);
+    
+    static void drawProgressBar(int x, int y, int w, int h, float progress);
+    static void drawProgressBar(int x, int y, int w, int h, float progress, uint16_t color);
+    
+    static void drawDitherBox(int x, int y, int w, int h);
+    static void drawDitherBox(int x, int y, int w, int h, uint8_t fillVal, uint8_t emptyVal);
+    static void drawDitherBox(int x, int y, int w, int h, uint8_t fillVal, uint8_t emptyVal, uint16_t color);
 };
 
 #endif

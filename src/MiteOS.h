@@ -71,6 +71,8 @@ typedef struct AlarmData {
 	uint8_t minute;
 } AlarmData;
 
+#define NOW makeTime(MiteOS::currentTime)
+
 class MiteOS {
 	public:
 		MiteSettings settings;
