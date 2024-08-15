@@ -79,12 +79,22 @@ void FurlyPage::initPage() {
 		START_STEP_COUNTER = ActivityManager::getTotalStepCount();
 	}
 	
-	LAST_WARMTH = Configuration::preferences.getUInt("furly_warmth", NOW);
-	LAST_FOOD   = Configuration::preferences.getUInt("furly_food", NOW);
-	LAST_WATER  = Configuration::preferences.getUInt("furly_water", NOW);
-	LAST_FUN    = Configuration::preferences.getUInt("furly_fun", NOW);
+	LAST_WARMTH = Configuration::preferences.getUInt("furly_warmth", 0);
+	if(LAST_WARMTH == 0) { Configuration::preferences.putUInt("furly_warmth", NOW); LAST_WARMTH = NOW; }
+	LAST_FOOD   = Configuration::preferences.getUInt("furly_food", 0);
+	if(LAST_FOOD == 0) { Configuration::preferences.putUInt("furly_food", NOW); LAST_FOOD = NOW; }
+	LAST_WATER  = Configuration::preferences.getUInt("furly_water", 0);
+	if(LAST_WATER == 0) { Configuration::preferences.putUInt("furly_water", NOW); LAST_WATER = NOW; }
+	LAST_FUN    = Configuration::preferences.getUInt("furly_fun", 0);
+	if(LAST_FUN == 0) { Configuration::preferences.putUInt("furly_fun", NOW); LAST_FUN = NOW; }
+	
 	EDU_START   = Configuration::preferences.getUInt("furly_edu", 0);
 	WORK_START  = Configuration::preferences.getUInt("furly_work", 0);
+	
+	printDebug("Warmth: " + String(LAST_WARMTH));
+	printDebug("Hungry: " + String(LAST_FOOD));
+	printDebug("Thirst: " + String(LAST_WATER));
+	printDebug("Fun " + String(LAST_FUN));
 }
 
 void FurlyPage::drawPage() {
@@ -132,12 +142,15 @@ bool FurlyPage::onButtonPressed(uint8_t buttonIndex) {
 							break;
 						case 2: // Warmth
 							LAST_WARMTH = NOW;
+							Configuration::preferences.putUInt("furly_warmth", LAST_WARMTH);
 							break;
 						case 3: // Food
 							LAST_FOOD = NOW;
+							Configuration::preferences.putUInt("furly_food", LAST_FOOD);
 							break;
 						case 4: // Water
 							LAST_WATER = NOW;
+							Configuration::preferences.putUInt("furly_water", LAST_WATER);
 							break;
 						default: break;
 					}
@@ -274,7 +287,7 @@ void FurlyPage::drawStepProgressBar() {
 		else if(MAIN_SCROLL_OFFSET == 4) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WATER ) / (float) WATER_REQUIRE )); txt = TXT_THIRST; }
 		else if(MAIN_SCROLL_OFFSET == 5) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FUN   ) / (float) FUN_REQUIRE   )); txt = TXT_FUN;    }
 		
-		Page::drawCentreString(txt, 100, 170);
+		Page::drawCentreString(txt, 100, 175);
 		Page::drawProgressBar(50, 180, 100, 10, progress, FOREGROUND_COLOR);
 	}
 }

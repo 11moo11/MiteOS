@@ -23,7 +23,7 @@ const int item_count = 4;
 
 void HassPage::drawPage() {
 	mDisplay.setFont(&FreeSans9pt7b);
-	drawButtonIcon(BTN_BACK, icon_home);
+	drawButtonIcon(BTN_BACK, icon_exit);
 	drawButtonIcon(BTN_CONFIRM, icon_checkmark);
 	drawButtonIcon(BTN_UP, icon_up);
 	drawButtonIcon(BTN_DOWN, icon_down);

@@ -125,7 +125,7 @@ void TimerPage::drawTime() {
 }
 
 void TimerPage::drawIcons() {
-	drawButtonIcon(BTN_BACK, icon_left);
+	drawButtonIcon(BTN_BACK, icon_exit);
 	if(timer.enableAlarm) {
 		drawButtonIcon(BTN_UP, icon_stop);
 	} else {

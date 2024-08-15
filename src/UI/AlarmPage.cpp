@@ -135,7 +135,7 @@ void AlarmPage::drawIcons() {
 			drawButtonIcon(BTN_UP, icon_up);
 			drawButtonIcon(BTN_DOWN, icon_down);
 			drawButtonIcon(BTN_MENU, icon_gear);
-			drawButtonIcon(BTN_BACK, icon_left);
+			drawButtonIcon(BTN_BACK, icon_exit);
 			break;
 		default: break;
 	}

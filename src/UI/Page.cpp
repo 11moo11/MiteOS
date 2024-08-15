@@ -223,7 +223,7 @@ void Page::drawProgressBar(int x, int y, int w, int h, float progress) {
 }
 void Page::drawProgressBar(int x, int y, int w, int h, float progress, uint16_t color) {
 	mDisplay.drawRect(x, y, w, h, color);
-	drawDitherBox(x + 1, y + 1, (w - 2) * progress, h - 2, 1, 1, color);
+	drawDitherBox(x + 1, y + 1, round((w - 2) * progress), h - 2, 1, 1, color);
 }
 
 

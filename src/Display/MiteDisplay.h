@@ -17,6 +17,8 @@
 // uncomment next line to use class GFX of library GFX_Root instead of Adafruit_GFX
 //#include <GFX.h>
 
+// This will dramatically reduce battery life and responsiveness of the watch
+// Should only be used for making screenshot and never for daily driving
 #define ENABLE_SCREENSHOTS true
 
 #ifndef ENABLE_GxEPD2_GFX

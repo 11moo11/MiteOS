@@ -94,7 +94,7 @@ void PlaybackPage::drawIcons() {
 		drawButtonIcon(BTN_CONFIRM, icon_refresh);
 	}
 	
-	drawButtonIcon(BTN_BACK, icon_home);
+	drawButtonIcon(BTN_BACK, icon_exit);
 }
 
 bool PlaybackPage::onButtonPressed(uint8_t buttonIndex) {

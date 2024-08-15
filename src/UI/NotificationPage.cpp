@@ -40,13 +40,13 @@ void NotificationPage::drawPage() {
 	}else{
 		mDisplay.setFont(&FreeSansBold9pt7b);
 		drawCentreString(TXT_NO_NOTIFICATION, 100, 100, false);
-		drawButtonIcon(BTN_BACK, icon_home);
+		drawButtonIcon(BTN_BACK, icon_exit);
 		drawButtonIcon(BTN_CONFIRM, icon_refresh);
 	}
 }
 
 void NotificationPage::drawIcons() {
-	drawButtonIcon(BTN_BACK, icon_home);
+	drawButtonIcon(BTN_BACK, icon_exit);
 	drawButtonIcon(BTN_UP, icon_up);
 	drawButtonIcon(BTN_DOWN, icon_down);
 	drawButtonIcon(BTN_CONFIRM, icon_refresh);
