@@ -62,6 +62,7 @@ class Page {
     bool handleMenuButtons(uint8_t buttonIndex);
     
 		static void drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]);
+    static void drawScrollBar(uint8_t index, uint8_t count);
     static void drawCentreString(String buf, int x, int y, bool textWrap = true);
 		static void drawCentreString(const char *buf, int x, int y, bool textWrap = true);
 		static void print(const char *buf);

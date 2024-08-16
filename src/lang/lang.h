@@ -1,19 +1,14 @@
 #ifndef LANG_H
 #define LANG_H
 
-// Possible Values LANG_EN, LANG_DE, LANG_FR
-#define LANG_EN
-
-
+#include "../Data/Configuration.h"
 
 #ifdef LANG_DE
 	#include "lang_de.h"
+#elif LANG_FR
+	#include "lang_fr.h"
 #else
-	#ifdef LANG_FR
-		#include "lang_fr.h"
-	#else
-		#include "lang_en.h"
-	#endif
+	#include "lang_en.h"
 #endif
 
 /* Reimplementation with defines from:

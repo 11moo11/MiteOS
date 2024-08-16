@@ -1,3 +1,19 @@
+
+
+#define STEPS_PER_KM 1400
+#define KM_TO_MILES 0.621371
+
+// Possible Values LANG_EN, LANG_DE, LANG_FR
+#define LANG_EN
+
+// This will dramatically reduce battery life and responsiveness of the watch
+// Should only be used for making screenshot and never for daily driving
+#define ENABLE_SCREENSHOTS true
+#define DEBUG true
+
+
+
+
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 #include <Preferences.h>
@@ -5,9 +21,6 @@
 #include "settings.h"
 
 #include "../Managers/PhoneConnectionManager.h"
-
-#define STEPS_PER_KM 1400
-#define KM_TO_MILES 0.621371
 
 class Configuration : Preferences {
     public:

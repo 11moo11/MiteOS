@@ -6,11 +6,15 @@
 #include "../Fonts/FreeMonoBold10pt7b.h"
 #include "../MiteOS.h"
 
+
+
 // TODO: Sidebar
 // Feed
 // Give Water
 // Play
 // Shop
+
+// Random Name: Patata, Kevin, 
 
 // Idea: Furly can die, but you can choose to revive it instead of getting a new one
 
@@ -31,6 +35,8 @@
 
 #define FURLY_PAGE pageData.subPageIndex
 #define MAIN_SCROLL_OFFSET pageData.number0
+#define SUBPAGE_INDEX pageData.number1
+
 #define START_STEP_COUNTER pageData.largenumber0
 
 #define CREDITS pageData.number1
@@ -42,6 +48,8 @@
 #define EDU_START pageData.largenumber5
 #define WORK_START pageData.largenumber6
 
+#define FURLY_BORN pageData.largenumber9
+
 #define FURLY_PAGE_MAIN 0
 #define FURLY_PAGE_INFO 1
 #define FURLY_PAGE_SETTINGS 2
@@ -52,6 +60,8 @@
 #define FUN_REQUIRE    86400 //  1 day
 
 #define MAIN_SELECTION_ICON_COUNT(level) (level == 3 ? 8 : (level == 2 ? 7 : (level == 1 ? 5 : 3)))
+#define CHECK_BIT(var, pos) ((var) & (1<<(pos)))
+
 const unsigned char* main_selection_icons[8] = {
 	furly_icon_gear,
 	icon_furly_info,
@@ -63,10 +73,21 @@ const unsigned char* main_selection_icons[8] = {
 	icon_empty, // Work
 };
 
+const char active_selection[4] = {
+	0b00000111,
+	0b00011011,
+	0b01111011,
+	0b10111011
+};
 
+/*
 #define LEVEL_1_STEPS 15000
 #define LEVEL_2_STEPS LEVEL_1_STEPS + 30000
 #define LEVEL_3_STEPS LEVEL_2_STEPS + 50000
+*/
+#define LEVEL_1_STEPS 100
+#define LEVEL_2_STEPS LEVEL_1_STEPS + 50
+#define LEVEL_3_STEPS LEVEL_2_STEPS + 50
 
 void FurlyPage::initPage() {
 	MAIN_SCROLL_OFFSET = 2; // Default to the sun
@@ -91,6 +112,9 @@ void FurlyPage::initPage() {
 	EDU_START   = Configuration::preferences.getUInt("furly_edu", 0);
 	WORK_START  = Configuration::preferences.getUInt("furly_work", 0);
 	
+	FURLY_BORN = Configuration::preferences.getUInt("furly_born", 0);
+	if(FURLY_BORN == 0) { Configuration::preferences.putUInt("furly_born", NOW); LAST_FUN = NOW; }
+	
 	printDebug("Warmth: " + String(LAST_WARMTH));
 	printDebug("Hungry: " + String(LAST_FOOD));
 	printDebug("Thirst: " + String(LAST_WATER));
@@ -105,6 +129,7 @@ void FurlyPage::drawPage() {
 	};
 	switch(FURLY_PAGE) {
 		case FURLY_PAGE_MAIN:
+			SUBPAGE_INDEX = 0;
 			drawMainPage();
 			break;
 		case FURLY_PAGE_INFO:
@@ -125,12 +150,10 @@ bool FurlyPage::onButtonPressed(uint8_t buttonIndex) {
 		case FURLY_PAGE_MAIN:
 			switch(buttonIndex) {
 				case BTN_UP:
-					MAIN_SCROLL_OFFSET--;
-					if(MAIN_SCROLL_OFFSET > 250) MAIN_SCROLL_OFFSET = MAIN_SELECTION_ICON_COUNT(level) - 1;
+					do{ MAIN_SCROLL_OFFSET--; if(MAIN_SCROLL_OFFSET > 8) MAIN_SCROLL_OFFSET = 7; }while(!CHECK_BIT(active_selection[level], MAIN_SCROLL_OFFSET));
 					return true;
 				case BTN_DOWN:
-					MAIN_SCROLL_OFFSET++;
-					if(MAIN_SCROLL_OFFSET >= MAIN_SELECTION_ICON_COUNT(level)) MAIN_SCROLL_OFFSET = 0;
+					do{ MAIN_SCROLL_OFFSET++; if(MAIN_SCROLL_OFFSET > 7) MAIN_SCROLL_OFFSET = 0; }while(!CHECK_BIT(active_selection[level], MAIN_SCROLL_OFFSET));
 					return true;
 				case BTN_CONFIRM:
 					switch(MAIN_SCROLL_OFFSET) {
@@ -160,6 +183,14 @@ bool FurlyPage::onButtonPressed(uint8_t buttonIndex) {
 		
 		case FURLY_PAGE_INFO:
 			switch(buttonIndex){
+				case BTN_UP:
+					SUBPAGE_INDEX--;
+					if(SUBPAGE_INDEX > 250) SUBPAGE_INDEX = 1;
+					break;
+				case BTN_DOWN:
+					SUBPAGE_INDEX++;
+					if(SUBPAGE_INDEX > 1) SUBPAGE_INDEX = 0;
+					break;
 				case BTN_BACK:
 					FURLY_PAGE = FURLY_PAGE_MAIN;
 					break;
@@ -200,7 +231,7 @@ void FurlyPage::drawMainPage() {
 	mDisplay.drawRect(165, 85, 30, 30, FOREGROUND_COLOR);
 	
 	uint8_t level = getLevel();
-	uint8_t prev = MAIN_SCROLL_OFFSET ==                                    0 ? MAIN_SELECTION_ICON_COUNT(level) - 1 : MAIN_SCROLL_OFFSET - 1;
+	uint8_t prev = MAIN_SCROLL_OFFSET; do{ prev--; if(prev > 8) prev = 7; }while(!CHECK_BIT(active_selection[level], prev));
 	mDisplay.drawBitmap(165, 40, main_selection_icons[prev], 30, 30, FOREGROUND_COLOR);
 	mDisplay.drawRect(165, 40, 30, 30, FOREGROUND_COLOR);
 	
@@ -211,7 +242,7 @@ void FurlyPage::drawMainPage() {
 	
 	
 	
-	uint8_t next = MAIN_SCROLL_OFFSET == MAIN_SELECTION_ICON_COUNT(level) - 1 ?                                    0 : MAIN_SCROLL_OFFSET + 1;
+	uint8_t next = MAIN_SCROLL_OFFSET; do{ next++; if(next > 7) next = 0; }while(!CHECK_BIT(active_selection[level], next));
 	mDisplay.drawBitmap(165, 130, main_selection_icons[next], 30, 30, FOREGROUND_COLOR);
 	mDisplay.drawRect(165, 130, 30, 30, FOREGROUND_COLOR);
 	
@@ -219,7 +250,6 @@ void FurlyPage::drawMainPage() {
 	Page::drawDitherBox(160, 155, 40, 5, 1, 1);
 	Page::drawDitherBox(160, 150, 40, 5, 1, 2);
 	Page::drawDitherBox(160, 145, 40, 5, 1, 3);
-	
 	
 	
 	drawFurly(80, 100);
@@ -235,6 +265,8 @@ void FurlyPage::drawFurly(uint8_t x, uint8_t y, uint8_t gender) {
 			break;
 		
 		case 1:
+			mDisplay.drawBitmap(x - (FURLY_SMOL_WIDTH / 2), y - (FURLY_SMOL_HEIGHT / 2), furly_state_smol, FURLY_SMOL_WIDTH, FURLY_SMOL_HEIGHT, FOREGROUND_COLOR);
+			break;
 		case 2:
 		case 3:
 			mDisplay.drawBitmap(x - (FURLY_WIDTH / 2), y - (FURLY_HEIGHT / 2), furly_part_body, FURLY_WIDTH, FURLY_HEIGHT, FOREGROUND_COLOR);
@@ -271,13 +303,14 @@ uint8_t FurlyPage::getLevel() {
 
 void FurlyPage::drawStepProgressBar() {
 	uint8_t level = getLevel();
-	uint32_t steps = getLevelSteps() - (level == 3 ? LEVEL_3_STEPS : (level == 2 ? LEVEL_2_STEPS : (level == 1 ? LEVEL_3_STEPS : 0)));
-	float progress = steps * 1.0 / (level == 0 ? LEVEL_1_STEPS : (level == 1 ? LEVEL_2_STEPS : (level == 2 ? LEVEL_3_STEPS : 9999999)));
+	if(level >= 3) return;
+	uint32_t steps = getLevelSteps() - (level == 3 ? LEVEL_3_STEPS : (level == 2 ? LEVEL_2_STEPS : (level == 1 ? LEVEL_1_STEPS : 0)));
+	float progress = min(1.0, max(0.0, steps * 1.0 / (level == 0 ? LEVEL_1_STEPS : (level == 1 ? LEVEL_2_STEPS - LEVEL_1_STEPS : (level == 2 ? LEVEL_3_STEPS - LEVEL_2_STEPS : 9999999)))));
 	
 	Page::drawProgressBar(50, 10, 100, 10, progress, FOREGROUND_COLOR);
 	
 	mDisplay.setFont(&FreeMonoBold7pt7b);
-	Page::drawCentreString(String(steps) + " / " + String((level == 0 ? LEVEL_1_STEPS : (level == 1 ? LEVEL_2_STEPS : (level == 2 ? LEVEL_3_STEPS : 9999999)))), 100, 30);
+	Page::drawCentreString(String(steps) + " / " + String((level == 0 ? LEVEL_1_STEPS : (level == 1 ? LEVEL_2_STEPS - LEVEL_1_STEPS : (level == 2 ? LEVEL_3_STEPS - LEVEL_2_STEPS : 9999999)))), 100, 30);
 	
 	if(MAIN_SCROLL_OFFSET >= 2 && MAIN_SCROLL_OFFSET <= 5) {
 		float progress = 0;
@@ -296,36 +329,109 @@ void FurlyPage::drawStepProgressBar() {
 void FurlyPage::drawInfoPage() {
 	drawButtonIcon(BTN_BACK, icon_left);
 	
-	mDisplay.drawRect(30, 15, 140, 170, FOREGROUND_COLOR);
+	drawButtonIcon(BTN_UP, icon_up);
+	drawButtonIcon(BTN_DOWN, icon_down);
+	
+	mDisplay.drawRect(25, 15, 150, 170, FOREGROUND_COLOR);
+	uint8_t offset_y = 40;
+	
+	drawScrollBar(SUBPAGE_INDEX, 2);
 	
 	uint8_t level = getLevel();
-	
-	mDisplay.setFont(&FreeMonoBold10pt7b);
-	
-	float progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WARMTH) / (float) WARMTH_REQUIRE));
-	Page::drawProgressBar(50, 40, 100, 10, progress);
-	mDisplay.setCursor(50, 35);
-	mDisplay.print(TXT_WARMTH);
-	
-	if(level < 1) return;
-	
-	progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FOOD) / (float) FOOD_REQUIRE));
-	Page::drawProgressBar(50, 70, 100, 10, progress);
-	mDisplay.setCursor(50, 65);
-	mDisplay.print(TXT_HUNGER);
-	
-	progress = min(1.0f, max(0.0f, 1 - (NOW - WATER_REQUIRE) / (float) LAST_WATER));
-	Page::drawProgressBar(50, 100, 100, 10, progress);
-	mDisplay.setCursor(50, 95);
-	mDisplay.print(TXT_THIRST);
-	
-	if(level < 2) return;
-	progress = min(1.0f, max(0.0f, 1 - (NOW - FUN_REQUIRE) / (float) LAST_FUN));
-	Page::drawProgressBar(50, 130, 100, 10, progress);
-	mDisplay.setCursor(50, 125);
-	mDisplay.print(TXT_FUN);
-	
-	Page::drawProgressBar(50, 160, 100, 10, 1);
-	mDisplay.setCursor(50, 155);
-	mDisplay.print(TXT_EDUCATION);
+	if(SUBPAGE_INDEX == 0) {
+		offset_y -= 5;
+		mDisplay.setFont(&FreeMonoBold10pt7b);
+		
+		mDisplay.setCursor(35, offset_y);
+		mDisplay.print(TXT_LEVEL);
+		mDisplay.print(": ");
+		mDisplay.print(level);
+		
+		offset_y += 15;
+		
+		mDisplay.setCursor(35, offset_y);
+		mDisplay.print(TXT_MOOD);
+		mDisplay.print(": ");
+		mDisplay.print("-");
+		
+		offset_y += 15;
+		
+		mDisplay.setCursor(35, offset_y);
+		mDisplay.print(TXT_AGE);
+		mDisplay.print(": ");
+		mDisplay.print("");
+		
+	} else if(SUBPAGE_INDEX == 1) {
+		
+		float progress;
+		uint8_t hours;
+		if(CHECK_BIT(active_selection[level], 2)) {
+			progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WARMTH) / (float) WARMTH_REQUIRE));
+			Page::drawProgressBar(35, offset_y, 100, 10, progress);
+			mDisplay.setFont(&FreeMonoBold10pt7b);
+			mDisplay.setCursor(35, offset_y - 5);
+			mDisplay.print(TXT_WARMTH);
+			
+			hours = round(progress * WARMTH_REQUIRE / 3600);
+			mDisplay.setFont(&FreeMonoBold7pt7b);
+			mDisplay.setCursor(140, offset_y + 8);
+			mDisplay.print(hours);
+			mDisplay.print("h");
+		
+			offset_y += 30;
+		}
+		
+		if(CHECK_BIT(active_selection[level], 3)) {
+			progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FOOD) / (float) FOOD_REQUIRE));
+			Page::drawProgressBar(35, offset_y, 100, 10, progress);
+			mDisplay.setFont(&FreeMonoBold10pt7b);
+			mDisplay.setCursor(35, offset_y - 5);
+			mDisplay.print(TXT_HUNGER);
+			
+			hours = round(progress * FOOD_REQUIRE / 3600);
+			mDisplay.setFont(&FreeMonoBold7pt7b);
+			mDisplay.setCursor(140, offset_y + 8);
+			mDisplay.print(hours);
+			mDisplay.print("h");
+			
+			offset_y += 30;
+		}
+		
+		if(CHECK_BIT(active_selection[level], 4)) {
+			progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WATER) / (float) WATER_REQUIRE));
+			Page::drawProgressBar(35, offset_y, 100, 10, progress);
+			mDisplay.setFont(&FreeMonoBold10pt7b);
+			mDisplay.setCursor(35, offset_y - 5);
+			mDisplay.print(TXT_THIRST);
+			
+			hours = round(progress * WATER_REQUIRE / 3600);
+			mDisplay.setFont(&FreeMonoBold7pt7b);
+			mDisplay.setCursor(140, offset_y + 8);
+			mDisplay.print(hours);
+			mDisplay.print("h");
+			
+			offset_y += 30;
+		}
+		
+		if(CHECK_BIT(active_selection[level], 5)) {
+			progress = min(1.0f, max(0.0f, 1 - (NOW - FUN_REQUIRE) / (float) LAST_FUN));
+			Page::drawProgressBar(35, offset_y, 100, 10, progress);
+			mDisplay.setCursor(35, offset_y - 5);
+			mDisplay.print(TXT_FUN);
+			
+			hours = round(progress * LAST_FUN / 3600);
+			mDisplay.setFont(&FreeMonoBold7pt7b);
+			mDisplay.setCursor(140, offset_y + 8);
+			mDisplay.print(hours);
+			mDisplay.print("h");
+		
+			offset_y += 30;
+		}
+		
+		if(CHECK_BIT(active_selection[level], 6)) {
+			Page::drawProgressBar(35, offset_y, 100, 10, 1);
+			mDisplay.setCursor(35, offset_y - 5);
+			mDisplay.print(TXT_EDUCATION);
+		}
+	}
 }

@@ -89,6 +89,9 @@
 #define TXT_FUN "Fun"
 #define TXT_EDUCATION "Education"
 #define TXT_SICK "Sick"
+#define TXT_LEVEL "Level"
+#define TXT_MOOD "Mood"
+#define TXT_AGE "Age"
 
 
 // Month and Day Stuff

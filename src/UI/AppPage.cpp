@@ -19,7 +19,7 @@ static const unsigned char* const pageIcons[] = {
 	app_icon_music,
 	app_icon_messages,
 	app_icon_hass,
-	app_icon_egg,
+	app_icon_paw,
 };
 
 static const String pageTitles[] = {

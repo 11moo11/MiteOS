@@ -76,6 +76,11 @@ void Page::drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]) {
 	}
 }
 
+void Page::drawScrollBar(uint8_t index, uint8_t count) {
+	mDisplay.drawRect(182, 45, 4, 110, FOREGROUND_COLOR);
+	mDisplay.fillRect(182, 45 + (110 / count * index), 4, 110 / count, FOREGROUND_COLOR);
+}
+
 void Page::drawCentreString(String buf, int x, int y, bool textWrap) {
 	drawCentreString(buf.c_str(), x, y);
 }
