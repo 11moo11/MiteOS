@@ -91,7 +91,9 @@
 #define TXT_SICK "Krank"
 #define TXT_LEVEL "Level"
 #define TXT_MOOD "Stimmung"
+#define TXT_BIRTHDATE "Geburtstag"
 #define TXT_AGE "Alter"
+#define TXT_RESTART "Neustart"
 
 // Month and Day Stuff
 #define TXT_DAYS "Tage"

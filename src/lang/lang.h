@@ -1,8 +1,6 @@
 #ifndef LANG_H
 #define LANG_H
 
-#include "../Data/Configuration.h"
-
 #ifdef LANG_DE
 	#include "lang_de.h"
 #elif LANG_FR

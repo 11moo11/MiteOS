@@ -125,6 +125,8 @@ void Configuration::saveSteps() {
 		}
 	}
 	preferences.putUInt(("steps" + String(dow)).c_str(), ActivityManager::getStepCount());
+	
+	printDebug("Saving steps...");
 }
 std::array<uint32_t, 7> Configuration::loadSteps(bool useCurrentData) {
 	if(!initialized) init();

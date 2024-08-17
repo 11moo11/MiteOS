@@ -119,10 +119,9 @@ extern RTC_DATA_ATTR u_int8_t doubleTapBtn;
 #define mDisplay MiteOS::display
 #define mRTC MiteOS::RTC
 
-#ifdef DEBUG
+#if DEBUG == true
 #define printDebug(a) Serial.println(a)
-#endif
-#ifndef DEBUG
+#else
 #define printDebug(a)
 #endif
 

@@ -20,6 +20,11 @@ class FurlyPage : public Page {
 		
 		uint8_t getLevel();
 		uint32_t getLevelSteps();
+		
+		void levelChanged();
+		void refillState(uint8_t state);
+		
+		void resetFurly();
 };
 
 #endif

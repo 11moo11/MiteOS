@@ -38,16 +38,16 @@ typedef struct PageData {
   uint8_t number8;
   uint8_t number9;
   
-  uint32_t largenumber0;
-  uint32_t largenumber1;
-  uint32_t largenumber2;
-  uint32_t largenumber3;
-  uint32_t largenumber4;
-  uint32_t largenumber5;
-  uint32_t largenumber6;
-  uint32_t largenumber7;
-  uint32_t largenumber8;
-  uint32_t largenumber9;
+  long largenumber0;
+  long largenumber1;
+  long largenumber2;
+  long largenumber3;
+  long largenumber4;
+  long largenumber5;
+  long largenumber6;
+  long largenumber7;
+  long largenumber8;
+  long largenumber9;
 } PageData;
 
 

@@ -30,7 +30,7 @@ RTC_DATA_ATTR u_int8_t doubleTapBtn = 1;
 #include "esp32-hal-cpu.h"
 
 void MiteOS::init() {
-	#ifdef DEBUG
+	#if DEBUG == TRUE
 	// This might cause a double reset, causing the esp to fully reset steps and stuff
 	// So this should only be enabled when debugging
 	// But: Thats just a theory at the moment and i will test it some more
