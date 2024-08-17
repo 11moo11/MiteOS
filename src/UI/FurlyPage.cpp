@@ -73,14 +73,14 @@
 #define CHECK_BIT(var, pos) ((var) & (1<<(pos)))
 
 const unsigned char* main_selection_icons[8] = {
-	furly_icon_gear,
+	icon_furly_gear,
 	icon_furly_info,
 	icon_furly_sun,
 	icon_furly_food,
 	icon_furly_bottle,
-	icon_empty, // Play
-	icon_empty, // Education
-	icon_empty, // Work
+	icon_furly_play,
+	icon_furly_edu,
+	icon_furly_work,
 };
 
 const char active_selection[4] = {
@@ -101,8 +101,7 @@ const char active_selection[4] = {
 #endif
 
 void FurlyPage::initPage() {
-	MAIN_SCROLL_OFFSET = 2; // Default to the sun
-	
+	MAIN_SCROLL_OFFSET = 1; // Default to the info
 	
 	Configuration::init();
 	START_STEP_COUNTER = Configuration::preferences.getUInt("furly_init", 0);
@@ -167,6 +166,12 @@ void FurlyPage::refillState(uint8_t state) {
 			LAST_WATER = NOW;
 			Configuration::preferences.putULong64("furly_water", LAST_WATER);
 			break;
+			
+		case FURLY_PLAY_ID:
+			printDebug("Refuel Fun");
+			LAST_FUN = NOW;
+			Configuration::preferences.putULong64("furly_fun", LAST_FUN);
+			break;
 		
 		default: break;
 	}
@@ -229,6 +234,10 @@ bool FurlyPage::onButtonPressed(uint8_t buttonIndex) {
 						
 						case FURLY_THIRST_ID: // Water
 							refillState(FURLY_THIRST_ID);
+							break;
+							
+						case FURLY_PLAY_ID: // Fun
+							refillState(FURLY_PLAY_ID);
 							break;
 						
 						default: break;
@@ -378,10 +387,11 @@ void FurlyPage::drawStepProgressBar() {
 	if(MAIN_SCROLL_OFFSET >= 2 && MAIN_SCROLL_OFFSET <= 5) {
 		float progress = 0;
 		String txt;
-		if(MAIN_SCROLL_OFFSET == 2)      { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WARMTH) / (float) WARMTH_REQUIRE)); txt = TXT_WARMTH; }
-		else if(MAIN_SCROLL_OFFSET == 3) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FOOD  ) / (float) FOOD_REQUIRE  )); txt = TXT_HUNGER; }
-		else if(MAIN_SCROLL_OFFSET == 4) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WATER ) / (float) WATER_REQUIRE )); txt = TXT_THIRST; }
-		else if(MAIN_SCROLL_OFFSET == 5) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FUN   ) / (float) FUN_REQUIRE   )); txt = TXT_FUN;    }
+		     if(MAIN_SCROLL_OFFSET == FURLY_WARMTH_ID) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WARMTH) / (float) WARMTH_REQUIRE)); txt = TXT_WARMTH;    }
+		else if(MAIN_SCROLL_OFFSET == FURLY_HUNGER_ID) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FOOD  ) / (float) FOOD_REQUIRE  )); txt = TXT_HUNGER;    }
+		else if(MAIN_SCROLL_OFFSET == FURLY_THIRST_ID) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WATER ) / (float) WATER_REQUIRE )); txt = TXT_THIRST;    }
+		else if(MAIN_SCROLL_OFFSET == FURLY_PLAY_ID  ) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FUN   ) / (float) FUN_REQUIRE   )); txt = TXT_FUN;       }
+		else if(MAIN_SCROLL_OFFSET == FURLY_EDU_ID   ) { progress = 0.5f;                                                                   txt = TXT_EDUCATION; }
 		
 		Page::drawCentreString(txt, 100, 175);
 		Page::drawProgressBar(50, 180, 100, 10, progress, FOREGROUND_COLOR);
@@ -526,13 +536,13 @@ void FurlyPage::drawInfoPage() {
 		}
 		
 		if(CHECK_BIT(active_selection[level], FURLY_PLAY_ID)) {
-			progress = min(1.0f, max(0.0f, 1 - (NOW - FUN_REQUIRE) / (float) LAST_FUN));
+			progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FUN) / (float) FUN_REQUIRE));
 			Page::drawProgressBar(35, offset_y, 100, 10, progress);
 			mDisplay.setFont(&FreeMonoBold10pt7b);
 			mDisplay.setCursor(35, offset_y - 5);
 			mDisplay.print(TXT_FUN);
 			
-			hours = round(progress * LAST_FUN / 3600);
+			hours = round(progress * FUN_REQUIRE / 3600);
 			mDisplay.setFont(&FreeMonoBold7pt7b);
 			mDisplay.setCursor(140, offset_y + 8);
 			mDisplay.print(hours);
@@ -543,6 +553,7 @@ void FurlyPage::drawInfoPage() {
 		
 		if(CHECK_BIT(active_selection[level], FURLY_EDU_ID)) {
 			Page::drawProgressBar(35, offset_y, 100, 10, 1);
+			mDisplay.setFont(&FreeMonoBold10pt7b);
 			mDisplay.setCursor(35, offset_y - 5);
 			mDisplay.print(TXT_EDUCATION);
 		}
