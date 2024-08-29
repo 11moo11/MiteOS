@@ -307,10 +307,10 @@ void FurlyPage::drawMainPage() {
 	mDisplay.drawBitmap(165, 40, main_selection_icons[prev], 30, 30, FOREGROUND_COLOR);
 	mDisplay.drawRect(165, 40, 30, 30, FOREGROUND_COLOR);
 	
-	Page::drawDitherBox(160, 35, 40, 5, 2, 1);
-	Page::drawDitherBox(160, 40, 40, 5, 1, 1);
-	Page::drawDitherBox(160, 45, 40, 5, 1, 2);
-	Page::drawDitherBox(160, 50, 40, 5, 1, 3);
+	Page::drawDitherBox(161, 35, 38, 5, 2, 1);
+	Page::drawDitherBox(161, 40, 38, 5, 1, 1);
+	Page::drawDitherBox(161, 45, 38, 5, 1, 2);
+	Page::drawDitherBox(161, 50, 38, 5, 1, 3);
 	
 	
 	
@@ -318,10 +318,10 @@ void FurlyPage::drawMainPage() {
 	mDisplay.drawBitmap(165, 130, main_selection_icons[next], 30, 30, FOREGROUND_COLOR);
 	mDisplay.drawRect(165, 130, 30, 30, FOREGROUND_COLOR);
 	
-	Page::drawDitherBox(160, 160, 40, 5, 2, 1);
-	Page::drawDitherBox(160, 155, 40, 5, 1, 1);
-	Page::drawDitherBox(160, 150, 40, 5, 1, 2);
-	Page::drawDitherBox(160, 145, 40, 5, 1, 3);
+	Page::drawDitherBox(161, 160, 38, 5, 2, 1);
+	Page::drawDitherBox(161, 155, 38, 5, 1, 1);
+	Page::drawDitherBox(161, 150, 38, 5, 1, 2);
+	Page::drawDitherBox(161, 145, 38, 5, 1, 3);
 	
 	
 	drawFurly(80, 100);

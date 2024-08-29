@@ -1,7 +1,6 @@
 #include "src/MiteOS.h"
-#include "settings.h"
 
-MiteOS miteOS(settings);
+MiteOS miteOS;
 
 void setup() {
 	miteOS.init();

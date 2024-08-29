@@ -119,7 +119,7 @@ void MiteOS::init() {
 			// Initial configuration
 			_bmaConfig();
 			pageData.pageIndex = 0; // Set Page to Watchface
-			gmtTimeOffset = settings.gmtOffset;
+			gmtTimeOffset = Configuration::getGmtOffset();
 			
 			RTC.read(osBootTime);
 			
@@ -256,10 +256,10 @@ void MiteOS::checkTime() {
 	}
 	
 	if(AUTO_DARKMODE) {
-		if(MiteOS::currentTime.Hour == settings.darkmodeStartH && MiteOS::currentTime.Minute == settings.darkmodeStartM) {
-			DARKMODE = !settings.inverseDarkMode;
-		}else if(MiteOS::currentTime.Hour == settings.darkmodeEndH && MiteOS::currentTime.Minute == settings.darkmodeEndM) {
-			DARKMODE = settings.inverseDarkMode;
+		if(MiteOS::currentTime.Hour == Configuration::getDarkmodeStartH() && MiteOS::currentTime.Minute == Configuration::getDarkmodeStartM()) {
+			DARKMODE = !Configuration::getInverseDarkMode();
+		}else if(MiteOS::currentTime.Hour == Configuration::getDarkmodeEndH() && MiteOS::currentTime.Minute == Configuration::getDarkmodeEndM()) {
+			DARKMODE = Configuration::getInverseDarkMode();
 		}
 	}
 
@@ -295,12 +295,12 @@ void MiteOS::checkTime() {
 
 void MiteOS::initDarkmode() {
 	if(AUTO_DARKMODE) {
-		if(MiteOS::currentTime.Hour > instance->settings.darkmodeStartH || (MiteOS::currentTime.Hour == instance->settings.darkmodeStartH && MiteOS::currentTime.Minute >= instance->settings.darkmodeStartM)) {
-			DARKMODE = !instance->settings.inverseDarkMode;
-		}else if(MiteOS::currentTime.Hour < instance->settings.darkmodeEndH || (MiteOS::currentTime.Hour == instance->settings.darkmodeEndH && MiteOS::currentTime.Minute <= instance->settings.darkmodeEndM)) {
-			DARKMODE = !instance->settings.inverseDarkMode;
+		if(MiteOS::currentTime.Hour > Configuration::getDarkmodeStartH() || (MiteOS::currentTime.Hour == Configuration::getDarkmodeStartH() && MiteOS::currentTime.Minute >= Configuration::getDarkmodeStartM())) {
+			DARKMODE = !Configuration::getInverseDarkMode();
+		}else if(MiteOS::currentTime.Hour < Configuration::getDarkmodeEndH() || (MiteOS::currentTime.Hour == Configuration::getDarkmodeEndH() && MiteOS::currentTime.Minute <= Configuration::getDarkmodeEndM())) {
+			DARKMODE = !Configuration::getInverseDarkMode();
 		}else{
-			DARKMODE = instance->settings.inverseDarkMode;
+			DARKMODE = Configuration::getInverseDarkMode();
 		}
 	}else{
 		DARKMODE = PREF_DARKMODE;
@@ -457,7 +457,7 @@ void MiteOS::_bmaConfig() {
 uint8_t MiteOS::getBoardRevision() {
 	esp_chip_info_t chip_info;
 	esp_chip_info(&chip_info);
-	
+
 	if(chip_info.model == CHIP_ESP32){ //Revision 1.0 - 2.0
 		Wire.beginTransmission(0x68); //v1.0 has DS3231
 		if (Wire.endTransmission() == 0){
@@ -477,5 +477,6 @@ uint8_t MiteOS::getBoardRevision() {
 	if(chip_info.model == CHIP_ESP32S3){ //Revision 3.0
 		return 30;
 	}
+	
 	return -1;
 }

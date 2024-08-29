@@ -241,9 +241,13 @@ void Page::drawDitherBox(int x, int y, int w, int h, uint8_t fillVal, uint8_t em
 void Page::drawDitherBox(int x, int y, int w, int h, uint8_t fillVal, uint8_t emptyVal, uint16_t color) {
 	for(int posX = 0; posX < w; posX++) {
 		for(int posY = 0; posY < h; posY++) {
-			if(((posX + posY) % (fillVal + emptyVal)) < fillVal) {
+			/*if(((posX + posY) % (fillVal + emptyVal)) < fillVal) {
+				mDisplay.drawPixel(x + posX, y + posY, color);
+			}*/
+			if(posX % (fillVal + emptyVal) < fillVal && posY % (fillVal + emptyVal) < fillVal) {
 				mDisplay.drawPixel(x + posX, y + posY, color);
 			}
+
 		}
 	}
 }

@@ -7,7 +7,7 @@
 #include "DSEG7_Classic_Bold_53.h"
 #include "../../Fonts/Seven_Segment10pt7b.h"
 #include "../../Fonts/icons.h"
-#include "../../Managers/NetworkManager.h"
+#include "../../Managers/WifiConnectionManager.h"
 #include "../../Managers/WeatherManager.h"
 #include "../../Images/weather_icons.h"
 

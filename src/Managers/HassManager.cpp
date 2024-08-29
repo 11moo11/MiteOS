@@ -1,6 +1,6 @@
 #include "HassManager.h"
 #include <HTTPClient.h>
-#include "NetworkManager.h"
+#include "WifiConnectionManager.h"
 #include "../Data/Configuration.h"
 
 String HassManager::url = "";
@@ -29,7 +29,7 @@ bool HassManager::toggle(String type, String entity) {
 	}
 	if(HassManager::url.length() == 0) return false;
 	
-	if (NetworkManager::connectWifi()) {
+	if (WifiConnectionManager::connectWifi()) {
 		HTTPClient http;
 
 		String serverPath = url + "/api/services/" + type + "/toggle";

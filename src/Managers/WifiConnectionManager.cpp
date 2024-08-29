@@ -1,6 +1,5 @@
-#include "NetworkManager.h"
+#include "WifiConnectionManager.h"
 #include "../MiteOS.h"
-#include "settings.h"
 #include <NTPClient.h>
 #include "WeatherManager.h"
 #include "../Images/menu_icons.h"
@@ -9,7 +8,7 @@ RTC_DATA_ATTR bool WifiConfigured;
 RTC_DATA_ATTR uint32_t lastWifiIPAddress;
 RTC_DATA_ATTR char lastWifiSSID[30];
 
-bool NetworkManager::connectWifi() {
+bool WifiConnectionManager::connectWifi() {
 	BluetoothManager::powerOff();
 	
 	PageManager::showConnectionIcon(icon_wifi);
@@ -34,7 +33,7 @@ bool NetworkManager::connectWifi() {
 
 
 
-void NetworkManager::registerNewWifiConnection() {
+void WifiConnectionManager::registerNewWifiConnection() {
 	mDisplay.epd2.setBusyCallback(0); // temporarily disable lightsleep on busy
 	
 	WiFiManager wifiManager;
@@ -70,7 +69,7 @@ void NetworkManager::registerNewWifiConnection() {
 	mDisplay.epd2.setBusyCallback(WatchyDisplay::busyCallback);
 }
 
-void NetworkManager::_configModeCallback(WiFiManager *myWiFiManager) {
+void WifiConnectionManager::_configModeCallback(WiFiManager *myWiFiManager) {
 	mDisplay.setFullWindow();
 	mDisplay.setFont(&FreeMonoBold9pt7b);
 	
@@ -86,7 +85,7 @@ void NetworkManager::_configModeCallback(WiFiManager *myWiFiManager) {
 	mDisplay.display(false); // full refresh
 }
 
-void NetworkManager::showSyncNTP() {
+void WifiConnectionManager::showSyncNTP() {
 	mDisplay.setFullWindow();
 	mDisplay.fillScreen(GxEPD_BLACK);
 	mDisplay.setFont(&FreeMonoBold9pt7b);
@@ -94,7 +93,7 @@ void NetworkManager::showSyncNTP() {
 	mDisplay.setCursor(0, 30);
 	mDisplay.println("Syncing NTP... ");
 	mDisplay.print("GMT offset: ");
-	mDisplay.println(MiteOS::instance->settings.gmtOffset);
+	mDisplay.println(Configuration::getGmtOffset());
 	mDisplay.display(false); // full refresh
 	
 	
@@ -132,16 +131,16 @@ void NetworkManager::showSyncNTP() {
 	delay(3000);
 }
 
-bool NetworkManager::syncNTP() { // NTP sync - call after connecting to WiFi and 
+bool WifiConnectionManager::syncNTP() { // NTP sync - call after connecting to WiFi and 
 								 // remember to turn it back off
-	return syncNTP(MiteOS::instance->settings.gmtOffset, MiteOS::instance->settings.ntpServer.c_str());
+	return syncNTP(Configuration::getGmtOffset(), Configuration::getNtpServer().c_str());
 }
 
-bool NetworkManager::syncNTP(long gmt) {
-  return syncNTP(gmt, MiteOS::instance->settings.ntpServer.c_str());
+bool WifiConnectionManager::syncNTP(long gmt) {
+  return syncNTP(gmt, Configuration::getNtpServer().c_str());
 }
 
-bool NetworkManager::syncNTP(long gmt, String ntpServer) {
+bool WifiConnectionManager::syncNTP(long gmt, String ntpServer) {
 	// NTP sync - call after connecting to
 	// WiFi and remember to turn it back off
 	WiFiUDP ntpUDP;
@@ -156,7 +155,7 @@ bool NetworkManager::syncNTP(long gmt, String ntpServer) {
 	return true;
 }
 
-void NetworkManager::powerOff() {
+void WifiConnectionManager::powerOff() {
 	WiFi.mode(WIFI_OFF);
 	
 	WifiConfigured = false;

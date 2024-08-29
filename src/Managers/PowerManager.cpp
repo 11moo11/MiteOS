@@ -6,7 +6,7 @@ void PowerManager::deepSleep() {
 	mDisplay.hibernate();
 	
 	BluetoothManager::powerOff();
-	NetworkManager::powerOff();
+	WifiConnectionManager::powerOff();
 	
 	mRTC.clearAlarm();        // resets the alarm flag in the RTC
 	
@@ -21,7 +21,7 @@ void PowerManager::deepSleep() {
 	// Enable RTC Wakeup as long as the battery voltage is safe
 	if(getBatteryVoltage() > 3.6)
 		esp_sleep_enable_ext0_wakeup((gpio_num_t) RTC_INT_PIN, 0); // enable deep sleep wake on RTC interrupt
-	
+
 	uint64_t mask = BTN_PIN_MASK | ACC_INT_MASK;
 	if(doubleTapBtn == 0) mask = BTN_PIN_MASK;
 	

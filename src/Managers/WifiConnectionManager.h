@@ -7,7 +7,7 @@ extern RTC_DATA_ATTR bool WifiConfigured;
 extern RTC_DATA_ATTR uint32_t lastWifiIPAddress;
 extern RTC_DATA_ATTR char lastWifiSSID[30];
 
-class NetworkManager {
+class WifiConnectionManager {
     public:
         static bool WIFI_CONNECTED;
     public:

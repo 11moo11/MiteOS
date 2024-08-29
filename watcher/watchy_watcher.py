@@ -43,7 +43,8 @@ updateImg()
 
 window.update()
 
-ser = serial.Serial('COM12', baudrate = 115200)
+#ser = serial.Serial('COM12', baudrate = 115200)
+ser = serial.Serial('/dev/ttyACM0', baudrate = 115200)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 
 print("Waiting...")

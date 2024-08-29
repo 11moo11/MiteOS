@@ -1,6 +1,6 @@
 #include "WeatherManager.h"
 
-#include "NetworkManager.h"
+#include "WifiConnectionManager.h"
 #include <HTTPClient.h>
 #include <JSON.h>
 
@@ -13,14 +13,14 @@ void WeatherManager::timeTick() {
 }
 
 WeatherData WeatherManager::getWeatherData() {
-	return _getWeatherData( MiteOS::instance->settings.cityID
-						  , MiteOS::instance->settings.lat
-						  , MiteOS::instance->settings.lon
-						  , MiteOS::instance->settings.weatherUnit
-						  , MiteOS::instance->settings.weatherLang
-						  , MiteOS::instance->settings.weatherURL
-						  , MiteOS::instance->settings.weatherAPIKey
-						  , MiteOS::instance->settings.weatherUpdateInterval
+	return _getWeatherData( Configuration::getCityID()
+						  , Configuration::getLat()
+						  , Configuration::getLon()
+						  , Configuration::getWeatherUnit()
+						  , Configuration::getWeatherLang()
+						  , Configuration::getWeatherURL()
+						  , Configuration::getWeatherAPIKey()
+						  , Configuration::getWeatherUpdateInterval()
 						  );
 }
 
@@ -36,7 +36,7 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 	
 	if (weatherCheckCounter >= updateInterval) { // only update if WEATHER_UPDATE_INTERVAL has elapsed
 												 // i.e. 30 minutes
-		if (NetworkManager::connectWifi()) {
+		if (WifiConnectionManager::connectWifi()) {
 			HTTPClient http; // Use Weather API for live data if WiFi is connected
 			http.setConnectTimeout(3000); // 3 second max timeout
 			String weatherQueryURL = url;
@@ -70,7 +70,7 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 				
 				// sync NTP during weather API call and use timezone of lat & lon
 				long gmtOffset = int(responseObject["timezone"]);
-				NetworkManager::syncNTP(gmtOffset);
+				WifiConnectionManager::syncNTP(gmtOffset);
 			} else {
 				// http error
 			}

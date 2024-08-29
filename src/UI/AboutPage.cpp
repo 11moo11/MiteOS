@@ -2,7 +2,7 @@
 #include "../MiteOS.h"
 #include "../Images/menu_icons.h"
 #include <Fonts/FreeMonoBold9pt7b.h>
-#include "../Managers/NetworkManager.h"
+#include "../Managers/WifiConnectionManager.h"
 
 void AboutPage::drawPage() {
 	drawButtonIcon(BTN_BACK, icon_left);

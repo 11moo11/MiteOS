@@ -1,6 +1,6 @@
 #include "SettingsPage.h"
 #include "../MiteOS.h"
-#include "../Managers/NetworkManager.h"
+#include "../Managers/WifiConnectionManager.h"
 #include <DSEG7_Classic_Bold_53.h>
 #include <Fonts/FreeSansBold9pt7b.h>
 #include "../Data/Configuration.h"
@@ -127,7 +127,7 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 						return true;
 					
 					case 1:
-						NetworkManager::showSyncNTP();
+						WifiConnectionManager::showSyncNTP();
 						return true;
 
 					case 2:
@@ -142,11 +142,11 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 			case SETTINGS_PAGE_NETWORK:
 				switch(pageData.menuIndex) {
 					case 0:
-						NetworkManager::registerNewWifiConnection();
+						WifiConnectionManager::registerNewWifiConnection();
 						return true;
 					
 					case 1:
-						NetworkManager::registerNewWifiConnection();
+						WifiConnectionManager::registerNewWifiConnection();
 						return true;
 					
 					default: break;

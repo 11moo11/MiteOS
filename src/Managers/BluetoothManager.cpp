@@ -30,7 +30,7 @@ class cb : public BLEServerCallbacks {
 
 class ccb : public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
-		std::string rxValue = pCharacteristic->getValue();
+		String rxValue = pCharacteristic->getValue();
 		
 		if (rxValue.length() > 0) {
 			//Serial.println(rxValue.length());
@@ -41,9 +41,7 @@ class ccb : public BLECharacteristicCallbacks {
 			Serial.println(" ");
 			*/
 			
-			String value = rxValue.c_str();
-			
-			BluetoothManager::parseCommand(value);
+			BluetoothManager::parseCommand(rxValue);
 		}
 	}
 };
@@ -72,7 +70,7 @@ static void my_gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_pa
 void BluetoothManager::init() {
 	if(initialized) return;
 	
-	NetworkManager::powerOff();
+	WifiConnectionManager::powerOff();
 	
 	printDebug("Initializing BT Device");
 	BLEDevice::init(TXT_DEVICE_NAME);

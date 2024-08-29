@@ -24,36 +24,17 @@
 #include "Managers/AlertManager.h"
 #include "Managers/ActivityManager.h"
 #include "Managers/BluetoothManager.h"
-#include "Managers/NetworkManager.h"
+#include "Managers/WifiConnectionManager.h"
 #include "Managers/PowerManager.h"
 
 #include "Display/MiteDisplay.h"
+
+#include <esp_chip_info.h>
 
 #define ADDITONAL_BUTTON_CHECK_DURATION 2000
 #define BUTTON_PRESS_REPEAT_DELAY 150
 
 static bool displayPoweredOn = false;
-
-typedef struct MiteSettings {
-	// Weather Settings
-	String cityID;
-	String lat;
-	String lon;
-	String weatherAPIKey;
-	String weatherURL;
-	String weatherUnit;
-	String weatherLang;
-	int8_t weatherUpdateInterval;
-	// NTP Settings
-	String ntpServer;
-	int gmtOffset;
-	//
-	bool inverseDarkMode;
-	uint8_t darkmodeStartH;
-	uint8_t darkmodeStartM;
-	uint8_t darkmodeEndH;
-	uint8_t darkmodeEndM;
-} MiteSettings;
 
 
 #define ALARM_MODE_ONCE 0
@@ -73,7 +54,6 @@ typedef struct AlarmData {
 
 class MiteOS {
 	public:
-		MiteSettings settings;
 		static WatchyDisplay watchyDisplay;
 		static MiteDisplay<WatchyDisplay, WatchyDisplay::HEIGHT> display;
 		static WatchyRTC RTC;
@@ -81,7 +61,7 @@ class MiteOS {
 		static MiteOS *instance;
 
 	public:
-		explicit MiteOS(const MiteSettings &s) : settings(s) { } // constructor
+		explicit MiteOS() { }; // constructor
 		void init();
 		void handleButtonPress();
 		
