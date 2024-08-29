@@ -55,7 +55,6 @@ bool Page::handleMenuButtons(uint8_t buttonIndex) {
 	return false;
 }
 
-
 void Page::drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]) {
 	switch(buttonIndex) {
 		case BTN_BACK:

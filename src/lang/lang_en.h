@@ -95,7 +95,6 @@
 #define TXT_AGE "Age"
 #define TXT_RESTART "Restart"
 
-
 // Month and Day Stuff
 #define TXT_DAYS "Days"
 

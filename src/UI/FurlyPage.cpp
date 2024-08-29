@@ -141,6 +141,7 @@ void FurlyPage::levelChanged() {
 		}
 		
 		LAST_LEVEL = level;
+		Configuration::init();
 		Configuration::preferences.putUChar("last_level", level);
 	}
 }
@@ -148,6 +149,8 @@ void FurlyPage::levelChanged() {
 void FurlyPage::refillState(uint8_t state) {
 	uint8_t level = getLevel();
 	
+	Configuration::init();
+
 	switch (state) {
 		case FURLY_WARMTH_ID:
 			printDebug("Refuel Warmth");

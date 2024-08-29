@@ -148,7 +148,7 @@ void MiteOS::waitForAdditionalButtons() {
 	long lastTimeout = millis();
 	pinMode(MENU_BTN_PIN, INPUT);
 	pinMode(BACK_BTN_PIN, INPUT);
-	pinMode(UP_BTN_PIN, INPUT);
+	pinMode(  UP_BTN_PIN, INPUT);
 	pinMode(DOWN_BTN_PIN, INPUT);
 
 	// Initialize with one so they dont get registered again and need to wait the 500ms
