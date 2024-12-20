@@ -130,7 +130,7 @@ void MiteOS::init() {
 			initDarkmode();
 			
 			PageManager::refreshPage(false); // full update on reset
-			AlertManager::vibMotor(75, 4);
+			// AlertManager::vibMotor(75, 4);
 			
 			setCpuFrequencyMhz(80); // I don't think it really works, but just set it to lowest frequency possible
 			
@@ -253,6 +253,10 @@ void MiteOS::checkTime() {
 		ActivityManager::resetSteps();
 	}else if(currentTime.Minute % 10 == 0) { // Saving steps each 10 minutes to make sure when the clock crashes its not loosing all progress
 		ActivityManager::saveSteps();
+	}
+
+	if(currentTime.Hour == 2 && currentTime.Minute == 1) {
+		WifiConnectionManager::syncNTP();
 	}
 	
 	if(AUTO_DARKMODE) {

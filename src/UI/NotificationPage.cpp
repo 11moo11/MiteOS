@@ -39,7 +39,7 @@ void NotificationPage::drawPage() {
 		drawIcons();
 	}else{
 		mDisplay.setFont(&FreeSansBold9pt7b);
-		drawCentreString(TXT_NO_NOTIFICATION, 100, 100, false);
+		drawCentreString(TXT_NO_NOTIFICATION, 100, 100, true);
 		drawButtonIcon(BTN_BACK, icon_exit);
 		drawButtonIcon(BTN_CONFIRM, icon_refresh);
 	}

@@ -89,6 +89,7 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 			currentWeatherData.external             = false;
 			String(TXT_CHIP).toCharArray(currentWeatherData.weatherDescription, 20);
 		}
+		WifiConnectionManager::powerOff();
 		weatherCheckCounter = 0;
 	} else {
 		// weatherCheckCounter++;

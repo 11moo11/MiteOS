@@ -28,7 +28,7 @@
 #define DARKMODE_END_M 30
 
 // Possible Values LANG_EN, LANG_DE, LANG_FR
-#define LANG_EN
+#define LANG_DE
 
 
 #define STEPS_PER_KM 1400

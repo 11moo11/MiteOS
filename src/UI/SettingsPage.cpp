@@ -21,7 +21,7 @@
 void SettingsPage::drawPage() {
 	if(pageData.subPageIndex == SETTINGS_PAGE_OVERVIEW) {
 		const char *menuItems[] = {
-			TXT_ABOUT " " TXT_OS_NAME, TXT_TIME, TXT_NETWORK, TXT_DISPLAY, TXT_INTERACTION, TXT_STORAGE, TXT_TEST
+			TXT_ABOUT " " TXT_OS_NAME, TXT_TIME, TXT_NETWORK, TXT_DISPLAY, TXT_INTERACTION, TXT_STORAGE, TXT_DEBUG
 		};
 		
 		showMenu(menuItems, 7, true, TXT_SETTINGS);
@@ -66,10 +66,10 @@ void SettingsPage::drawPage() {
 		drawButtonIcon(BTN_BACK, icon_left);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_TEST) {
 		const char *menuItems[] = {
-			TXT_VIB_MOTOR, TXT_SHOW_ACC
+			TXT_VIB_MOTOR, TXT_SHOW_ACC, TXT_REBOOT
 		};
 		
-		showMenu(menuItems, 2, true, TXT_TEST);
+		showMenu(menuItems, 3, true, TXT_DEBUG);
 	}
 	
 	
@@ -211,6 +211,17 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 					
 					case 1:
 						showAccelerometer();
+						return true;
+
+					case 2:
+						mDisplay.setFullWindow();
+						mDisplay.fillScreen(BACKGROUND_COLOR);
+						drawCentreString("bye", 100, 100, false);
+						mDisplay.display(true); // partial refresh
+
+						delay(10);
+						
+						ESP.restart();
 						return true;
 					
 					default: break;

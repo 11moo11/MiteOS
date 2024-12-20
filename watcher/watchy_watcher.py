@@ -53,7 +53,7 @@ def serial_ports():
         ports = ['COM%s' % (i + 1) for i in range(256)]
     elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
         # this excludes your current terminal "/dev/tty"
-        ports = glob.glob('/dev/tty[A-Za-z]*')
+        ports = glob.glob('/dev/ttyACM[A-Za-z0-9]*')
     elif sys.platform.startswith('darwin'):
         ports = glob.glob('/dev/tty.*')
     else:
@@ -75,6 +75,7 @@ window.update()
 
 #ser = serial.Serial('COM12', baudrate = 115200)
 #ser = serial.Serial('/dev/ttyACM0', baudrate = 115200)
+print(serial_ports()[0])
 ser = serial.Serial(serial_ports()[0], baudrate = 115200)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 
@@ -87,11 +88,11 @@ while True:
         line = line.decode('ascii')
         
         if line.startswith('screenshot|'):
-            print("Screenshot")
+            # print("Screenshot")
             imageData = line.split("|")[1]
             imageData = byte_array_to_booleans(bytes.fromhex(imageData))
             
-            print(len(imageData))
+            # print(len(imageData))
             data = np.zeros((200,200,3), dtype=np.uint8)
             for x in range(0, 200):
                 for y in range(0, 200):

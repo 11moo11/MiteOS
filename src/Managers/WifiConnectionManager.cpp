@@ -12,22 +12,33 @@ bool WifiConnectionManager::connectWifi() {
 	BluetoothManager::powerOff();
 	
 	PageManager::showConnectionIcon(icon_wifi);
-	
-	if (WL_CONNECT_FAILED == WiFi.begin()) { // WiFi not setup, you can also use hard coded credentials
+
+	WifiConfigured = false;
+
+	WiFi.mode(WIFI_MODE_STA);
+
+	if (WL_CONNECT_FAILED != WiFi.begin()) { // WiFi not setup, you can also use hard coded credentials
 											 // with WiFi.begin(SSID,PASS);
 		WifiConfigured = false;
-	} else {
-		if (WL_CONNECTED == WiFi.waitForConnectResult()) { // attempt to connect for 10s
-			lastWifiIPAddress = WiFi.localIP();
-			WiFi.SSID().toCharArray(lastWifiSSID, 30);
-			WifiConfigured = true;
-		} else { // connection failed, time out
-			WifiConfigured = false;
-			// turn off radios
-			WiFi.mode(WIFI_OFF);
-			btStop();
+		uint8_t wait = 50;
+		while (wait-- > 0) {
+			if(WiFi.status() == WL_CONNECTED) {
+				lastWifiIPAddress = WiFi.localIP();
+				WiFi.SSID().toCharArray(lastWifiSSID, 30);
+				WifiConfigured = true;
+				break;
+			}
+			delay(100);
 		}
 	}
+
+	if(!WifiConfigured) {
+		delay(50);
+
+		// turn off radios
+		powerOff();
+	}
+
 	return WifiConfigured;
 }
 
@@ -126,7 +137,9 @@ void WifiConnectionManager::showSyncNTP() {
 	} else {
 		mDisplay.println("WiFi Not Configured");
 	}
-	
+
+	powerOff();
+
 	mDisplay.display(true); // full refresh
 	delay(3000);
 }
@@ -156,6 +169,7 @@ bool WifiConnectionManager::syncNTP(long gmt, String ntpServer) {
 }
 
 void WifiConnectionManager::powerOff() {
+	WiFi.disconnect();
 	WiFi.mode(WIFI_OFF);
 	
 	WifiConfigured = false;

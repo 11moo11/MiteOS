@@ -19,7 +19,7 @@ void PowerManager::deepSleep() {
 	}
 	
 	// Enable RTC Wakeup as long as the battery voltage is safe
-	if(getBatteryVoltage() > 3.6)
+	if(getBatteryVoltage() > 3.65)
 		esp_sleep_enable_ext0_wakeup((gpio_num_t) RTC_INT_PIN, 0); // enable deep sleep wake on RTC interrupt
 
 	uint64_t mask = BTN_PIN_MASK | ACC_INT_MASK;

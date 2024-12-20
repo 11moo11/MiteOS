@@ -126,9 +126,9 @@ void BluetoothManager::bondDevice() {
 void BluetoothManager::connectDevice() {
 	if(!btDeviceRegistered) return;
 	
-	PageManager::showConnectionIcon(icon_bluetooth);
-	
 	if(connected) return;
+
+	PageManager::showConnectionIcon(icon_bluetooth);
 	
 	init();
 	
