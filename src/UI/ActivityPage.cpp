@@ -78,7 +78,7 @@ void ActivityPage::drawStepList() {
 			drawCircle(16 + (66 * col), 4 + (66 * row), 35, 4, percentage);
 		}
 		
-		drawCentreString(String(dayShortStr(dow)), 33 + (66 * col), 33 + (66 * row) + 18, false);
+		drawCentreString(String(Lang::dayShortStr(dow)), 33 + (66 * col), 33 + (66 * row) + 18, false);
 		drawCentreString(String(steps[dow - 1]), 33 + (66 * col), 33 + (66 * row) + 32, false);
 		
 		/*
@@ -88,7 +88,7 @@ void ActivityPage::drawStepList() {
 		}
 		
 		mDisplay.setCursor(30, 40 + (22 * row++));
-		mDisplay.print(String(dayShortStr(dow)));
+		mDisplay.print(String(Lang::dayShortStr(dow)));
 		mDisplay.print(": ");
 		mDisplay.println(steps[dow - 1]);
 		*/

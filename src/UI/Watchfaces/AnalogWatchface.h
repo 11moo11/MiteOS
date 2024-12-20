@@ -39,7 +39,7 @@ class AnalogWatchface : public Watchface {
 			mDisplay.print(dateDay);
 			
 			//weekday
-			String wDay = dayShortStr(MiteOS::currentTime.Wday);
+			String wDay = Lang::dayShortStr(MiteOS::currentTime.Wday);
 			wDay = wDay.substring(0,wDay.length() - 1);
 			mDisplay.fillRect(79, 140, 42, 22, FOREGROUND_COLOR);
 			mDisplay.setFont(&FreeSerifBold12pt7b);

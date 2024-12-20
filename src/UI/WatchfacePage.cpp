@@ -9,6 +9,7 @@
 #include "Watchfaces/AnalogWatchface.h"
 #include "Watchfaces/HobbitTimeWatchface.h"
 #include "Watchfaces/CalendarWatchface.h"
+#include "Watchfaces/TrainWatchface.h"
 
 RTC_DATA_ATTR uint8_t watchFaceId = 0;
 
@@ -19,6 +20,7 @@ PROGMEM MacPaintWatchface macPaintWatchface;
 PROGMEM AnalogWatchface analogWatchface;
 PROGMEM HobbitTimeWatchface hobbitTimeWatchface;
 PROGMEM CalendarWatchface calendarWatchface;
+PROGMEM TrainWatchface trainWatchface;
 PROGMEM Watchface* watchfaces[] = {
 	&seg7Watchface,
 	&bttfWatchface,
@@ -27,9 +29,10 @@ PROGMEM Watchface* watchfaces[] = {
 	&analogWatchface,
 	&hobbitTimeWatchface,
 	&calendarWatchface,
+	&trainWatchface,
 };
 
-#define WATCHFACE_COUNT 7
+#define WATCHFACE_COUNT 8
 
 void WatchfacePage::drawPage() {
 	printDebug("Drawing Watchface");

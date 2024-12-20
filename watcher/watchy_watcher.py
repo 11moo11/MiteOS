@@ -71,7 +71,8 @@ def serial_ports():
 
 updateImg()
 
-window.update()
+if(len(sys.argv) < 2 or sys.argv[1] != "false"):
+    window.update()
 
 #ser = serial.Serial('COM12', baudrate = 115200)
 #ser = serial.Serial('/dev/ttyACM0', baudrate = 115200)
@@ -105,4 +106,6 @@ while True:
             updateImg()
         else:
             print(line);
-    window.update()
+    
+    if(len(sys.argv) < 2 or sys.argv[1] != "false"):
+        window.update()

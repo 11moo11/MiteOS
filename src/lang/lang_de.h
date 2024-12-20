@@ -42,6 +42,8 @@
 #define TXT_INTERACT_VIBRATE_ON_BTN "Tasten Vib."
 #define TXT_INTERACT_DBL_TAP "Double Tap"
 
+#define TXT_STEPS "Schritte"
+
 #define TXT_BTN_1 "Zurück"
 #define TXT_BTN_2 "Vor"
 #define TXT_BTN_3 "Hoch"

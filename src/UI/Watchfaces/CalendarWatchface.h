@@ -80,7 +80,7 @@ class CalendarWatchface : public Watchface {
 			// END draw Calendar
 			
 			// highlight calendar day
-			textstring = dayShortStr(MiteOS::currentTime.Wday);
+			textstring = Lang::dayShortStr(MiteOS::currentTime.Wday);
 			
 			// draw time
 			mDisplay.setFont(&Teko_Regular12pt7b);
