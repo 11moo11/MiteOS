@@ -101,8 +101,10 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo() {
 }
 
 void PhoneConnectionManager::SyncConfiguration() {
+	printDebug("Requesting Configuration...");
+
 	BluetoothManager::sendCommand("GET_CONFIGURATION=");
-	
+
 	PlaybackInfo pbi;
 	
 	if(BluetoothManager::lastResponse.length() > 0) {

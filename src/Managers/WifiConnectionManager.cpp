@@ -165,6 +165,7 @@ bool WifiConnectionManager::syncNTP(long gmt, String ntpServer) {
 	tmElements_t tm;
 	breakTime((time_t)timeClient.getEpochTime(), tm);
 	mRTC.set(tm);
+	
 	return true;
 }
 

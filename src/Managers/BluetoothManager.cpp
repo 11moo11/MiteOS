@@ -73,8 +73,8 @@ void BluetoothManager::init() {
 	WifiConnectionManager::powerOff();
 	
 	printDebug("Initializing BT Device");
-	BLEDevice::init(TXT_DEVICE_NAME);
-	esp_err_t err = esp_ble_gatt_set_local_mtu(256);
+	BLEDevice::init("Mite");
+	esp_err_t err = esp_ble_gatt_set_local_mtu(512);
 	pServer = BLEDevice::createServer();
 	
 	// add server callback so we can detect when we're connected.
@@ -168,8 +168,8 @@ void BluetoothManager::connectDevice() {
 void BluetoothManager::startBLEAdvertising() {
 	printDebug("startBLEAdvertising");
 	BLEAdvertising* advertising = pServer->getAdvertising();
-	//advertising->setAppearance(192);
-	//advertising->addServiceUUID(SERVICE_UUID);
+	advertising->setAppearance(192);
+	advertising->addServiceUUID(SERVICE_UUID);
 	//advertising->setScanResponse(true);
 	//advertising->setMinPreferred(0x06); // functions that help with iPhone connections issue
 	//advertising->setMinPreferred(0x12);
@@ -222,7 +222,7 @@ void BluetoothManager::parseCommand(String value) {
 		//Serial.println(value.length());
 	}
 	
-	BluetoothManager::lastResponse = value;
+	BluetoothManager::lastResponse += value;
 	BluetoothManager::waitingForResponse = false;
 }
 
@@ -251,12 +251,16 @@ void BluetoothManager::waitForResponse() {
 	
 	uint8_t wait = 0;
 	while(waitingForResponse && wait < 50 && connected) { // Wait for response or 5 seconds, whatever comes first
+		if(wait % 10 == 0) notificationUpdateCharacteristic->notify();
+
 		wait++;
 		//Serial.println(commandCharacteristic->getLength());
+
 		delay(100);
 	}
 	//Serial.println(wait);
 	//Serial.println(commandCharacteristic->getLength());
+	Serial.println(lastResponse);
 	
 	waitingForResponse = false;
 }

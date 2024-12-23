@@ -86,7 +86,7 @@
 #define TXT_ERR "Err"
 
 // Tamagotchi App
-#define TXT_FURLY "Furly"
+#define TXT_FURLY "Wooly"
 #define TXT_WARMTH "Wärme"
 #define TXT_HUNGER "Hunger"
 #define TXT_THIRST "Durst"

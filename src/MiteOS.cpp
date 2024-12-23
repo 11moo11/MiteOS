@@ -256,7 +256,9 @@ void MiteOS::checkTime() {
 	}
 
 	if(currentTime.Hour == 2 && currentTime.Minute == 1) {
-		WifiConnectionManager::syncNTP();
+		if(WifiConnectionManager::connectWifi()) {
+			WifiConnectionManager::syncNTP();
+		}
 	}
 	
 	if(AUTO_DARKMODE) {
