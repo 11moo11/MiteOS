@@ -9,7 +9,7 @@
 
 #include "../Images/menu_icons.h"
 
-#define IMAGE_SCALE 2
+#define IMAGE_SCALE 1
 #define IMAGE_BORDER ((DISPLAY_WIDTH - (PLAYBACK_IMAGE_SIZE * IMAGE_SCALE)) / 2)
 
 void PlaybackPage::drawPage() {
@@ -25,12 +25,12 @@ void PlaybackPage::drawPage() {
 	
 	if(strlen(pbi.title) > 2) {
 		pageData.number1 = 1;
-		int16_t byteWidth = (48 + 7) / 8; // Bitmap scanline pad = whole byte
+		int16_t byteWidth = (PLAYBACK_IMAGE_SIZE + 7) / 8; // Bitmap scanline pad = whole byte
 		uint8_t b = 0;
 		
 		mDisplay.startWrite();
-		for (int16_t j = 0; j < 48; j++) {
-			for (int16_t i = 0; i < 48; i++) {
+		for (int16_t j = 0; j < PLAYBACK_IMAGE_SIZE; j++) {
+			for (int16_t i = 0; i < PLAYBACK_IMAGE_SIZE; i++) {
 				if (i & 7)
 					b <<= 1;
 				else

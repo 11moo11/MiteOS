@@ -13,7 +13,7 @@ String ent;
 #define HASS_PAGE_COUNT 1
 
 void HassPage::drawPage() {
-	Configuration::loadHassConfig();
+	loadData();
 
 	mDisplay.setFont(&FreeSans9pt7b);
 	drawButtonIcon(BTN_BACK, icon_exit);
@@ -21,6 +21,12 @@ void HassPage::drawPage() {
 	drawButtonIcon(BTN_UP, icon_up);
 	drawButtonIcon(BTN_DOWN, icon_down);
 	
+	displayPage();
+}
+
+void HassPage::loadData() {
+	Configuration::loadHassConfig();
+
 	ent = HassManager::getEntities();
 	item_count = 1;
 	for (int i = 0; i < ent.length(); i++) {
@@ -29,8 +35,6 @@ void HassPage::drawPage() {
 		}
 	}
 	item_count /= 2;
-	
-	displayPage();
 }
 
 String HassPage::getElement(uint8_t index) {
@@ -42,7 +46,7 @@ String HassPage::getElement(uint8_t index) {
 }
 
 bool HassPage::onButtonPressed(uint8_t buttonIndex) {
-	Configuration::loadHassConfig();
+	loadData();
 
 	switch(buttonIndex) {
 		/*

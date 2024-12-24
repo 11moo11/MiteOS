@@ -74,7 +74,7 @@ void BluetoothManager::init() {
 	
 	printDebug("Initializing BT Device");
 	BLEDevice::init("Mite");
-	esp_err_t err = esp_ble_gatt_set_local_mtu(512);
+	esp_err_t err = esp_ble_gatt_set_local_mtu(MTU_SIZE);
 	pServer = BLEDevice::createServer();
 	
 	// add server callback so we can detect when we're connected.
@@ -222,8 +222,11 @@ void BluetoothManager::parseCommand(String value) {
 		//Serial.println(value.length());
 	}
 	
-	BluetoothManager::lastResponse += value;
-	BluetoothManager::waitingForResponse = false;
+	BluetoothManager::lastResponse = BluetoothManager::lastResponse + value;
+	// Make sure the data has ended or is smaller than our MTU size (with some padding)
+	if(value.endsWith("}") || value.length() < MTU_SIZE - 8) {
+		BluetoothManager::waitingForResponse = false;
+	}
 }
 
 void BluetoothManager::requestNotifications() {
@@ -247,7 +250,7 @@ void BluetoothManager::sendCommand(String str) {
 
 void BluetoothManager::waitForResponse() {
 	waitingForResponse = true;
-	lastResponse = "";
+	BluetoothManager::lastResponse = "";
 	
 	uint8_t wait = 0;
 	while(waitingForResponse && wait < 50 && connected) { // Wait for response or 5 seconds, whatever comes first
@@ -260,7 +263,8 @@ void BluetoothManager::waitForResponse() {
 	}
 	//Serial.println(wait);
 	//Serial.println(commandCharacteristic->getLength());
-	Serial.println(lastResponse);
+	printDebug(BluetoothManager::lastResponse.length());
+	printDebug(BluetoothManager::lastResponse);
 	
 	waitingForResponse = false;
 }

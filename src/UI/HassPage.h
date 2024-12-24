@@ -11,6 +11,7 @@ class HassPage : public Page {
 	private:
 		void displayPage();
 		String getElement(uint8_t index);
+		void loadData();
 };
 
 #endif
