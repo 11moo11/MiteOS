@@ -115,6 +115,17 @@ void PhoneConnectionManager::SyncConfiguration() {
 				HassManager::setURL(json["hassUrl"]);
 				HassManager::setToken(json["hassTkn"]);
 				
+				if(json.hasOwnProperty("entities")) {
+					String entities = "";
+					for(uint8_t i = 0; i < json["entities"].length(); i++) {
+						if(i > 0) entities += ",";
+						entities += (String) json["entities"][i]["name"];
+						entities += ",";
+						entities += (String) json["entities"][i]["key"];
+					}
+					printDebug(entities);
+					HassManager::setEntities(entities);
+				}
 				Configuration::saveHassConfig();
 			}
 		}

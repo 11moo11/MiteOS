@@ -5,6 +5,7 @@
 
 String HassManager::url = "";
 String HassManager::token = "";
+String HassManager::entities = "";
 
 bool HassManager::toggleLight(String entity) {
 	return toggle("light", entity);
@@ -33,13 +34,14 @@ bool HassManager::toggle(String type, String entity) {
 		HTTPClient http;
 
 		String serverPath = url + "/api/services/" + type + "/toggle";
-		
+		printDebug(serverPath);
+
 		http.begin(serverPath.c_str());
 		http.addHeader("Content-Type", F("application/json"));
 		http.addHeader("Authorization", "Bearer " + token);
 		
 		int httpResponseCode = http.POST("{\"entity_id\": \"" + entity + "\"}");
-		Serial.println(httpResponseCode);
+		printDebug(httpResponseCode);
 		http.end();
 		
 		return httpResponseCode == 200;

@@ -85,27 +85,30 @@ seq = []
 count = 1 ## row index
 while True:
     if (ser.inWaiting() > 0):
-        line = ser.readline().strip()
-        line = line.decode('ascii')
-        
-        if line.startswith('screenshot|'):
-            # print("Screenshot")
-            imageData = line.split("|")[1]
-            imageData = byte_array_to_booleans(bytes.fromhex(imageData))
+        try:
+            line = ser.readline().strip()
+            line = line.decode('ascii')
             
-            # print(len(imageData))
-            data = np.zeros((200,200,3), dtype=np.uint8)
-            for x in range(0, 200):
-                for y in range(0, 200):
-                    if imageData[x * 200 + y]:
-                        #data[y, x] = (255, 236, 221)
-                        data[y, x] = (255, 255, 255)
-            
-            im = Image.fromarray(data)
-            im.save('buf.png')
-            updateImg()
-        else:
-            print(line);
+            if line.startswith('screenshot|'):
+                # print("Screenshot")
+                imageData = line.split("|")[1]
+                imageData = byte_array_to_booleans(bytes.fromhex(imageData))
+                
+                # print(len(imageData))
+                data = np.zeros((200,200,3), dtype=np.uint8)
+                for x in range(0, 200):
+                    for y in range(0, 200):
+                        if imageData[x * 200 + y]:
+                            #data[y, x] = (255, 236, 221)
+                            data[y, x] = (255, 255, 255)
+                
+                im = Image.fromarray(data)
+                im.save('buf.png')
+                updateImg()
+            else:
+                print(line);
+        except:
+            print("err")
     
     if(len(sys.argv) < 2 or sys.argv[1] != "false"):
         window.update()

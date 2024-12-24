@@ -7,31 +7,43 @@
 
 #include "../Images/big_icons.h"
 
-const char *haas_items[] = { 
-	"Licht",
-	"light.marius_right",
-	"VR",
-	"switch.tz3000_kdi2o9m6_ts011f_switch",
-	"3D Printer",
-	"switch.tz3000_kdi2o9m6_ts011f_switch_6",
-	"Printer Light",
-	"switch.tz3000_kdi2o9m6_ts011f_switch"
-};
-const int item_count = 4;
+int item_count = 1;
+String ent;
 
 #define HASS_PAGE_COUNT 1
 
 void HassPage::drawPage() {
+	Configuration::loadHassConfig();
+
 	mDisplay.setFont(&FreeSans9pt7b);
 	drawButtonIcon(BTN_BACK, icon_exit);
 	drawButtonIcon(BTN_CONFIRM, icon_checkmark);
 	drawButtonIcon(BTN_UP, icon_up);
 	drawButtonIcon(BTN_DOWN, icon_down);
 	
+	ent = HassManager::getEntities();
+	item_count = 1;
+	for (int i = 0; i < ent.length(); i++) {
+		if (ent.charAt(i) == ',') {
+			item_count++;
+		}
+	}
+	item_count /= 2;
+	
 	displayPage();
 }
 
+String HassPage::getElement(uint8_t index) {
+	uint16_t tindex = 0;
+	for(uint8_t i = index; i > 0; i--) {
+		tindex = ent.indexOf(',', tindex) + 1;
+	}
+	return ent.substring(tindex, ent.indexOf(',', tindex));
+}
+
 bool HassPage::onButtonPressed(uint8_t buttonIndex) {
+	Configuration::loadHassConfig();
+
 	switch(buttonIndex) {
 		/*
 		case BTN_BACK:
@@ -39,16 +51,13 @@ bool HassPage::onButtonPressed(uint8_t buttonIndex) {
 			return true;
 		*/
 		case BTN_CONFIRM:
-			HassManager::setURL("http://hs.devforce.de:8123");
-			HassManager::setToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI0NzRlNjNkMDNlMTY0OTNmYWM4YmEzMjdhMDkzZjRmYiIsImlhdCI6MTcxMDMyMTg0MiwiZXhwIjoyMDI1NjgxODQyfQ.0nXo1q9Fd936L3Q6NEkMBltBNGGtIjF45xDcNEe1uZY");
-			
 			mDisplay.fillScreen(BACKGROUND_COLOR);
 			mDisplay.setFont(&FreeSans9pt7b);
 			mDisplay.setTextColor(FOREGROUND_COLOR);
 			drawCentreString(TXT_WAIT, 100, 100, false);
 			mDisplay.display(true);
 			
-			if(HassManager::toggle(haas_items[(pageData.number1 * 2) + 1 + (pageData.subPageIndex * 8)])) {
+			if(HassManager::toggle(getElement((pageData.number1 * 2) + 1 + (pageData.subPageIndex * 8)))) {
 				mDisplay.fillScreen(BACKGROUND_COLOR);
 				mDisplay.setFont(&FreeSans9pt7b);
 				
@@ -102,16 +111,17 @@ bool HassPage::onButtonPressed(uint8_t buttonIndex) {
 }
 
 void HassPage::displayPage() {
-	for(uint8_t i = 0; i < min(4, item_count); i++) {
-		if(i >= item_count) return;
+	for(uint8_t i = 0; i < 4; i++) {
+		if(i >= (pageData.subPageIndex * 4) + item_count) return;
+
 		uint8_t x = 25 + (i >= 2 ? 80 : 0);
 		uint8_t y = 25 + (i % 2 == 1 ? 70 : 0);
 		
 		const unsigned char* icon = big_icon_power;
-		String entityId = haas_items[(i * 2) + 1 + (pageData.subPageIndex * 8)];
+		String entityId = getElement((i * 2) + 1 + (pageData.subPageIndex * 8));
 		if(entityId.startsWith("light.")) icon = big_icon_lightbulb;
 		
-		drawCentreString(haas_items[(i * 2) + (pageData.subPageIndex * 8)], x + 30, y + 68);
+		drawCentreString(getElement((i * 2) + (pageData.subPageIndex * 8)), x + 30, y + 68);
 		
 		if(pageData.number1 == i) {
 			mDisplay.fillRect(x + 8, y + 8, 44, 44, FOREGROUND_COLOR);

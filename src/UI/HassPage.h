@@ -10,6 +10,7 @@ class HassPage : public Page {
 		bool isPageable() { return false; };
 	private:
 		void displayPage();
+		String getElement(uint8_t index);
 };
 
 #endif

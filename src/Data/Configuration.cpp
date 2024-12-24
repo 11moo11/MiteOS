@@ -155,6 +155,8 @@ uint32_t Configuration::loadTotalSteps() {
 
 
 void Configuration::saveNotification(uint8_t index, Notification n) {
+	if(!initialized) init();
+
 	String prefix = "n" + String(index);
 	Configuration::preferences.putString((prefix + "app").c_str(), n.app_name);
 	Configuration::preferences.putString((prefix + "title").c_str(), n.title);
@@ -162,6 +164,8 @@ void Configuration::saveNotification(uint8_t index, Notification n) {
 }
 
 Notification Configuration::loadNotification(uint8_t index) {
+	if(!initialized) init();
+
 	String prefix = "n" + String(index);
 	
 	Notification n;
@@ -174,13 +178,19 @@ Notification Configuration::loadNotification(uint8_t index) {
 }
 
 void Configuration::saveHassConfig() {
-	Configuration::preferences.putString("hassUrl", HassManager::  getURL());
-	Configuration::preferences.putString("hassTkn", HassManager::getToken());
+	if(!initialized) init();
+
+	Configuration::preferences.putString("hassUrl", HassManager::     getURL());
+	Configuration::preferences.putString("hassTkn", HassManager::   getToken());
+	Configuration::preferences.putString("hassEnt", HassManager::getEntities());
 }
 
 void Configuration::loadHassConfig() {
-	HassManager::  setURL(Configuration::preferences.getString("hassUrl"));
-	HassManager::setToken(Configuration::preferences.getString("hassTkn"));
+	if(!initialized) init();
+	
+	HassManager::     setURL(Configuration::preferences.getString("hassUrl"));
+	HassManager::   setToken(Configuration::preferences.getString("hassTkn"));
+	HassManager::setEntities(Configuration::preferences.getString("hassEnt"));
 }
 
 
