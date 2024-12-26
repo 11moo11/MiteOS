@@ -46,7 +46,7 @@ void TrainWatchface::draw(){
 	mDisplay.fillRoundRect(40, 12, 5, 12, 1, FOREGROUND_COLOR);
 	mDisplay.fillRoundRect(10, 10, 30, 16, 3, BACKGROUND_COLOR);
 	if (PowerManager::getBatteryPercentage() > 0) {
-		mDisplay.fillRoundRect(11, 11, 28 * (PowerManager::getBatteryPercentage() / 100.0), 14, 2, FOREGROUND_COLOR);
+		mDisplay.fillRoundRect(11, 11, 28 * (PowerManager::getBatteryPercentage() / 100.0), 14, 3, FOREGROUND_COLOR);
 	}
 
 	mDisplay.setFont(&Teko_Regular12pt7b);

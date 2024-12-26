@@ -31,7 +31,7 @@
 
 #include <esp_chip_info.h>
 
-#define ADDITONAL_BUTTON_CHECK_DURATION 2000
+#define ADDITONAL_BUTTON_CHECK_DURATION 1000
 #define BUTTON_PRESS_REPEAT_DELAY 150
 
 static bool displayPoweredOn = false;

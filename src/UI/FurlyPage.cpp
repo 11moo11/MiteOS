@@ -111,18 +111,18 @@ void FurlyPage::initPage() {
 		START_STEP_COUNTER = ActivityManager::getTotalStepCount();
 	}
 	
-	LAST_WARMTH = Configuration::preferences.getLong64("furly_warmth", 0);
-	if(LAST_WARMTH == 0) { Configuration::preferences.putLong64("furly_warmth", NOW); LAST_WARMTH = NOW; }
+	LAST_WARMTH = Configuration::preferences.getULong64("furly_warmth", 0);
+	if(LAST_WARMTH == 0) { Configuration::preferences.getULong64("furly_warmth", NOW); LAST_WARMTH = NOW; }
 	
-	LAST_FOOD   = Configuration::preferences.getLong64("furly_food", 0);
-	LAST_WATER  = Configuration::preferences.getLong64("furly_water", 0);
-	LAST_FUN    = Configuration::preferences.getLong64("furly_fun", 0);
+	LAST_FOOD   = Configuration::preferences.getULong64("furly_food", 0);
+	LAST_WATER  = Configuration::preferences.getULong64("furly_water", 0);
+	LAST_FUN    = Configuration::preferences.getULong64("furly_fun", 0);
 	
-	EDU_START   = Configuration::preferences.getLong64("furly_edu", 0);
-	WORK_START  = Configuration::preferences.getLong64("furly_work", 0);
+	EDU_START   = Configuration::preferences.getULong64("furly_edu", 0);
+	WORK_START  = Configuration::preferences.getULong64("furly_work", 0);
 	
-	FURLY_BORN = Configuration::preferences.getLong64("furly_born", 0);
-	if(FURLY_BORN == 0) { Configuration::preferences.putLong64("furly_born", NOW); FURLY_BORN = NOW; }
+	FURLY_BORN = Configuration::preferences.getULong64("furly_born", 0);
+	if(FURLY_BORN == 0) { Configuration::preferences.getULong64("furly_born", NOW); FURLY_BORN = NOW; }
 	
 	printDebug("Warmth: " + String(LAST_WARMTH));
 	printDebug("Hungry: " + String(LAST_FOOD));
@@ -378,15 +378,18 @@ uint8_t FurlyPage::getLevel() {
 
 void FurlyPage::drawStepProgressBar() {
 	uint8_t level = getLevel();
-	if(level >= 3) return;
-	uint32_t steps = getLevelSteps() - (level == 3 ? LEVEL_3_STEPS : (level == 2 ? LEVEL_2_STEPS : (level == 1 ? LEVEL_1_STEPS : 0)));
-	float progress = min(1.0, max(0.0, steps * 1.0 / (level == 0 ? LEVEL_1_STEPS : (level == 1 ? LEVEL_2_STEPS - LEVEL_1_STEPS : (level == 2 ? LEVEL_3_STEPS - LEVEL_2_STEPS : 9999999)))));
-	
-	Page::drawProgressBar(50, 10, 100, 10, progress, FOREGROUND_COLOR);
 	
 	mDisplay.setFont(&FreeMonoBold7pt7b);
-	Page::drawCentreString(String(steps) + " / " + String((level == 0 ? LEVEL_1_STEPS : (level == 1 ? LEVEL_2_STEPS - LEVEL_1_STEPS : (level == 2 ? LEVEL_3_STEPS - LEVEL_2_STEPS : 9999999)))), 100, 30);
 	
+	if(level < 3) {
+		uint32_t steps = getLevelSteps() - (level == 3 ? LEVEL_3_STEPS : (level == 2 ? LEVEL_2_STEPS : (level == 1 ? LEVEL_1_STEPS : 0)));
+		float progress = min(1.0, max(0.0, steps * 1.0 / (level == 0 ? LEVEL_1_STEPS : (level == 1 ? LEVEL_2_STEPS - LEVEL_1_STEPS : (level == 2 ? LEVEL_3_STEPS - LEVEL_2_STEPS : 9999999)))));
+		
+		Page::drawProgressBar(50, 10, 100, 10, progress, FOREGROUND_COLOR);
+		
+		Page::drawCentreString(String(steps) + " / " + String((level == 0 ? LEVEL_1_STEPS : (level == 1 ? LEVEL_2_STEPS - LEVEL_1_STEPS : (level == 2 ? LEVEL_3_STEPS - LEVEL_2_STEPS : 9999999)))), 100, 30);
+	}
+
 	if(MAIN_SCROLL_OFFSET >= 2 && MAIN_SCROLL_OFFSET <= 5) {
 		float progress = 0;
 		String txt;
@@ -569,8 +572,8 @@ void FurlyPage::resetFurly() {
 	
 	Configuration::preferences.putUInt("furly_init", 0);
 	Configuration::preferences.putUChar("last_level", (uint8_t) 0);
-	Configuration::preferences.getLong64("furly_warmth", NOW);
-	Configuration::preferences.putLong64("furly_born", 0);
+	Configuration::preferences.getULong64("furly_warmth", NOW);
+	Configuration::preferences.getULong64("furly_born", 0);
 	
 	FURLY_PAGE = FURLY_PAGE_MAIN;
 	

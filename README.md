@@ -5,7 +5,7 @@ A Watchy OS
 Features
 -----
 
-✅ Multiple [Watchfaces](#builtin-watchfaces) (relatively easy to add your own)  
+✅ Multiple [Watchfaces](#builtin-watchfaces) (from other creators / relatively easy to add your own)  
 ✅ Timer  
 ✅ Alarm (up to 3 at a time)  
 ✅ Weather Information (Temperature / Moon Phase) **  
@@ -14,6 +14,7 @@ Features
 ✅ Media-Playback Info*  
 ✅ Home Assistant Integration (Lights / Switches) \*/*\*  
 ✅ Dark-/Lightmode (Static or Timed)  
+✅ Configure Settings through Companion App *
 
 \(*) Requires the Phone Companion App (see [Phone Companion](#phone-companion) for Restrictions)  
 \(**) Requires a WiFi Connection
@@ -22,16 +23,15 @@ Features
 ✅ App-Menu  
 ✅ NTP Time Syncing  
 ✅ Vibrate on Hour Change  
-✅ Settings Menu on the watch (Still requires some stuff to be done through code)
+✅ Settings Menu on the watch (Still requires some stuff to be done through code or the app)
 
 
 Planned Features
 -----
 - Weather Information through Phone instead of WiFi
-- Activity Tracking
+- Activity Tracking (like running and stuff, based on the amount of steps coming in per second)
 - TOTP
 - Night-Mode (save battery at night or if it is not worn)
-- Configure Settings through Companion App
 - Google Health Syncing
   
 
@@ -67,6 +67,8 @@ BuiltIn Watchfaces
 - [Hobbit Time](https://github.com/BraininaBowl/Hobbit-Time-for-Watchy) by BraininaBowl
 - [MacPaint](https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/MacPaint) by SQFMI
 - [Pokemon 2.0](https://github.com/Klemek/watchy/tree/master/watchfaces/pokemon-2.0) by Klemek
+- [Calendar] (https://github.com/uCBill/Calendar) by uCBill (Reworked by me)
+- [Train](https://github.com/uCBill/Multi_face_Watchy/blob/main/train.h) by uCBill (based on [Bahn](https://github.com/BraininaBowl/Bahn-for-Watchy) by BraininaBowl)
 
 All watchfaces have been modified by me to run on this OS. I also added light and darkmode to each of the watchfaces.  
 If you are the author of any of these watchfaces and don't want me to distribute them, please contact me and i'll remove them immediatly.
@@ -79,5 +81,5 @@ Screenshots
 <img src="img/weather.jpg"  width="120" height="120">
 <img src="img/alarms.jpg"  width="120" height="120">
 <img src="img/app_page.jpg"  width="120" height="120">
-<img src="img/haas.jpg"  width="120" height="120">
+<img src="img/hass.jpg"  width="120" height="120">
 <img src="img/timer.jpg"  width="120" height="120">

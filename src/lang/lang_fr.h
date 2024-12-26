@@ -66,7 +66,7 @@
 #define TXT_NO_NOTIFICATION "Aucune notification"
 #define TXT_NO_PLAYBACK "Pas de lecture"
 
-#define TXT_HASS "HASS"
+#define TXT_HASS "HA"
 #define TXT_WAIT "Attends..."
 #define TXT_SUCCESS "Réussir"
 #define TXT_FAILED "Échec"

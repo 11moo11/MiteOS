@@ -213,7 +213,7 @@ void Page::drawCircle(int centerX, int centerY, int diameter, int lineThickness,
 		}
 	}
 	
-	for(double angle = 0; angle <= 2 * M_PI; angle += M_PI / 10) {
+	for(double angle = 0; angle < 2 * M_PI; angle += M_PI / 10) {
 		for (int r = radius - lineThickness; r <= radius; ++r) {
 			int x = static_cast<int>(radius + r * cos(angle));
 			int y = static_cast<int>(radius + r * sin(angle));
@@ -227,7 +227,8 @@ void Page::drawProgressBar(int x, int y, int w, int h, float progress) {
 }
 void Page::drawProgressBar(int x, int y, int w, int h, float progress, uint16_t color) {
 	mDisplay.drawRect(x, y, w, h, color);
-	drawDitherBox(x + 1, y + 1, round((w - 2) * progress), h - 2, 1, 1, color);
+	//drawDitherBox(x + 1, y + 1, round((w - 2) * progress), h - 2, 2, 1, color);
+	mDisplay.fillRect(x + 2, y + 2, round((w - 4) * progress), h - 4, color);
 }
 
 

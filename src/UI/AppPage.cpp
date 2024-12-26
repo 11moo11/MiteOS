@@ -53,7 +53,7 @@ void AppPage::drawPage() {
 	drawButtonIcon(BTN_DOWN, icon_down);
 
 	if(APP_PAGE_COUNT > 1) {
-		drawCentreString(String(currentAppPage + 1) + " / " + String(APP_PAGE_COUNT), 100, 190, false);
+		drawCentreString(String(currentAppPage + 1) + " / " + String(APP_PAGE_COUNT), 100, 15, false);
 	}
 	displayPage();
 }

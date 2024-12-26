@@ -7,10 +7,9 @@
 
 #include "../Images/big_icons.h"
 
-int item_count = 1;
+uint8_t item_count = 1;
+uint8_t page_count = 1;
 String ent;
-
-#define HASS_PAGE_COUNT 1
 
 void HassPage::drawPage() {
 	loadData();
@@ -35,6 +34,7 @@ void HassPage::loadData() {
 		}
 	}
 	item_count /= 2;
+	page_count = (uint8_t) max((uint8_t) 1, (uint8_t) ceil(item_count / 4.0));
 }
 
 String HassPage::getElement(uint8_t index) {
@@ -88,26 +88,27 @@ bool HassPage::onButtonPressed(uint8_t buttonIndex) {
 				if(pageData.number1 >= 4) {
 					pageData.number1 = 0;
 					pageData.subPageIndex++;
-					if(pageData.subPageIndex >= HASS_PAGE_COUNT) {
+					if(pageData.subPageIndex >= page_count) {
 						pageData.subPageIndex = 0;
 					}
 				}
-			}while(pageData.number1 + (pageData.subPageIndex * 4) > item_count);
-
+			}while(pageData.number1 + (pageData.subPageIndex * 4) >= item_count);
+			printDebug(pageData.number1);
 			return true;
 		case BTN_UP:
 			do {
 				if(pageData.number1 == 0) {
 					pageData.number1 = 3;
 					if(pageData.subPageIndex == 0) {
-						pageData.subPageIndex = HASS_PAGE_COUNT - 1;
+						pageData.subPageIndex = page_count - 1;
 					}else{
 						pageData.subPageIndex--;
 					}
 				}else{
 					pageData.number1--;
 				}
-			}while(pageData.number1 + (pageData.subPageIndex * 4) > item_count);
+			}while(pageData.number1 + (pageData.subPageIndex * 4) >= item_count);
+			printDebug(pageData.number1);
 			return true;
 	}
 	
@@ -116,7 +117,7 @@ bool HassPage::onButtonPressed(uint8_t buttonIndex) {
 
 void HassPage::displayPage() {
 	for(uint8_t i = 0; i < 4; i++) {
-		if(i >= (pageData.subPageIndex * 4) + item_count) return;
+		if(i >= (pageData.subPageIndex * 4) + item_count) break;
 
 		uint8_t x = 25 + (i >= 2 ? 80 : 0);
 		uint8_t y = 25 + (i % 2 == 1 ? 70 : 0);
@@ -134,4 +135,6 @@ void HassPage::displayPage() {
 			mDisplay.drawBitmap(x + 10, y + 10, icon, 40, 40, FOREGROUND_COLOR);
 		}
 	}
+
+	drawCentreString(String(pageData.subPageIndex + 1) + " / " + String(page_count), 100, 15, false);
 }
