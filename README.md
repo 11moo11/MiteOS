@@ -61,13 +61,12 @@ I use a modified version of https://github.com/yik3z/Watchy-CAD/tree/main/CAD/Ca
 BuiltIn Watchfaces
 -----
 - [7_SEG](https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/7_SEG) by SQFMI
-- [Analog](https://github.com/BenjaminGabel/AnalogWatchFace) by BenjaminGabel
 - [BTTF](https://github.com/peerdavid/wos) by peerdavid
-- [Calendar](https://github.com/uCBill/Calendar_watchy) by uCBill
-- [Hobbit Time](https://github.com/BraininaBowl/Hobbit-Time-for-Watchy) by BraininaBowl
-- [MacPaint](https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/MacPaint) by SQFMI
 - [Pokemon 2.0](https://github.com/Klemek/watchy/tree/master/watchfaces/pokemon-2.0) by Klemek
-- [Calendar](https://github.com/uCBill/Calendar) by uCBill (Reworked by me)
+- [MacPaint](https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/MacPaint) by SQFMI
+- [Analog](https://github.com/BenjaminGabel/AnalogWatchFace) by BenjaminGabel
+- [Hobbit Time](https://github.com/BraininaBowl/Hobbit-Time-for-Watchy) by BraininaBowl
+- [Calendar](https://github.com/uCBill/Calendar_watchy) by uCBill (Reworked by me)
 - [Train](https://github.com/uCBill/Multi_face_Watchy/blob/main/train.h) by uCBill (based on [Bahn](https://github.com/BraininaBowl/Bahn-for-Watchy) by BraininaBowl)
 
 All watchfaces have been modified by me to run on this OS. I also added light and darkmode to each of the watchfaces.  
