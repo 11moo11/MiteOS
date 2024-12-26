@@ -145,6 +145,13 @@ void WeatherPage::drawMoonPhase() {
 		const uint8_t* icon_left = (phase > 0.5 ? (i == 0 ? icon_moon_full : icon_moon_full_small) : (i == 0 ? icon_moon_new : icon_moon_new_small));
 		const uint8_t* icon_right = (phase > 0.5 ? (i == 0 ? icon_moon_new : icon_moon_new_small) : (i == 0 ? icon_moon_full : icon_moon_full_small));
 		
+		// Flip Images when Darkmode to render a full moon always white
+		if(DARKMODE) {
+			const uint8_t* buf = icon_left;
+			icon_left = icon_right;
+			icon_right = buf;
+		}
+
 		// Make sure phase is between 0 and 1 to calculate size
 		uint8_t value = (phase > 0.5 ? size * ((phase - 0.5) * 2) : size * phase * 2);
 		
@@ -176,7 +183,7 @@ void WeatherPage::drawMoonPhase() {
 					tm->tm_mday += d;
 					time_t next = mktime(tm);
 
-					mDisplay.drawBitmap(30, offset_y, icon_moon_full_small, 30, 30, FOREGROUND_COLOR);
+					mDisplay.drawBitmap(30, offset_y, (DARKMODE ? icon_moon_new_small : icon_moon_full_small), 30, 30, FOREGROUND_COLOR);
 					
 					mDisplay.setCursor(70, offset_y + 20);
 					mDisplay.print(day(next));
@@ -194,7 +201,7 @@ void WeatherPage::drawMoonPhase() {
 					tm->tm_mday += d;
 					time_t next = mktime(tm);
 					
-					mDisplay.drawBitmap(30, offset_y, icon_moon_new_small, 30, 30, FOREGROUND_COLOR);
+					mDisplay.drawBitmap(30, offset_y, (DARKMODE ? icon_moon_full_small : icon_moon_new_small), 30, 30, FOREGROUND_COLOR);
 
 					mDisplay.setCursor(70, offset_y + 20);
 					mDisplay.print(day(next));
