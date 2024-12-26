@@ -79,6 +79,7 @@ Screenshots
 <img src="img/pokemon_watchface.jpg"  width="120" height="120">
 <img src="img/step_tracker.jpg"  width="120" height="120">
 <img src="img/weather.jpg"  width="120" height="120">
+<img src="img/moon.jpg"  width="120" height="120">
 <img src="img/alarms.jpg"  width="120" height="120">
 <img src="img/app_page.jpg"  width="120" height="120">
 <img src="img/hass.jpg"  width="120" height="120">

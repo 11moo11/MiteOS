@@ -55,6 +55,7 @@
 #define TXT_ALARM_IN TXT_ALARM " dans:"
 #define TXT_MIN_CAPS "MIN"
 
+#define TEMP_LANG "fr"
 #define TXT_CHIP "Puce"
 
 #define TXT_BOND "Conn. Tele."

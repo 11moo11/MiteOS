@@ -33,6 +33,7 @@ void ActivityPage::drawPage() {
 		mDisplay.drawBitmap(90, 70, steps, 19, 23, FOREGROUND_COLOR);
 	}
 	drawButtonIcon(BTN_CONFIRM, icon_right);
+	drawButtonIcon(BTN_HOME, icon_home);
 }
 
 

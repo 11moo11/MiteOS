@@ -13,7 +13,6 @@
 
 #define OPENWEATHERMAP_APIKEY "f058fe1cad2afe8e2ddc5d063a64cecb" //use your own API key :)
 #define TEMP_UNIT "metric" //metric = Celsius , imperial = Fahrenheit
-#define TEMP_LANG "de"
 #define WEATHER_UPDATE_INTERVAL 30 //must be greater than 5, smaller than 255, measured in minutes
 
 //NTP Settings
@@ -28,7 +27,7 @@
 #define DARKMODE_END_M 30
 
 // Possible Values LANG_EN, LANG_DE, LANG_FR
-#define LANG_DE
+#define LANG_EN
 
 
 #define STEPS_PER_KM 1400
@@ -46,6 +45,7 @@
 #define CONFIGURATION_H
 #include <Preferences.h>
 #include "../MiteOS.h"
+#include "../lang/lang.h"
 
 #include "../Managers/PhoneConnectionManager.h"
 

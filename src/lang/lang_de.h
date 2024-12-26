@@ -55,6 +55,7 @@
 #define TXT_ALARM_IN TXT_ALARM " in:"
 #define TXT_MIN_CAPS "MIN"
 
+#define TEMP_LANG "de"
 #define TXT_CHIP "Chip"
 
 #define TXT_BOND "Handy verb."
