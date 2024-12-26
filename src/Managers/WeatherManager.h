@@ -12,15 +12,16 @@ typedef struct WeatherData {
 	bool external;
 	tmElements_t sunrise;
 	tmElements_t sunset;
+	ulong timestamp;
 } WeatherData;
 
 class WeatherManager {
 	public:
-		static WeatherData getWeatherData();
+		static WeatherData getWeatherData(bool cached = false);
 		static void timeTick();
 		
 		static float getMoonPhase();
-		static float getMoonPhase(uint8_t year, uint8_t month, uint8_t day, uint8_t hour = 0);
+		static float getMoonPhase(uint8_t year, uint8_t month, uint8_t day, uint8_t hour = 0, uint8_t minute = 0);
 	private:
 		static WeatherData _getWeatherData(String cityID, String lat, String lon, String units, String lang,
 									String url, String apiKey,
@@ -29,7 +30,7 @@ class WeatherManager {
 };
 
 extern RTC_DATA_ATTR WeatherData currentWeatherData;
-extern RTC_DATA_ATTR int weatherCheckCounter;
+extern RTC_DATA_ATTR uint8_t weatherCheckCounter;
 
 #define MOON_SYNODIC_PERIOD   29.530588853   // Period of moon cycle in days.
 #define	MOON_SYNODIC_OFFSET   2451550.26     // Reference cycle offset in days.

@@ -14,7 +14,7 @@
 #define OPENWEATHERMAP_APIKEY "f058fe1cad2afe8e2ddc5d063a64cecb" //use your own API key :)
 #define TEMP_UNIT "metric" //metric = Celsius , imperial = Fahrenheit
 #define TEMP_LANG "de"
-#define WEATHER_UPDATE_INTERVAL 30 //must be greater than 5, measured in minutes
+#define WEATHER_UPDATE_INTERVAL 30 //must be greater than 5, smaller than 255, measured in minutes
 
 //NTP Settings
 #define NTP_SERVER "pool.ntp.org"

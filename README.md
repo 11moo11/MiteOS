@@ -33,7 +33,7 @@ Planned Features
 - TOTP
 - Night-Mode (save battery at night or if it is not worn)
 - Google Health Syncing
-  
+
 
 Phone Companion
 -----

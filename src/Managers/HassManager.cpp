@@ -20,6 +20,8 @@ bool HassManager::toggle(String entity) {
 		return toggleSwitch(entity);
 	}else if(entity.startsWith("light.")) {
 		return toggleLight(entity);
+	}else if(entity.startsWith("input_boolean.")) {
+		return toggle("input_boolean", entity);
 	}
 	return false;
 }

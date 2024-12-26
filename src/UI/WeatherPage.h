@@ -6,6 +6,7 @@
 class WeatherPage : public Page {
 	public:
 		void drawPage() override;
+		bool onButtonPressed(uint8_t buttonIndex) override;
 	private:
 		void drawWeather();
 		void drawMoonPhase();

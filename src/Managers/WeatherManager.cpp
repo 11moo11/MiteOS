@@ -6,13 +6,14 @@
 
 RTC_DATA_ATTR WeatherData currentWeatherData;
 
-RTC_DATA_ATTR int weatherCheckCounter = -1;
+RTC_DATA_ATTR uint8_t weatherCheckCounter = 250;
 
 void WeatherManager::timeTick() {
-	if(weatherCheckCounter >= 0) weatherCheckCounter += 1;
+	weatherCheckCounter += 1;
 }
 
-WeatherData WeatherManager::getWeatherData() {
+WeatherData WeatherManager::getWeatherData(bool cached) {
+	if(cached) return currentWeatherData;
 	return _getWeatherData( Configuration::getCityID()
 						  , Configuration::getLat()
 						  , Configuration::getLon()
@@ -29,10 +30,6 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 											uint8_t updateInterval) {
 	
 	currentWeatherData.isMetric = units == String("metric");
-	
-	if (weatherCheckCounter < 0) { //-1 on first run, set to updateInterval
-		weatherCheckCounter = updateInterval;
-	}
 	
 	if (weatherCheckCounter >= updateInterval) { // only update if WEATHER_UPDATE_INTERVAL has elapsed
 												 // i.e. 30 minutes
@@ -65,11 +62,14 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 				desc.substring(1, desc.length() - 1).toCharArray(currentWeatherData.weatherDescription, 30);
 				currentWeatherData.external = true;
 				
-				breakTime((time_t)(int)responseObject["sys"]["sunrise"], currentWeatherData.sunrise);
-				breakTime((time_t)(int)responseObject["sys"]["sunset"], currentWeatherData.sunset);
-				
-				// sync NTP during weather API call and use timezone of lat & lon
 				long gmtOffset = int(responseObject["timezone"]);
+
+				breakTime((time_t)(int)responseObject["sys"]["sunrise"] + gmtOffset, currentWeatherData.sunrise);
+				breakTime((time_t)(int)responseObject["sys"]["sunset"] + gmtOffset, currentWeatherData.sunset);
+				
+				currentWeatherData.timestamp = NOW;
+
+				// sync NTP during weather API call and use timezone of lat & lon
 				WifiConnectionManager::syncNTP(gmtOffset);
 			} else {
 				// http error
@@ -118,15 +118,15 @@ double WeatherManager::_Julian(int32_t year, int32_t month, const double &day) {
 }
 
 float WeatherManager::getMoonPhase() {
-	return getMoonPhase(MiteOS::currentTime.Year, MiteOS::currentTime.Month, MiteOS::currentTime.Day);
+	return getMoonPhase(MiteOS::currentTime.Year, MiteOS::currentTime.Month, MiteOS::currentTime.Day, MiteOS::currentTime.Hour, MiteOS::currentTime.Minute);
 }
 
 
 // Phase from 0 - 0.5 = Increasing Moon
 // Phase from 0.5 - 1 = Decreasing Moon
-float WeatherManager::getMoonPhase(uint8_t year, uint8_t month, uint8_t day, uint8_t hour) {
-	double j = _Julian(((int32_t) year) + 1970, month, (double) day + (hour / 24.0));
-
+float WeatherManager::getMoonPhase(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute) {
+	double j = _Julian(((int32_t) year) + 1970, month, (double) day + (hour / 24.0) + (minute / 1440.0));
+	
 	// Calculate illumination (synodic) phase.
 	// From number of days since new moon on Julian date MOON_SYNODIC_OFFSET
 	// (1815UTC January 6, 2000), determine remainder of incomplete cycle.

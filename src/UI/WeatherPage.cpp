@@ -5,20 +5,49 @@
 #include "../Fonts/DSEG7_Classic_Regular_15.h"
 #include "../Fonts/Seven_Seg18pt7b.h"
 #include "../Fonts/Seven_Segment10pt7b.h"
+#include "../Fonts/FreeSans6pt7b.h"
 #include "../Managers/WeatherManager.h"
 #include "../Images/moon_icons.h"
 #include "../Images/menu_icons.h"
+#include "../Images/big_icons.h"
 #include "../Images/weather_icons.h"
+
+#define WEATHER_PAGE_SITES 2
 
 void WeatherPage::drawPage() {
 	//mDisplay.fillScreen(GxEPD_BLACK);
 	
-	drawWeather();
-	drawMoonPhase();
+	drawButtonIcon(BTN_HOME, icon_home);
+	if(pageData.subPageIndex == 0) {
+		drawButtonIcon(BTN_UP, icon_refresh);
+	}
+	drawButtonIcon(BTN_CONFIRM, icon_right);
+
+	if(pageData.subPageIndex == 0)
+		drawWeather();
+	else
+		drawMoonPhase();
+}
+
+bool WeatherPage::onButtonPressed(uint8_t buttonIndex) {
+	if(buttonIndex == BTN_UP) {
+		weatherCheckCounter = WEATHER_UPDATE_INTERVAL;
+		WeatherManager::getWeatherData(false);
+		return true;
+	}else if(buttonIndex == BTN_CONFIRM) {
+		pageData.subPageIndex++;
+		if(pageData.subPageIndex >= WEATHER_PAGE_SITES)
+			pageData.subPageIndex = 0;
+		return true;
+	}
+	return false;
 }
 
 void WeatherPage::drawWeather() {
-	WeatherData currentWeather = WeatherManager::getWeatherData();
+	WeatherData currentWeather = WeatherManager::getWeatherData(true);
+	if(currentWeather.timestamp == 0) {
+		currentWeather = WeatherManager::getWeatherData(false);
+	}
 
 	if(currentWeather.weatherConditionCode <= 100) return;
 	
@@ -27,10 +56,10 @@ void WeatherPage::drawWeather() {
 
 	mDisplay.setFont(&DSEG7_Classic_Regular_39);
 	
-	mDisplay.setCursor(10, 60);
+	mDisplay.setCursor(25, 70);
 	mDisplay.println(String(temperature).c_str());
 	
-	mDisplay.drawBitmap(10 + String(temperature).length() * 35, 15, currentWeather.isMetric ? celsius : fahrenheit, 26, 20, FOREGROUND_COLOR);
+	mDisplay.drawBitmap(25 + String(temperature).length() * 35, 25, currentWeather.isMetric ? celsius : fahrenheit, 26, 20, FOREGROUND_COLOR);
 	
 	const unsigned char* weatherIcon;
 	
@@ -40,31 +69,40 @@ void WeatherPage::drawWeather() {
 	if(currentWeather.external) {
 		if(weatherConditionCode > 0) {
 			//https://openweathermap.org/weather-conditions
-			if(weatherConditionCode > 801){//Cloudy
+			if(weatherConditionCode > 801){ //Cloudy
 				weatherIcon = cloudy;
-			}else if(weatherConditionCode == 801){//Few Clouds
+			}else if(weatherConditionCode == 801){ //Few Clouds
 				weatherIcon = cloudsun;
-			}else if(weatherConditionCode == 800){//Clear
+			}else if(weatherConditionCode == 800){ //Clear
 				weatherIcon = sunny;
-			}else if(weatherConditionCode >=700){//Atmosphere
+			}else if(weatherConditionCode >= 700){ //Atmosphere
 				weatherIcon = atmosphere;
-			}else if(weatherConditionCode >=600){//Snow
+			}else if(weatherConditionCode >= 600){ //Snow
 				weatherIcon = snow;
-			}else if(weatherConditionCode >=500){//Rain
+			}else if(weatherConditionCode >= 500){ //Rain
 				weatherIcon = rain;
-			}else if(weatherConditionCode >=300){//Drizzle
+			}else if(weatherConditionCode >= 300){ //Drizzle
 				weatherIcon = drizzle;
-			}else if(weatherConditionCode >=200){//Thunderstorm
+			}else if(weatherConditionCode >= 200){ //Thunderstorm
 				weatherIcon = thunderstorm;
 			}else{
 				return;
 			}
 		}
+
+		mDisplay.drawBitmap(40, 110, big_icon_sunrise, 40, 40, FOREGROUND_COLOR);
+		drawCentreString(String(currentWeather.sunrise.Hour) + ":" + (currentWeather.sunrise.Minute < 10 ? "0" : "") + String(currentWeather.sunrise.Minute), 60, 170, false);
+
+		mDisplay.drawBitmap(120, 110, big_icon_sunset, 40, 40, FOREGROUND_COLOR);
+		drawCentreString(String(currentWeather.sunset.Hour) + ":" + (currentWeather.sunset.Minute < 10 ? "0" : "") + String(currentWeather.sunset.Minute), 140, 170, false);
 	}else{
 		weatherIcon = chip;
 	}
 	
-	mDisplay.drawBitmap(130, 20, weatherIcon, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, FOREGROUND_COLOR);
+	mDisplay.drawBitmap(120, 30, weatherIcon, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, FOREGROUND_COLOR);
+
+	mDisplay.setFont(&FreeSans6pt7b);
+	drawCentreString(String(hour(currentWeather.timestamp)) + ":" + (minute(currentWeather.timestamp) < 10 ? "0" : "") + String(minute(currentWeather.timestamp)), 100, 190);
 }
 
 void drawPartialBitmap(int16_t x, int16_t y, const uint8_t* bitmap, int16_t w, int16_t h, int16_t start_w, int16_t end_w, uint16_t color) {
@@ -92,9 +130,9 @@ void drawPartialBitmap(int16_t x, int16_t y, const uint8_t* bitmap, int16_t w, i
 }
 
 void WeatherPage::drawMoonPhase() {
-	mDisplay.fillRect(0, 120, 200, 80, GxEPD_BLACK);
+	//mDisplay.fillRect(0, 120, 200, 80, GxEPD_BLACK);
 	
-	mDisplay.drawBitmap(90, 183, icon_up, 20, 20, GxEPD_WHITE);
+	mDisplay.drawBitmap(90, 83, icon_up_l, 20, 20, FOREGROUND_COLOR);
 	
 	for(int i = -2; i <= 2; i++) {
 		// Get current moon phase
@@ -111,49 +149,68 @@ void WeatherPage::drawMoonPhase() {
 		uint8_t value = (phase > 0.5 ? size * ((phase - 0.5) * 2) : size * phase * 2);
 		
 		// Draw the moons
-		drawPartialBitmap(80 - (-35 * i + (i > 0 ? -10 : 0)), 145 - (i != 0 ? -10 + abs(i) * 5 : 0), icon_left, size, size,   0, size - value, GxEPD_WHITE);
-		drawPartialBitmap(80 - (-35 * i + (i > 0 ? -10 : 0)), 145 - (i != 0 ? -10 + abs(i) * 5 : 0), icon_right, size, size, size - value, size, GxEPD_WHITE);
+		drawPartialBitmap(80 - (-35 * i + (i > 0 ? -10 : 0)), 45 - (i != 0 ? -10 + abs(i) * 5 : 0), icon_left, size, size,   0, size - value, FOREGROUND_COLOR);
+		drawPartialBitmap(80 - (-35 * i + (i > 0 ? -10 : 0)), 45 - (i != 0 ? -10 + abs(i) * 5 : 0), icon_right, size, size, size - value, size, FOREGROUND_COLOR);
 		
 		// If its the current day, draw the percentages and indicator
 		if(i == 0) {
 			int fraction = ((1.0 - cos(2 * M_PI * phase)) * 0.5) * 100;
 			
-			mDisplay.setTextColor(GxEPD_WHITE);
+			mDisplay.setTextColor(FOREGROUND_COLOR);
 			
 			mDisplay.setFont(&DSEG7_Classic_Regular_15);
 			String str = String(fraction);
-			mDisplay.setCursor(80, 142);
+			mDisplay.setCursor(80, 42);
 			mDisplay.print(str.c_str());
 			
 			mDisplay.setFont(&Seven_Segment10pt7b);
 			mDisplay.print("%");
 			
-			bool wasBelowHalf = false;
-			if(phase < 0.5) {
-				wasBelowHalf = true;
-			}
+			float last_val = phase;
+			uint8_t offset_y = 110;
 			for(uint8_t d = 0; d < 30; d++) {
-				float p = WeatherManager::getMoonPhase(MiteOS::currentTime.Year, MiteOS::currentTime.Month, MiteOS::currentTime.Day + d, 23);
-				if(p >= 0.5 && wasBelowHalf) {
-					mDisplay.setCursor(130, 138);
-					mDisplay.print(String(d) + " " + TXT_DAYS);
+				float p = WeatherManager::getMoonPhase(MiteOS::currentTime.Year, MiteOS::currentTime.Month, MiteOS::currentTime.Day + d, 23, 59);
+				if(p >= 0.5 && last_val < 0.5) {
+  					time_t base = makeTime(MiteOS::currentTime);
+					struct tm* tm = localtime(&base);
+					tm->tm_mday += d;
+					time_t next = mktime(tm);
+
+					mDisplay.drawBitmap(30, offset_y, icon_moon_full_small, 30, 30, FOREGROUND_COLOR);
 					
+					mDisplay.setCursor(70, offset_y + 20);
+					mDisplay.print(day(next));
+					mDisplay.print(".");
+					mDisplay.print(month(next));
+					mDisplay.print(".");
+
+					mDisplay.setCursor(120, offset_y + 20);
+					mDisplay.print(String(d) + " " + TXT_DAYS);
+
+					offset_y += 40;
+				}if(p <= 0.5 && last_val > 0.5) {
   					time_t base = makeTime(MiteOS::currentTime);
 					struct tm* tm = localtime(&base);
 					tm->tm_mday += d;
 					time_t next = mktime(tm);
 					
-					mDisplay.setCursor(155, 195);
+					mDisplay.drawBitmap(30, offset_y, icon_moon_new_small, 30, 30, FOREGROUND_COLOR);
+
+					mDisplay.setCursor(70, offset_y + 20);
 					mDisplay.print(day(next));
 					mDisplay.print(".");
 					mDisplay.print(month(next));
 					mDisplay.print(".");
-					
-					break;
-				}else if(p < 0.5){
-					wasBelowHalf = true;
+
+					mDisplay.setCursor(120, offset_y + 20);
+					mDisplay.print(String(d) + " " + TXT_DAYS);
+
+					offset_y += 40;
 				}
+
+				last_val = p;
 			}
 		}
 	}
+
 }

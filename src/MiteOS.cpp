@@ -59,8 +59,6 @@ void MiteOS::init() {
 			printDebug("RTC Alarm");
 			checkTime();
 			
-			WeatherManager::timeTick();
-			
 			//vibMotor(75, 4);
 			PageManager::refreshPage();
 	
@@ -297,6 +295,9 @@ void MiteOS::checkTime() {
 			pageData.pageIndex = GLOBAL_PAGE_ALARM;
 		}
 	}
+	
+	WeatherManager::timeTick();
+	WeatherManager::getWeatherData();
 }
 
 void MiteOS::initDarkmode() {
