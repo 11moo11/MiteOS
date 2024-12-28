@@ -7,6 +7,7 @@ import time
 from PIL import Image, ImageTk
 import tkinter as tk
 import numpy as np
+import time
 
 window = tk.Tk()
 
@@ -76,13 +77,17 @@ if(len(sys.argv) < 2 or sys.argv[1] != "false"):
 
 #ser = serial.Serial('COM12', baudrate = 115200)
 #ser = serial.Serial('/dev/ttyACM0', baudrate = 115200)
+while(len(serial_ports()) == 0):
+    time.sleep(1)
+
 print(serial_ports()[0])
-ser = serial.Serial(serial_ports()[0], baudrate = 115200)
+ser = serial.Serial(serial_ports()[0], baudrate = 921600)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 
 print("Waiting...")
 seq = []
 count = 1 ## row index
+last_frame = time.time()
 while True:
     if (ser.inWaiting() > 0):
         try:
@@ -92,6 +97,7 @@ while True:
             if line.startswith('screenshot|'):
                 # print("Screenshot")
                 imageData = line.split("|")[1]
+                # print(len(imageData))
                 imageData = byte_array_to_booleans(bytes.fromhex(imageData))
                 
                 # print(len(imageData))
@@ -105,6 +111,9 @@ while True:
                 im = Image.fromarray(data)
                 im.save('buf.png')
                 updateImg()
+                end = time.time()
+                print("[Screenshot] @ " + str(round(1 / (end - last_frame) * 60)) + " FPM")
+                last_frame = time.time()
             else:
                 print(line);
         except:

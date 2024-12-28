@@ -51,8 +51,16 @@ void WeatherPage::drawWeather() {
 
 	if(currentWeather.weatherConditionCode <= 100) return;
 	
+	// Set the values to last weather data
 	int8_t temperature = currentWeather.temperature;
 	int16_t weatherConditionCode = currentWeather.weatherConditionCode;
+	String weatherDescription = currentWeatherData.weatherDescription;
+
+	// Check if the weather data is older than 3 hours and stop showing it
+	if(hour(NOW - currentWeatherData.timestamp) >= 3) {
+		temperature = currentWeather.chip_temperature;
+		String(TXT_CHIP).toCharArray(currentWeatherData.weatherDescription, 20);
+	}
 
 	mDisplay.setFont(&DSEG7_Classic_Regular_39);
 	
@@ -66,7 +74,7 @@ void WeatherPage::drawWeather() {
 	mDisplay.setFont(&Seven_Segment10pt7b);
 	drawCentreString(currentWeatherData.weatherDescription, 100, 90);
 	
-	if(currentWeather.external) {
+	if(hour(NOW - currentWeatherData.timestamp) < 3) {
 		if(weatherConditionCode > 0) {
 			//https://openweathermap.org/weather-conditions
 			if(weatherConditionCode > 801){ //Cloudy
@@ -95,14 +103,14 @@ void WeatherPage::drawWeather() {
 
 		mDisplay.drawBitmap(120, 110, big_icon_sunset, 40, 40, FOREGROUND_COLOR);
 		drawCentreString(String(currentWeather.sunset.Hour) + ":" + (currentWeather.sunset.Minute < 10 ? "0" : "") + String(currentWeather.sunset.Minute), 140, 170, false);
+
+		mDisplay.setFont(&FreeSans6pt7b);
+		drawCentreString(String(hour(currentWeather.timestamp)) + ":" + (minute(currentWeather.timestamp) < 10 ? "0" : "") + String(minute(currentWeather.timestamp)), 100, 190);
 	}else{
 		weatherIcon = chip;
 	}
 	
 	mDisplay.drawBitmap(120, 30, weatherIcon, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, FOREGROUND_COLOR);
-
-	mDisplay.setFont(&FreeSans6pt7b);
-	drawCentreString(String(hour(currentWeather.timestamp)) + ":" + (minute(currentWeather.timestamp) < 10 ? "0" : "") + String(minute(currentWeather.timestamp)), 100, 190);
 }
 
 void drawPartialBitmap(int16_t x, int16_t y, const uint8_t* bitmap, int16_t w, int16_t h, int16_t start_w, int16_t end_w, uint16_t color) {

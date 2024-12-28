@@ -60,7 +60,7 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 				currentWeatherData.weatherConditionCode = int(responseObject["weather"][0]["id"]);
 				String desc = JSONVar::stringify(responseObject["weather"][0]["description"]);
 				desc.substring(1, desc.length() - 1).toCharArray(currentWeatherData.weatherDescription, 30);
-				currentWeatherData.external = true;
+				//currentWeatherData.external = true;
 				
 				long gmtOffset = int(responseObject["timezone"]);
 
@@ -79,16 +79,17 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 			// turn off radios
 			WiFi.mode(WIFI_OFF);
 			btStop();
-		} else { // No WiFi, use internal temperature sensor
-			uint8_t temperature = accSensor.readTemperature(); // celsius
-			if (!currentWeatherData.isMetric) {
-				temperature = temperature * 9. / 5. + 32.; // fahrenheit
-			}
-			currentWeatherData.temperature          = temperature;
-			currentWeatherData.weatherConditionCode = 800;
-			currentWeatherData.external             = false;
-			String(TXT_CHIP).toCharArray(currentWeatherData.weatherDescription, 20);
 		}
+		
+		uint8_t chip_temperature = accSensor.readTemperature(); // celsius
+		if (!currentWeatherData.isMetric) {
+			chip_temperature = chip_temperature * 9. / 5. + 32.; // fahrenheit
+		}
+		currentWeatherData.chip_temperature = chip_temperature;
+		//currentWeatherData.weatherConditionCode = 800;
+		//currentWeatherData.external             = false;
+		//String(TXT_CHIP).toCharArray(currentWeatherData.weatherDescription, 20);
+		
 		WifiConnectionManager::powerOff();
 		weatherCheckCounter = 0;
 	} else {
