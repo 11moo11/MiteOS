@@ -7,8 +7,8 @@
 
 #include "Watchface.h"
 #include "Calendar/calendar_img.h"
-#include "Calendar/Teko_Regular12pt7b.h"
-#include "Calendar/Teko_Regular8pt7b.h"
+#include "../../Fonts/Teko_Regular12pt7b.h"
+#include "../../Fonts/Teko_Regular8pt7b.h"
 
 class CalendarWatchface : public Watchface {
 	public:

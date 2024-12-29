@@ -15,6 +15,7 @@
 #include "../UI/HassPage.h"
 #include "../UI/FurlyPage.h"
 #include "../UI/TOTPPage.h"
+#include "../UI/CalendarPage.h"
 
 PROGMEM WatchfacePage watchfacePage;
 PROGMEM TimerPage timerPage;
@@ -30,6 +31,7 @@ PROGMEM PlaybackPage playbackPage;
 PROGMEM HassPage hassPage;
 PROGMEM FurlyPage furlyPage;
 PROGMEM TOTPPage totpPage;
+PROGMEM CalendarPage calendarPage;
 PROGMEM Page* pages[] = {
 	&watchfacePage,
 	&timerPage,
@@ -45,6 +47,7 @@ PROGMEM Page* pages[] = {
 	&hassPage,
 	&furlyPage,
 	&totpPage,
+	&calendarPage,
 };
 
 

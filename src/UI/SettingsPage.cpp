@@ -1,13 +1,12 @@
 #include "SettingsPage.h"
 #include "../MiteOS.h"
 #include "../Managers/WifiConnectionManager.h"
+#include "../Managers/FileManager.h"
 #include <DSEG7_Classic_Bold_53.h>
 #include <Fonts/FreeSansBold9pt7b.h>
 #include "../Data/Configuration.h"
 
 #include "../Images/menu_icons.h"
-
-#include "SPIFFS.h"
 
 #define SETTINGS_PAGE_OVERVIEW 0
 #define SETTINGS_PAGE_TIME 1
@@ -68,19 +67,16 @@ void SettingsPage::drawPage() {
 		drawButtonIcon(BTN_BACK, icon_left);
 
 		// Initialize SPIFFS
-		if (!SPIFFS.begin(false)) {
-			printDebug("Failed to mount SPIFFS / Try reformatting");
-			return;
-		}
-		
-		sizeSpace = SPIFFS.totalBytes() / 1000.0;
-		usedSpace = SPIFFS.usedBytes() / 1000.0;
+		if (FileManager::init()) {
+			sizeSpace = SPIFFS.totalBytes() / 1000.0;
+			usedSpace = SPIFFS.usedBytes() / 1000.0;
 
-		drawCentreString("Files:", 100, 120);
-		drawCentreString(String(usedSpace, 1) + "KB / " + String(sizeSpace, 1) + "KB", 100, 140);
-		
-		drawProgressBar(30, 145, 140, 10, usedSpace / (float) sizeSpace);
-		drawCentreString(String((usedSpace / (float) sizeSpace) * 100, 0) + " %", 100, 170);
+			drawCentreString("Files:", 100, 120);
+			drawCentreString(String(usedSpace, 1) + "KB / " + String(sizeSpace, 1) + "KB", 100, 140);
+			
+			drawProgressBar(30, 145, 140, 10, usedSpace / (float) sizeSpace);
+			drawCentreString(String((usedSpace / (float) sizeSpace) * 100, 0) + " %", 100, 170);
+		}
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_TEST) {
 		const char *menuItems[] = {
 			TXT_VIB_MOTOR, TXT_SHOW_ACC, TXT_REBOOT

@@ -17,8 +17,9 @@
 #define GLOBAL_PAGE_HASS 11
 #define GLOBAL_PAGE_FURLY 12
 #define GLOBAL_PAGE_TOTP 13
+#define GLOBAL_PAGE_CALENDAR 14
 
-#define PAGE_COUNT 14
+#define PAGE_COUNT 15
 
 class PageManager {
 	public:

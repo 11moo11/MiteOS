@@ -22,7 +22,7 @@ static const unsigned char* const pageIcons[] = {
 	app_icon_paw,
 	
 	app_icon_lock,
-	app_icon_empty,
+	app_icon_calendar,
 	app_icon_empty,
 	app_icon_empty,
 };
@@ -39,10 +39,11 @@ static const String pageTitles[] = {
 	TXT_FURLY,
 
 	TXT_TOTP,
-	"",
+	TXT_CALENDAR,
 	"",
 	"",
 };
+
 static const uint8_t pageTarget[] = {
 	GLOBAL_PAGE_SETTINGS,
 	GLOBAL_PAGE_ALARM,
@@ -55,7 +56,7 @@ static const uint8_t pageTarget[] = {
 	GLOBAL_PAGE_FURLY,
 
 	GLOBAL_PAGE_TOTP,
-	255,
+	GLOBAL_PAGE_CALENDAR,
 	255,
 	255,
 };

@@ -2,6 +2,7 @@
 #define PAGE_H
 
 #include <Arduino.h>
+#include "../Images/menu_icons.h"
 
 #define BTN_BACK 1
 #define BTN_MENU 2
@@ -37,6 +38,10 @@ typedef struct PageData {
 	uint8_t number7;
 	uint8_t number8;
 	uint8_t number9;
+
+	int16_t short0;
+	int16_t short1;
+	int16_t short2;
 	
 	long largenumber0;
 	long largenumber1;

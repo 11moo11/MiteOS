@@ -22,6 +22,7 @@
 #define TXT_BLUETOOTH "Bluetooth"
 #define TXT_MEDIA "Media"
 #define TXT_TOTP "TOTP"
+#define TXT_CALENDAR "Calendar"
 
 #define TXT_ABOUT "About"
 #define TXT_TIME "Time"
