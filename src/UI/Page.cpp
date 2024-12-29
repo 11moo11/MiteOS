@@ -249,7 +249,7 @@ void Page::drawDitherBox(int x, int y, int w, int h, uint8_t fillVal, uint8_t em
 			}*/
 
 			if(odd) {
-				if(posX % (fillVal + emptyVal) >= fillVal && posY % (fillVal + emptyVal) >= fillVal) {
+				if(posX + fillVal % (fillVal + emptyVal) < fillVal && posY % (fillVal + emptyVal) < fillVal) {
 					mDisplay.drawPixel(x + posX, y + posY, color);
 				}
 			}else{

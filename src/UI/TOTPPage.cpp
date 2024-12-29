@@ -45,8 +45,7 @@ void TOTPPage::drawPage() {
 	mDisplay.setFont(&FreeSans6pt7b);
 	uint8_t seconds = 30 - (second(NOW) % 30);
 	drawCentreString(String(seconds) + "s", 100, 196, false);
-	mDisplay.drawFastHLine(40, 198, 120 * (seconds / 30.0), FOREGROUND_COLOR);
-	mDisplay.drawFastHLine(40, 199, 120 * (seconds / 30.0), FOREGROUND_COLOR);
+	mDisplay.fillRect(40, 198, 120 * (seconds / 30.0), 2, FOREGROUND_COLOR);
 	drawDitherBox(40, 198, 120, 2, 2, 2);
 }
 
