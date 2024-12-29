@@ -67,8 +67,7 @@ class AnalogWatchface : public Watchface {
 			mDisplay.setCursor(43, 127);
 			mDisplay.print("0");
 			mDisplay.fillCircle(45, 100, 2, FOREGROUND_COLOR);
-			double batteryCurrent = (PowerManager::getBatteryVoltage() - 3.3) / 0.9;
-			double batteryAngle = batteryCurrent * 180;
+			double batteryAngle = PowerManager::getBatteryPercentage() * 1.80;
 			double radBattery = ((batteryAngle) * 71) / 4068.0;
 			double bx1 = 45 + (sin(radBattery) * 16);
 			double by1 = 100 + (cos(radBattery) * 16);

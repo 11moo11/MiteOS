@@ -7,6 +7,8 @@
 
 #include "../Images/menu_icons.h"
 
+#include "SPIFFS.h"
+
 #define SETTINGS_PAGE_OVERVIEW 0
 #define SETTINGS_PAGE_TIME 1
 #define SETTINGS_PAGE_NETWORK 2
@@ -52,18 +54,33 @@ void SettingsPage::drawPage() {
 		
 		showMenu(menuItems, 2, true, TXT_INTERACTION);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_STORAGE) {
-		int sizeSpace = Configuration::getSize();
-		int usedSpace = Configuration::usedSpace();
+		float sizeSpace = Configuration::getSize() * 32 / 1000.0;
+		float usedSpace = Configuration::usedSpace() * 32 / 1000.0;
 		
 		mDisplay.setFont(&FreeSansBold9pt7b);
-		drawCentreString("Entries:", 100, 50);
-		drawCentreString(String(usedSpace) + " / " + String(sizeSpace), 100, 70);
+		drawCentreString("Settings:", 100, 40);
+		drawCentreString(String(usedSpace, 1) + "KB / " + String(sizeSpace, 1) + "KB", 100, 60);
 		
-		mDisplay.drawRect(30, 90, 140, 20, FOREGROUND_COLOR);
-		mDisplay.fillRect(30, 90, 140 * (usedSpace / (float) sizeSpace), 20, FOREGROUND_COLOR);
-		drawCentreString(String((usedSpace / (float) sizeSpace) * 100) + " %", 100, 130);
+		drawProgressBar(30, 65, 140, 10, usedSpace / (float) sizeSpace);
+		drawCentreString(String((usedSpace / (float) sizeSpace) * 100, 0) + " %", 100, 90);
 		
+
 		drawButtonIcon(BTN_BACK, icon_left);
+
+		// Initialize SPIFFS
+		if (!SPIFFS.begin(false)) {
+			printDebug("Failed to mount SPIFFS / Try reformatting");
+			return;
+		}
+		
+		sizeSpace = SPIFFS.totalBytes() / 1000.0;
+		usedSpace = SPIFFS.usedBytes() / 1000.0;
+
+		drawCentreString("Files:", 100, 120);
+		drawCentreString(String(usedSpace, 1) + "KB / " + String(sizeSpace, 1) + "KB", 100, 140);
+		
+		drawProgressBar(30, 145, 140, 10, usedSpace / (float) sizeSpace);
+		drawCentreString(String((usedSpace / (float) sizeSpace) * 100, 0) + " %", 100, 170);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_TEST) {
 		const char *menuItems[] = {
 			TXT_VIB_MOTOR, TXT_SHOW_ACC, TXT_REBOOT

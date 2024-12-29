@@ -13,7 +13,7 @@ Preferences Configuration::preferences;
 void Configuration::init() {
 	if(initialized) return;
 	
-	preferences.begin("miteos", false); 
+	preferences.begin("miteos", false);
 	initialized = true;
 	
 	printDebug("Initialized Configuration");

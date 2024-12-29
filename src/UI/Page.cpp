@@ -227,8 +227,8 @@ void Page::drawProgressBar(int x, int y, int w, int h, float progress) {
 }
 void Page::drawProgressBar(int x, int y, int w, int h, float progress, uint16_t color) {
 	mDisplay.drawRect(x, y, w, h, color);
-	//drawDitherBox(x + 1, y + 1, round((w - 2) * progress), h - 2, 2, 1, color);
-	mDisplay.fillRect(x + 2, y + 2, round((w - 4) * progress), h - 4, color);
+	drawDitherBox(x + 1, y + 1, round((w - 2) * progress), h - 2, 1, 1, color);
+	//mDisplay.fillRect(x + 2, y + 2, round((w - 4) * progress), h - 4, color);
 }
 
 
@@ -239,23 +239,14 @@ void Page::drawDitherBox(int x, int y, int w, int h, uint8_t fillVal, uint8_t em
 	drawDitherBox(x, y, w, h, fillVal, emptyVal, FOREGROUND_COLOR);
 }
 void Page::drawDitherBox(int x, int y, int w, int h, uint8_t fillVal, uint8_t emptyVal, uint16_t color) {
-	bool odd = false;
 	for(int posY = 0; posY < h; posY++) {
-		odd = posY % (fillVal + emptyVal) >= fillVal;
-		
 		for(int posX = 0; posX < w; posX++) {
 			/*if(((posX + posY) % (fillVal + emptyVal)) < fillVal) {
 				mDisplay.drawPixel(x + posX, y + posY, color);
 			}*/
 
-			if(odd) {
-				if(posX + fillVal % (fillVal + emptyVal) < fillVal && posY % (fillVal + emptyVal) < fillVal) {
-					mDisplay.drawPixel(x + posX, y + posY, color);
-				}
-			}else{
-				if(posX % (fillVal + emptyVal) < fillVal && posY % (fillVal + emptyVal) < fillVal) {
-					mDisplay.drawPixel(x + posX, y + posY, color);
-				}
+			if(((posX + (posY % (fillVal + emptyVal))) % (fillVal + emptyVal)) < fillVal/* && posY % (fillVal + emptyVal) < fillVal*/) {
+				mDisplay.drawPixel(x + posX, y + posY, color);
 			}
 
 		}
