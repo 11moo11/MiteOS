@@ -16,8 +16,9 @@
 #define GLOBAL_PAGE_PLAYBACK 10
 #define GLOBAL_PAGE_HASS 11
 #define GLOBAL_PAGE_FURLY 12
+#define GLOBAL_PAGE_TOTP 13
 
-#define PAGE_COUNT 13
+#define PAGE_COUNT 14
 
 class PageManager {
 	public:

@@ -21,6 +21,7 @@
 #define TXT_TIMER "Timer"
 #define TXT_BLUETOOTH "Bluetooth"
 #define TXT_MEDIA "Medien"
+#define TXT_TOTP "TOTP"
 
 #define TXT_ABOUT "Über"
 #define TXT_TIME "Zeit"

@@ -81,6 +81,9 @@ extern RTC_DATA_ATTR BMA423 accSensor;
 //extern RTC_DATA_ATTR bool WIFI_CONFIGURED;
 //extern RTC_DATA_ATTR bool BLE_CONFIGURED;
 extern RTC_DATA_ATTR PageData pageData;
+
+extern RTC_DATA_ATTR int gmtTimeOffset;
+
 extern RTC_DATA_ATTR tmElements_t osBootTime;
 
 extern RTC_DATA_ATTR bool AUTO_DARKMODE;

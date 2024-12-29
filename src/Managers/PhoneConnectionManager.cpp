@@ -105,8 +105,8 @@ void PhoneConnectionManager::SyncConfiguration() {
 
 	BluetoothManager::sendCommand("GET_CONFIGURATION=");
 
-	PlaybackInfo pbi;
-	
+	Configuration::init();
+
 	if(BluetoothManager::lastResponse.length() > 0) {
 		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
 		
@@ -128,6 +128,18 @@ void PhoneConnectionManager::SyncConfiguration() {
 				}
 				Configuration::saveHassConfig();
 			}
+		}
+		
+		if(json.hasOwnProperty("totp")) {
+			String tokens = "";
+			for(uint8_t i = 0; i < json["totp"].length(); i++) {
+				if(i > 0) tokens += ",";
+				tokens += (String) json["totp"][i]["name"];
+				tokens += ",";
+				tokens += (String) json["totp"][i]["token"];
+			}
+			printDebug(tokens);
+			Configuration::preferences.putString("totp", tokens);
 		}
 	}
 }

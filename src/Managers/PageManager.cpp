@@ -14,6 +14,7 @@
 #include "../UI/PlaybackPage.h"
 #include "../UI/HassPage.h"
 #include "../UI/FurlyPage.h"
+#include "../UI/TOTPPage.h"
 
 PROGMEM WatchfacePage watchfacePage;
 PROGMEM TimerPage timerPage;
@@ -28,6 +29,7 @@ PROGMEM NotificationPage notificationPage;
 PROGMEM PlaybackPage playbackPage;
 PROGMEM HassPage hassPage;
 PROGMEM FurlyPage furlyPage;
+PROGMEM TOTPPage totpPage;
 PROGMEM Page* pages[] = {
 	&watchfacePage,
 	&timerPage,
@@ -42,6 +44,7 @@ PROGMEM Page* pages[] = {
 	&playbackPage,
 	&hassPage,
 	&furlyPage,
+	&totpPage,
 };
 
 

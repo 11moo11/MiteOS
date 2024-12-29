@@ -104,7 +104,7 @@ void WifiConnectionManager::showSyncNTP() {
 	mDisplay.setCursor(0, 30);
 	mDisplay.println("Syncing NTP... ");
 	mDisplay.print("GMT offset: ");
-	mDisplay.println(Configuration::getGmtOffset());
+	mDisplay.println(gmtTimeOffset);
 	mDisplay.display(false); // full refresh
 	
 	
@@ -146,7 +146,7 @@ void WifiConnectionManager::showSyncNTP() {
 
 bool WifiConnectionManager::syncNTP() { // NTP sync - call after connecting to WiFi and 
 								 // remember to turn it back off
-	return syncNTP(Configuration::getGmtOffset(), Configuration::getNtpServer().c_str());
+	return syncNTP(gmtTimeOffset, Configuration::getNtpServer().c_str());
 }
 
 bool WifiConnectionManager::syncNTP(long gmt) {

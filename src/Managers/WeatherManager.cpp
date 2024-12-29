@@ -1,5 +1,6 @@
 #include "WeatherManager.h"
 
+#include "../MiteOS.h"
 #include "WifiConnectionManager.h"
 #include <HTTPClient.h>
 #include <JSON.h>
@@ -62,15 +63,15 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 				desc.substring(1, desc.length() - 1).toCharArray(currentWeatherData.weatherDescription, 30);
 				//currentWeatherData.external = true;
 				
-				long gmtOffset = int(responseObject["timezone"]);
+				gmtTimeOffset = int(responseObject["timezone"]);
 
-				breakTime((time_t)(int)responseObject["sys"]["sunrise"] + gmtOffset, currentWeatherData.sunrise);
-				breakTime((time_t)(int)responseObject["sys"]["sunset"] + gmtOffset, currentWeatherData.sunset);
+				breakTime((time_t)(int)responseObject["sys"]["sunrise"] + gmtTimeOffset, currentWeatherData.sunrise);
+				breakTime((time_t)(int)responseObject["sys"]["sunset"] + gmtTimeOffset, currentWeatherData.sunset);
 				
 				currentWeatherData.timestamp = NOW;
 
 				// sync NTP during weather API call and use timezone of lat & lon
-				WifiConnectionManager::syncNTP(gmtOffset);
+				WifiConnectionManager::syncNTP(gmtTimeOffset);
 			} else {
 				// http error
 			}

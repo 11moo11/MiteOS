@@ -9,7 +9,7 @@ RTC_DATA_ATTR BMA423 accSensor;
 //RTC_DATA_ATTR bool BLE_CONFIGURED;
 //RTC_DATA_ATTR WeatherData currentWeather;
 //RTC_DATA_ATTR int weatherIntervalCounter = -1;
-RTC_DATA_ATTR long gmtTimeOffset = 0;
+RTC_DATA_ATTR int gmtTimeOffset = 0;
 
 RTC_DATA_ATTR tmElements_t osBootTime;
 

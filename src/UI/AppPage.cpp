@@ -5,7 +5,7 @@
 #include "../Managers/PageManager.h"
 #include <Fonts/FreeSans9pt7b.h>
 
-#define APP_PAGE_COUNT 2
+#define APP_PAGE_COUNT 3
 
 RTC_DATA_ATTR uint8_t currentAppPage;
 RTC_DATA_ATTR uint8_t currentAppIndex;
@@ -20,6 +20,11 @@ static const unsigned char* const pageIcons[] = {
 	app_icon_messages,
 	app_icon_hass,
 	app_icon_paw,
+	
+	app_icon_lock,
+	app_icon_empty,
+	app_icon_empty,
+	app_icon_empty,
 };
 
 static const String pageTitles[] = {
@@ -32,6 +37,11 @@ static const String pageTitles[] = {
 	TXT_NOTIFICATION,
 	TXT_HASS,
 	TXT_FURLY,
+
+	TXT_TOTP,
+	"",
+	"",
+	"",
 };
 static const uint8_t pageTarget[] = {
 	GLOBAL_PAGE_SETTINGS,
@@ -43,6 +53,11 @@ static const uint8_t pageTarget[] = {
 	GLOBAL_PAGE_NOTIFICATIONS,
 	GLOBAL_PAGE_HASS,
 	GLOBAL_PAGE_FURLY,
+
+	GLOBAL_PAGE_TOTP,
+	255,
+	255,
+	255,
 };
 
 void AppPage::drawPage() {
