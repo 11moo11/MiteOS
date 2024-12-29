@@ -13,7 +13,7 @@ Features
 ✅ TOTP Token Storage*  
 ✅ Check Phone Notifications*  
 ✅ Media-Playback Info*  
-✅ Home Assistant Integration (Lights / Switches) \*/*\*  
+✅ Home Assistant Integration (Lights / Switches) \*/\*\*  
 ✅ Dark-/Lightmode (Static or Timed)  
 ✅ Configure Settings through Companion App*  
 
