@@ -3,6 +3,7 @@
 #include "../MiteOS.h"
 
 #include "../Images/menu_icons.h"
+#include "../Fonts/FreeSans6pt7b.h"
 #include "../Fonts/Teko_Regular12pt7b.h"
 #include "../Fonts/Teko_Regular20pt7b.h"
 #include <Fonts/FreeSans9pt7b.h>
@@ -40,6 +41,13 @@ void TOTPPage::drawPage() {
 	
 	mDisplay.setFont(&FreeSans9pt7b);
 	drawCentreString(String(pageData.subPageIndex + 1) + " / " + TOTP_PAGE_COUNT, 100, 15, false);
+	
+	mDisplay.setFont(&FreeSans6pt7b);
+	uint8_t seconds = 30 - (second(NOW) % 30);
+	drawCentreString(String(seconds) + "s", 100, 196, false);
+	mDisplay.drawFastHLine(40, 198, 120 * (seconds / 30.0), FOREGROUND_COLOR);
+	mDisplay.drawFastHLine(40, 199, 120 * (seconds / 30.0), FOREGROUND_COLOR);
+	drawDitherBox(40, 198, 120, 2, 2, 2);
 }
 
 bool TOTPPage::onButtonPressed(uint8_t buttonIndex) {

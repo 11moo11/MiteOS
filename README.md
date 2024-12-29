@@ -8,14 +8,14 @@ Features
 ✅ Multiple [Watchfaces](#builtin-watchfaces) (from other creators / relatively easy to add your own)  
 ✅ Timer  
 ✅ Alarm (up to 3 at a time)  
-✅ Weather Information (Temperature / Moon Phase) **  
 ✅ Step Tracking (Remembers the Last 7 days)  
+✅ Weather Information (Temperature / Moon Phase) **  
+✅ TOTP Token Storage*  
 ✅ Check Phone Notifications*  
 ✅ Media-Playback Info*  
 ✅ Home Assistant Integration (Lights / Switches) \*/*\*  
 ✅ Dark-/Lightmode (Static or Timed)  
-✅ Configure Settings through Companion App*
-✅ TOTP Token Storage*
+✅ Configure Settings through Companion App*  
 
 \(*) Requires the Phone Companion App (see [Phone Companion](#phone-companion) for Restrictions)  
 \(**) Requires a WiFi Connection
@@ -24,7 +24,7 @@ Features
 ✅ App-Menu  
 ✅ NTP Time Syncing  
 ✅ Vibrate on Hour Change  
-✅ Settings Menu on the watch (Still requires some stuff to be done through code or the app)
+✅ Settings Menu on the watch (Still requires some stuff to be done through code or the app)  
 
 
 Planned Features
