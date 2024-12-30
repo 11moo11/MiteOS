@@ -1,7 +1,11 @@
 #include "FileManager.h"
 #include <FS.h>
 
+bool FileManager::initialized = false;
+
 bool FileManager::init() {
+    if(initialized) return true;
+
     if (!LittleFS.begin(true)) {
         printDebug("Failed to mount LittleFS / Try reformatting");
         return false;
@@ -18,6 +22,7 @@ bool FileManager::init() {
     LittleFS.mkdir(PATH_NOTIFICATIONS);
     LittleFS.mkdir(PATH_PLAYBACK);
 
+    initialized = true;
     return true;
 }
 
@@ -51,10 +56,12 @@ bool FileManager::format() {
     }
 }
 bool FileManager::writeFile(String path, String message) {
+    init();
     return writeFile(path.c_str(), message.c_str());
 }
 
 bool FileManager::writeFile(const char* path, const char* message) {
+    init();
     printDebug("Writing to file: " + String(path));
 
     // Open file for writing
@@ -76,6 +83,7 @@ bool FileManager::writeFile(const char* path, const char* message) {
     }
 }
 bool FileManager::emptyDir(String path) {
+    init();
     File root = LittleFS.open(path);
     File file = root.openNextFile();
 
@@ -93,4 +101,27 @@ bool FileManager::emptyDir(String path) {
         file = root.openNextFile();
     }
     return success;
+}
+bool FileManager::deleteFile(String path) {
+    init();
+    printDebug("DELETE " + path);
+    return LittleFS.remove(path);
+}
+bool FileManager::exists(String path) {
+    init();
+    return LittleFS.exists(path);
+}
+
+String FileManager::readFile(String path) {
+    init();
+    File file = LittleFS.open(path);
+    
+    String str;
+    if(file) {
+        if(file.available()) {
+            str = file.readString();
+            file.close();
+        }
+    }
+    return str;
 }

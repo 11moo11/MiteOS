@@ -1,6 +1,5 @@
 #include "PlaybackPage.h"
 
-#include "../Managers/PhoneConnectionManager.h"
 #include "../MiteOS.h"
 
 #include <Fonts/FreeSans9pt7b.h>
@@ -11,6 +10,7 @@
 
 #define IMAGE_SCALE 1
 #define IMAGE_BORDER ((DISPLAY_WIDTH - (PLAYBACK_IMAGE_SIZE * IMAGE_SCALE)) / 2)
+#define FORCE_REQUERY pageData.number3
 
 void PlaybackPage::drawPage() {
 	if(pageData.number1 != 1) {
@@ -20,7 +20,8 @@ void PlaybackPage::drawPage() {
 		mDisplay.display(true);
 	}
 	
-	PlaybackInfo pbi = PhoneConnectionManager::RequestPlaybackInfo();
+	PlaybackInfo pbi = PhoneConnectionManager::RequestPlaybackInfo(FORCE_REQUERY == 0);
+	FORCE_REQUERY = 0;
 	mDisplay.fillScreen(BACKGROUND_COLOR);
 	
 	if(strlen(pbi.title) > 2) {
@@ -46,9 +47,8 @@ void PlaybackPage::drawPage() {
 		mDisplay.endWrite();
 		
 		// Progress Bar
-		mDisplay.drawRect(40, 105, 120, 12, FOREGROUND_COLOR);
 		float percentage = ((float) pbi.position) / pbi.duration;
-		mDisplay.fillRect(40, 105, 120 * percentage, 12, FOREGROUND_COLOR);
+		drawProgressBar(50, 105, 100, 12, percentage, FOREGROUND_COLOR);
 		
 		// Progress Texts
 		mDisplay.setFont(&FreeSans9pt7b);
@@ -66,10 +66,11 @@ void PlaybackPage::drawPage() {
 		if(pbi.duration % 60 < 10) durationStr += "0";
 		durationStr += String(pbi.duration % 60);
 		
+		mDisplay.setTextWrap(false);
 		mDisplay.setCursor(3, 117);
 		mDisplay.print(curPos);
 		
-		mDisplay.setCursor(163, 117);
+		mDisplay.setCursor(153, 117);
 		mDisplay.print(durationStr);
 		
 		// Song Info
@@ -82,10 +83,10 @@ void PlaybackPage::drawPage() {
 		mDisplay.setFont(&FreeSansBold9pt7b);
 		drawCentreString(TXT_NO_PLAYBACK, 100, 100, false);
 	}
-	drawIcons();
+	drawIcons(pbi);
 }
 
-void PlaybackPage::drawIcons() {
+void PlaybackPage::drawIcons(PlaybackInfo pbi) {
 	if(pageData.number1 == 1) {
 		drawButtonIcon(BTN_DOWN, icon_next);
 		drawButtonIcon(BTN_MENU, icon_previous);
@@ -101,14 +102,17 @@ bool PlaybackPage::onButtonPressed(uint8_t buttonIndex) {
 	if(pageData.number1 == 1) {
 		if(buttonIndex == BTN_DOWN) {
 			BluetoothManager::sendCommand("NEXT_PLAYBACK=");
+			FORCE_REQUERY = 1;
 			delay(500);
 			return true;
 		} else if(buttonIndex == BTN_MENU) {
 			BluetoothManager::sendCommand("PREVIOUS_PLAYBACK=");
+			FORCE_REQUERY = 1;
 			delay(500);
 			return true;
 		} else if(buttonIndex == BTN_UP) {
 			BluetoothManager::sendCommand("TOGGLE_PLAYBACK=");
+			FORCE_REQUERY = 1;
 			delay(500);
 			return true;
 		}

@@ -27,6 +27,7 @@ struct PlaybackInfo {
 	unsigned char image[PLAYBACK_IMAGE_SIZE * PLAYBACK_IMAGE_SIZE / 8 + 1];
 	long position = 0;
 	long duration = 0;
+	bool playing = false;
 };
 
 class PhoneConnectionManager {
@@ -35,7 +36,7 @@ class PhoneConnectionManager {
 		static Notification GetNotification(uint8_t index);
 		static uint8_t GetNotificationCount();
 		
-		static PlaybackInfo RequestPlaybackInfo();
+		static PlaybackInfo RequestPlaybackInfo(bool cached = true);
 		
 		static void SyncConfiguration();
 		static void SyncCalendar();

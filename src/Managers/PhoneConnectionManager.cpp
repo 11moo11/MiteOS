@@ -60,15 +60,23 @@ uint8_t PhoneConnectionManager::GetNotificationCount() {
 	return min((uint8_t) NOTIFICATION_CNT, (uint8_t) Configuration::preferences.getUInt("notiCnt", (uint8_t) 0));
 }
 
-PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo() {
-	BluetoothManager::sendCommand("GET_PLAYBACK_INFO=");
-	
+PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 	PlaybackInfo pbi;
 	
-	if(BluetoothManager::lastResponse.length() > 0) {
-		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
-		
-		
+	JSONVar json;
+
+	if(cached && FileManager::exists(PATH_PLAYBACK"dat")) {
+		json = JSON.parse(FileManager::readFile(PATH_PLAYBACK"dat"));
+	}else{
+		BluetoothManager::sendCommand("GET_PLAYBACK_INFO=");
+
+		if(BluetoothManager::lastResponse.length() > 0) {
+			json = JSON.parse(BluetoothManager::lastResponse);
+			FileManager::writeFile(PATH_PLAYBACK"dat", BluetoothManager::lastResponse);
+		}
+	}
+
+	if(json.hasOwnProperty("title")) {
 		if(json.hasOwnProperty("title")) {
 			String str = JSONVar::stringify(json["title"]);
 			str.substring(1, str.length() - 1).toCharArray(pbi.title, PLAYBACK_TEXT_LENGTH, 0);
@@ -88,6 +96,18 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo() {
 		if(json.hasOwnProperty("duration")) {
 			pbi.duration = long(json["duration"]);
 		}
+		if(json.hasOwnProperty("timestamp") && json.hasOwnProperty("playing")) { // Check if the time should have already passed, then just get the current data
+			if(json["playing"]) {
+				pbi.playing = true;
+				long time_passed = max(0, NOW - ((unsigned long) json["timestamp"] + gmtTimeOffset));
+				if(pbi.position + time_passed >= pbi.duration) {
+					if(cached) {
+						return RequestPlaybackInfo(false);
+					}
+				}
+				pbi.position += time_passed;
+			}
+		}
 		
 		if(json.hasOwnProperty("art")) {
 			String art = JSONVar::stringify(json["art"]);
@@ -97,7 +117,10 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo() {
 			int size = decode_base64_length((const unsigned char*) art.c_str());
 			int binary_length = decode_base64((const unsigned char*) art.c_str(), pbi.image);
 		}
+	}else{
+		FileManager::deleteFile(PATH_PLAYBACK"dat");
 	}
+	
 	return pbi;
 }
 

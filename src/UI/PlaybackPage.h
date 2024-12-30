@@ -2,6 +2,7 @@
 #define PLAYBACK_PAGE_H
 
 #include "Page.h"
+#include "../Managers/PhoneConnectionManager.h"
 
 class PlaybackPage : public Page {
 	public:
@@ -9,7 +10,7 @@ class PlaybackPage : public Page {
 		bool onButtonPressed(uint8_t buttonIndex) override;
 		bool isPageable() { return false; };
 	private:
-		void drawIcons();
+		void drawIcons(PlaybackInfo pbi);
 };
 
 #endif

@@ -242,6 +242,7 @@ void BluetoothManager::sendCommand(String str) {
 	if(!connected) return;
 	
 	commandCharacteristic->setValue("");
+	delay(50);
 	notificationUpdateCharacteristic->setValue(str.c_str());
 	notificationUpdateCharacteristic->notify();
 	
@@ -254,7 +255,7 @@ void BluetoothManager::waitForResponse() {
 	
 	uint8_t wait = 0;
 	while(waitingForResponse && wait < 50 && connected) { // Wait for response or 5 seconds, whatever comes first
-		if(wait % 10 == 0) notificationUpdateCharacteristic->notify();
+		//if(wait % 10 == 0) notificationUpdateCharacteristic->notify();
 
 		wait++;
 		//Serial.println(commandCharacteristic->getLength());
