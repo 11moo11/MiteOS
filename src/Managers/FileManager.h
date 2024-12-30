@@ -20,6 +20,7 @@ class FileManager {
 		static bool writeFile(String path, String message);
 		static bool writeFile(const char* path, const char* message);
 		static bool emptyDir(String path);
+		static uint16_t dirFileCount(String path);
 		static bool deleteFile(String path);
 		static bool exists(String path);
 		static String readFile(String path);

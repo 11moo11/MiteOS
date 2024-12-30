@@ -102,6 +102,20 @@ bool FileManager::emptyDir(String path) {
     }
     return success;
 }
+uint16_t FileManager::dirFileCount(String path) {
+    init();
+    File root = LittleFS.open(path);
+    File file = root.openNextFile();
+
+    uint16_t count = 0;
+    while(file) {
+        count++;
+        file.close();
+        file = root.openNextFile();
+    }
+    return count;
+}
+
 bool FileManager::deleteFile(String path) {
     init();
     printDebug("DELETE " + path);

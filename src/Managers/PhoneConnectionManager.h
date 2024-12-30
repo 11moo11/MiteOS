@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 
-#define NOTIFICATION_CNT 5
+#define NOTIFICATION_CNT 20
 
 #define NOTIFICATION_APP_NAME_LENGTH 30
 #define NOTIFICATION_TITLE_LENGTH 50

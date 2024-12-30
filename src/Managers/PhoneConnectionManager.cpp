@@ -25,39 +25,35 @@ void PhoneConnectionManager::SyncNotifications(bool force) {
 	if(BluetoothManager::lastResponse.length() > 0) {
 		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
 		
-		Configuration::init();
-		
 		if(json.hasOwnProperty("count")) {
 			uint8_t count = uint8_t(json["count"]);
+			if(count > NOTIFICATION_CNT) count = NOTIFICATION_CNT;
 			
-			Notification n;
-			
-			for(uint8_t i = 0; i < NOTIFICATION_CNT; i++) {
-				if(count > i) {
-					String str = JSONVar::stringify(json["nBundleList"][i]["appName"]);
-					str.substring(1, str.length() - 1).toCharArray(n.app_name, NOTIFICATION_APP_NAME_LENGTH, 0);
-					
-					str = JSONVar::stringify(json["nBundleList"][i]["title"]);
-					str.substring(1, str.length() - 1).toCharArray(n.title, NOTIFICATION_TITLE_LENGTH, 0);
-					
-					str = JSONVar::stringify(json["nBundleList"][i]["text"]);
-					str.substring(1, str.length() - 1).toCharArray(n.message, NOTIFICATION_MESSAGE_LENGTH, 0);
-				}
-				Configuration::saveNotification(i, n);
+			FileManager::emptyDir(PATH_NOTIFICATIONS);
+
+			for(uint8_t i = 0; i < count; i++) {
+				FileManager::writeFile(PATH_NOTIFICATIONS + String(i), JSON.stringify(json["nBundleList"][i]));
 			}
-			
-			Configuration::preferences.putUInt("notiCnt", count);
 		}
 	}
 }
 
 Notification PhoneConnectionManager::GetNotification(uint8_t index) {
-	return Configuration::loadNotification(index);
+	JSONVar json = JSON.parse(FileManager::readFile(PATH_NOTIFICATIONS + String(index)));
+
+	Notification n;
+
+	if(json.hasOwnProperty("appName")) {
+		((String) json["appName"]).toCharArray(n.app_name, NOTIFICATION_APP_NAME_LENGTH, 0);
+		((String) json["title"]).toCharArray(n.title, NOTIFICATION_TITLE_LENGTH, 0);
+		((String) json["text"]).toCharArray(n.message, NOTIFICATION_MESSAGE_LENGTH, 0);
+	}
+
+	return n;
 }
 
 uint8_t PhoneConnectionManager::GetNotificationCount() {
-	Configuration::init();
-	return min((uint8_t) NOTIFICATION_CNT, (uint8_t) Configuration::preferences.getUInt("notiCnt", (uint8_t) 0));
+	return FileManager::dirFileCount(PATH_NOTIFICATIONS);
 }
 
 PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
@@ -99,7 +95,8 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 		if(json.hasOwnProperty("timestamp") && json.hasOwnProperty("playing")) { // Check if the time should have already passed, then just get the current data
 			if(json["playing"]) {
 				pbi.playing = true;
-				long time_passed = max(0, NOW - ((unsigned long) json["timestamp"] + gmtTimeOffset));
+				long time_passed = NOW - ((unsigned long) json["timestamp"] + gmtTimeOffset);
+				if(time_passed < 0) time_passed = 0;
 				if(pbi.position + time_passed >= pbi.duration) {
 					if(cached) {
 						return RequestPlaybackInfo(false);
