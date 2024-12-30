@@ -5,9 +5,14 @@
 #include "../Fonts/Teko_Regular8pt7b.h"
 #include "../Fonts/Teko_Regular12pt7b.h"
 
+#include "../Managers/FileManager.h"
+#include <JSON.h>
 
 #define MONTH_OFFSET pageData.short0
 #define PAGE_INDEX pageData.subPageIndex
+
+#define APPOINTMENT_PAGE pageData.short1
+#define APPOINTMENT_COUNT pageData.short2
 
 #define PAGE_INDEX_CALENDAR 0
 #define PAGE_INDEX_APPOINTMENTS 1
@@ -29,7 +34,16 @@ bool CalendarPage::onButtonPressed(uint8_t buttonIndex) {
             return true;
         }
     }else if(PAGE_INDEX == PAGE_INDEX_APPOINTMENTS) {
-
+        if(buttonIndex == BTN_UP) {
+            if(APPOINTMENT_PAGE == 0)
+                APPOINTMENT_PAGE = ceil(APPOINTMENT_COUNT / 3.0);
+            APPOINTMENT_PAGE--;
+            return true;
+        }else if(buttonIndex == BTN_DOWN) {
+            APPOINTMENT_PAGE++;
+            if(APPOINTMENT_PAGE >= ceil(APPOINTMENT_COUNT / 3.0)) APPOINTMENT_PAGE = 0;
+            return true;
+        }
     }
 
     if(buttonIndex == BTN_CONFIRM) {
@@ -139,10 +153,61 @@ void CalendarPage::drawMonth() {
     textstring += MiteOS::currentTime.Year + 1970;
     */
 }
+
 void CalendarPage::drawAppointment() {
     drawButtonIcon(BTN_BACK, icon_home);
     drawButtonIcon(BTN_UP, icon_up);
     drawButtonIcon(BTN_DOWN, icon_down);
     drawButtonIcon(BTN_CONFIRM, icon_switch);
+    
+    FileManager::init();
+    File root = LittleFS.open(PATH_CALENDAR);
+    File file = root.openNextFile();
 
+    mDisplay.setFont(&Teko_Regular12pt7b);
+    uint8_t offset_y = 45;
+    APPOINTMENT_COUNT = 0;
+    while(file) {
+        APPOINTMENT_COUNT++;
+        if(offset_y < 180 && APPOINTMENT_COUNT - 1 > APPOINTMENT_PAGE * 3) {
+            String name = file.name();
+            long startTime = name.substring(0, name.indexOf("_")).toInt();
+
+            if(startTime > NOW && offset_y < 180) {
+                if(file.available()) {
+                    String line = file.readStringUntil('\n');
+                    
+                    // {"id":34,"title":"My Appointment","startTime":1736353800000,"endTime":1736361000000,"allDay":false,"calendarId":"13","calendarName":"calendar name"}
+                    JSONVar json = JSON.parse(line);
+                    if(json.hasOwnProperty("startTime")) {
+                        mDisplay.setCursor(10, offset_y);
+                        mDisplay.setTextWrap(false);
+                        mDisplay.println((String) json["title"]);
+
+                        tmElements_t startTime;
+                        breakTime((unsigned long) json["startTime"], startTime);
+
+                        mDisplay.setCursor(10, offset_y + 20);
+                        mDisplay.print(String(startTime.Day) + ". " + String(monthShortStr(startTime.Month)) + " " + String(startTime.Year + 1970) );
+                        if(!json["allDay"]) {
+                            tmElements_t endTime;
+                            breakTime((unsigned long) json["endTime"], endTime);
+
+                            mDisplay.print("   ");
+                            mDisplay.print(String(startTime.Hour) + ":" + (startTime.Minute < 10 ? "0" : "") + String(startTime.Minute));
+                            mDisplay.print(" - ");
+                            mDisplay.println(String(endTime.Hour) + ":" + (startTime.Minute < 10 ? "0" : "") + String(endTime.Minute));
+                            //mDisplay.println(json["title"]);
+                        }
+
+                        offset_y += 50;
+                    }
+                }
+                file.close();
+            }
+        }
+        file = root.openNextFile();
+    }
+
+    drawCentreString(String(APPOINTMENT_PAGE + 1) + " / " + String((int) ceil(APPOINTMENT_COUNT / 3.0)), 100, 15, false);
 }

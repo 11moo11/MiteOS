@@ -92,7 +92,10 @@ while True:
     if (ser.inWaiting() > 0):
         try:
             line = ser.readline().strip()
-            line = line.decode('ascii')
+            try:
+                line = line.decode('ascii')
+            except:
+                line = line.decode("utf-8")
             
             if line.startswith('screenshot|'):
                 # print("Screenshot")

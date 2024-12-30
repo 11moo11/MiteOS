@@ -5,6 +5,7 @@
 #include "../Data/Configuration.h"
 #include <JSON.h>
 #include "../Data/Base64.hpp"
+#include "../Managers/FileManager.h"
 
 RTC_DATA_ATTR int8_t notificationRequeryCounter = -1;
 
@@ -140,6 +141,47 @@ void PhoneConnectionManager::SyncConfiguration() {
 			}
 			printDebug(tokens);
 			Configuration::preferences.putString("totp", tokens);
+		}
+	}
+}
+void PhoneConnectionManager::SyncCalendar() {
+	printDebug("Requesting Calendar...");
+
+	BluetoothManager::sendCommand("GET_CALENDAR=");
+	
+	if(BluetoothManager::lastResponse.length() > 0) {
+		FileManager::init();
+
+		// Cleanup
+		File root = LittleFS.open(PATH_CALENDAR);
+		File file = root.openNextFile();
+
+    	while(file) {
+			String name = file.name();
+			long startTime = name.substring(0, name.indexOf("_")).toInt();
+
+			if(startTime < NOW) {
+				String path = file.path();
+				file.close();
+				printDebug(path);
+				LittleFS.remove(path);
+			}
+			file = root.openNextFile();
+		}
+
+		// Write all the data
+		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
+		if(json.hasOwnProperty("events")) {
+			printDebug(json["events"].length());
+			if(json["events"].length() > 0) {
+				for(uint16_t i = 0; i < json["events"].length(); i++) {
+					printDebug(json["events"][i]);
+
+					String id = JSON.stringify(json["events"][i]["startTime"]) + "_" + String((int) json["events"][i]["id"]);
+
+					FileManager::writeFile(String(PATH_CALENDAR) + id, JSON.stringify(json["events"][i]));
+				}
+			}
 		}
 	}
 }

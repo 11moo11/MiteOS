@@ -217,14 +217,14 @@ void BluetoothManager::parseCommand(String value) {
 		*/
 	} else {
 		//printDebug("Unknown command");
-		printDebug(value);
+		//printDebug(value);
 		
 		//Serial.println(value.length());
 	}
 	
 	BluetoothManager::lastResponse = BluetoothManager::lastResponse + value;
 	// Make sure the data has ended or is smaller than our MTU size (with some padding)
-	if(value.endsWith("}") || value.length() < MTU_SIZE - 8) {
+	if(value.endsWith("}") || value.length() < MTU_SIZE - 6) {
 		BluetoothManager::waitingForResponse = false;
 	}
 }

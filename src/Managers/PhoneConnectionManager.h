@@ -38,6 +38,7 @@ class PhoneConnectionManager {
 		static PlaybackInfo RequestPlaybackInfo();
 		
 		static void SyncConfiguration();
+		static void SyncCalendar();
 };
 
 #endif

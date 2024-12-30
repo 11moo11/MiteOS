@@ -8,9 +8,10 @@ void BluetoothPage::drawPage() {
 	const char *items[] = { 
 		(btDeviceRegistered ? TXT_UNBOND : TXT_BOND),
 		"Test",
-		"Sync Settings"
+		"Sync Settings",
+		"Sync Calendar"
 	};
-	showMenu(items, 3, true, TXT_BLUETOOTH);
+	showMenu(items, 4, true, TXT_BLUETOOTH);
 }
 
 bool BluetoothPage::onButtonPressed(uint8_t buttonIndex) {
@@ -47,6 +48,11 @@ bool BluetoothPage::onButtonPressed(uint8_t buttonIndex) {
 			BluetoothManager::connectDevice();
 			if(BluetoothManager::connected) {
 				PhoneConnectionManager::SyncConfiguration();
+			}
+		}else if(pageData.menuIndex == 3) {
+			BluetoothManager::connectDevice();
+			if(BluetoothManager::connected) {
+				PhoneConnectionManager::SyncCalendar();
 			}
 		}
 		

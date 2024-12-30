@@ -66,10 +66,10 @@ void SettingsPage::drawPage() {
 
 		drawButtonIcon(BTN_BACK, icon_left);
 
-		// Initialize SPIFFS
+		// Initialize LittleFS
 		if (FileManager::init()) {
-			sizeSpace = SPIFFS.totalBytes() / 1000.0;
-			usedSpace = SPIFFS.usedBytes() / 1000.0;
+			sizeSpace = LittleFS.totalBytes() / 1000.0;
+			usedSpace = LittleFS.usedBytes() / 1000.0;
 
 			drawCentreString("Files:", 100, 120);
 			drawCentreString(String(usedSpace, 1) + "KB / " + String(sizeSpace, 1) + "KB", 100, 140);

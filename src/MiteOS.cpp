@@ -1,5 +1,7 @@
 #include "MiteOS.h"
 
+#include "Managers/FileManager.h"
+
 WatchyRTC MiteOS::RTC;
 WatchyDisplay MiteOS::watchyDisplay {};
 MiteDisplay<WatchyDisplay, WatchyDisplay::HEIGHT> MiteOS::display(watchyDisplay);
@@ -132,6 +134,12 @@ void MiteOS::init() {
 			
 			setCpuFrequencyMhz(80); // I don't think it really works, but just set it to lowest frequency possible
 			
+			#if DEBUG
+			Serial.println("==============================");
+			FileManager::printFolder("/");
+			Serial.println("==============================");
+			#endif
+
 			// For some reason, seems to be enabled on first boot
 			esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
 			break;
