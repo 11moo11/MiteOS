@@ -5,27 +5,38 @@
 #include <DSEG7_Classic_Bold_53.h>
 #include <Fonts/FreeSansBold9pt7b.h>
 #include "../Data/Configuration.h"
+#include "WatchfacePage.h"
 
 #include "../Images/menu_icons.h"
 
 #define SETTINGS_PAGE_OVERVIEW 0
-#define SETTINGS_PAGE_TIME 1
-#define SETTINGS_PAGE_NETWORK 2
-#define SETTINGS_PAGE_DISPLAY 3
-#define SETTINGS_PAGE_INTERACT 4
-#define SETTINGS_PAGE_STORAGE 5
-#define SETTINGS_PAGE_TEST 6
+#define SETTINGS_PAGE_WATCHFACE 1
+#define SETTINGS_PAGE_TIME 2
+#define SETTINGS_PAGE_NETWORK 3
+#define SETTINGS_PAGE_DISPLAY 4
+#define SETTINGS_PAGE_INTERACT 5
+#define SETTINGS_PAGE_STORAGE 6
+#define SETTINGS_PAGE_TEST 7
 
 #define SETTINGS_PAGE_DARKMODE 11
 #define SETTINGS_PAGE_DBL_TAP 12
+#define SETTINGS_PAGE_WATCHFACE_SELECT 13
+#define SETTINGS_PAGE_WATCHFACE_TOP_LEFT 14
+#define SETTINGS_PAGE_WATCHFACE_TOP_RIGHT 15
 
 void SettingsPage::drawPage() {
 	if(pageData.subPageIndex == SETTINGS_PAGE_OVERVIEW) {
 		const char *menuItems[] = {
-			TXT_ABOUT " " TXT_OS_NAME, TXT_TIME, TXT_NETWORK, TXT_DISPLAY, TXT_INTERACTION, TXT_STORAGE, TXT_DEBUG
+			TXT_ABOUT " " TXT_OS_NAME, TXT_WATCHFACE, TXT_TIME, TXT_NETWORK, TXT_DISPLAY, TXT_INTERACTION, TXT_STORAGE, TXT_DEBUG
 		};
 		
-		showMenu(menuItems, 7, true, TXT_SETTINGS);
+		showMenu(menuItems, 8, true, TXT_SETTINGS);
+	}else if(pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE) {
+		const char *menuItems[] = {
+			TXT_WATCHFACE, TXT_WATCHFACE_TOP_LEFT, TXT_WATCHFACE_TOP_RIGHT
+		};
+
+		showMenu(menuItems, 3, true, TXT_WATCHFACE);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_TIME) {
 		const char *menuItems[] = {
 			TXT_SET_TIME, TXT_SYNC_NTP, 
@@ -105,6 +116,26 @@ void SettingsPage::drawPage() {
 		};
 		
 		showMenu(menuItems, 5, true, TXT_INTERACT_DBL_TAP);
+	} else if(pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE_SELECT) {
+		const char* menuItems[WATCHFACE_COUNT];
+		String strings[WATCHFACE_COUNT];
+
+		for(uint8_t i = 0; i < WATCHFACE_COUNT; i++) {
+			strings[i] = ((i == watchFaceId ? TXT_CHECKBOX_ON : TXT_CHECKBOX_OFF) + ((WatchfacePage*) PageManager::getPage(GLOBAL_PAGE_WATCHFACE))->getWatchface(i)->watchfaceName());
+			menuItems[i] = strings[i].c_str();
+		}
+
+		showMenu(menuItems, WATCHFACE_COUNT, true, TXT_WATCHFACE);
+	} else if(pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE_TOP_LEFT || pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE_TOP_RIGHT) {
+		const char* menuItems[PAGE_COUNT];
+		String strings[PAGE_COUNT];
+
+		for(uint8_t i = 0; i < PAGE_COUNT; i++) {
+			strings[i] = /*((i == watchFaceId ? TXT_CHECKBOX_ON : TXT_CHECKBOX_OFF) + */ PageManager::getPage(i);
+			menuItems[i] = strings[i].c_str();
+		}
+
+		showMenu(menuItems, PAGE_COUNT, true, (pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE_TOP_LEFT ? TXT_WATCHFACE_TOP_LEFT : TXT_WATCHFACE_TOP_RIGHT));
 	}
 }
 
@@ -132,7 +163,23 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 					pageData.subPageIndex = pageData.menuIndex;
 				}
 				return true;
-			
+
+			case SETTINGS_PAGE_WATCHFACE:
+				switch(pageData.menuIndex) {
+					case 0:
+						pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE_SELECT
+						return true;
+					case 1:
+						pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE_TOP_LEFT
+						return true;
+					case 2:
+						pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE_TOP_RIGHT
+						return true;
+					
+					default: break;
+				}
+				break;
+
 			case SETTINGS_PAGE_TIME:
 				switch(pageData.menuIndex) {
 					case 0:
@@ -240,6 +287,11 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 					default: break;
 				}
 				break;
+			
+			case SETTINGS_PAGE_WATCHFACE_SELECT:
+				watchFaceId = pageData.menuIndex;
+				Configuration::saveSettings();
+				return true;
 			
 			default: break;
 		}

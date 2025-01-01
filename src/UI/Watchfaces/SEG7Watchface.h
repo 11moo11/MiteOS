@@ -5,6 +5,8 @@
 
 class SEG7Watchface : public Watchface {
     public:
+		String watchfaceName() { return "7SEG"; }
+
         void draw();
         void drawTime();
         void drawDate();

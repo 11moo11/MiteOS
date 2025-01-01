@@ -30,9 +30,8 @@ PROGMEM Watchface* watchfaces[] = {
 	&hobbitTimeWatchface,
 	&calendarWatchface,
 	&trainWatchface,
+	// DONT FORGET TO INCREATE WATCHFACE_COUNT IN HEADER FILE
 };
-
-#define WATCHFACE_COUNT 8
 
 void WatchfacePage::drawPage() {
 	printDebug("Drawing Watchface");
@@ -45,14 +44,7 @@ void WatchfacePage::drawPage() {
 
 bool WatchfacePage::onButtonPressed(uint8_t buttonIndex) {
 	if(buttonIndex == BTN_TOGGLE_BTN) {
-		watchFaceId++;
-		if(watchFaceId >= WATCHFACE_COUNT) watchFaceId = 0;
-		Configuration::saveSettings();
-		return true;
-	}
-	
-	if(buttonIndex == BTN_MENU) {
-		PageManager::showPage(GLOBAL_PAGE_APPS);
+		// TODO: Add some function to it
 		return true;
 	}
 	
@@ -60,6 +52,15 @@ bool WatchfacePage::onButtonPressed(uint8_t buttonIndex) {
 		PageManager::showPage(GLOBAL_PAGE_NOTIFICATIONS);
 		return true;
 	}
+	
+	if(buttonIndex == BTN_MENU) {
+		PageManager::showPage(GLOBAL_PAGE_APPS);
+		return true;
+	}
 	return false;
 }
 
+Watchface* WatchfacePage::getWatchface(uint8_t index) {
+	if(index > WATCHFACE_COUNT) return watchfaces[0];
+	return watchfaces[index];
+}

@@ -25,6 +25,8 @@ class PageManager {
 	public:
 		static void nextPage();
 		static void previousPage();
+
+		static Page* getPage(uint8_t pageIndex);
 		static void showPage(uint8_t pageIndex);
 		
 		static void refreshPage(bool partialRefresh = true);

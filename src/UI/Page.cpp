@@ -6,6 +6,8 @@
 #include "../Images/menu_icons.h"
 #include "glcdfont.c"
 
+#define ITEMS_ON_SCREEN (DISPLAY_HEIGHT / MENU_HEIGHT) - 1
+
 void Page::showMenu(const char *menuItems[], uint8_t itemCount, bool partialRefresh, String title) {
 	mDisplay.setFullWindow();
 	mDisplay.fillScreen(BACKGROUND_COLOR);
@@ -20,16 +22,29 @@ void Page::showMenu(const char *menuItems[], uint8_t itemCount, bool partialRefr
 	int16_t x1, y1;
 	uint16_t w, h;
 	int16_t yPos;
-	
+
+
 	if(pageData.menuIndex < 0 || pageData.menuIndex > 250) pageData.menuIndex = itemCount - 1;
-	else if(pageData.menuIndex >= itemCount) pageData.menuIndex = 0;
-	
-	for (int i = 0; i < itemCount; i++) {
-		yPos = MENU_HEIGHT + (MENU_HEIGHT * i);
+	if(pageData.menuIndex >= itemCount) pageData.menuIndex = 0;
+	while(pageData.menuIndex < pageData.menuOffset) {
+		pageData.menuOffset--;
+	}
+	while(pageData.menuIndex >= ITEMS_ON_SCREEN + pageData.menuOffset) {
+		pageData.menuOffset++;
+	}
+
+	if(itemCount > ITEMS_ON_SCREEN) {
+		drawScrollBar(pageData.menuOffset, itemCount, ITEMS_ON_SCREEN);
+	}
+
+	for (int i = pageData.menuOffset; i < pageData.menuOffset + ITEMS_ON_SCREEN; i++) {
+		if(i >= itemCount) break;
+		
+		yPos = MENU_HEIGHT + (MENU_HEIGHT * (i - pageData.menuOffset));
 		mDisplay.setCursor(25, yPos);
 		if (i == pageData.menuIndex) {
 			mDisplay.getTextBounds(menuItems[i], 25, yPos, &x1, &y1, &w, &h);
-			mDisplay.fillRect(x1 - 1, y1 - 10, 150, h + 15, FOREGROUND_COLOR);
+			mDisplay.fillRect(x1 - 3, y1 - 3, 153, h + 6, FOREGROUND_COLOR);
 			mDisplay.setTextColor(BACKGROUND_COLOR);
 			print(menuItems[i], BACKGROUND_COLOR, FOREGROUND_COLOR);
 		} else {
@@ -76,8 +91,17 @@ void Page::drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]) {
 }
 
 void Page::drawScrollBar(uint8_t index, uint8_t count) {
+	drawScrollBar(index, count, 1);
+}
+
+void Page::drawScrollBar(uint8_t index, uint8_t count, uint8_t bar_size) {
+	if(index >= count) index = count - 1;
+	
+	float handle_h = 110.0 / count * bar_size;
+	float handle_y = (110.0 - handle_h) * index / (count - bar_size);
+
 	mDisplay.drawRect(182, 45, 4, 110, FOREGROUND_COLOR);
-	mDisplay.fillRect(182, 45 + (110 / count * index), 4, 110 / count, FOREGROUND_COLOR);
+	mDisplay.fillRect(182, 45 + handle_y, 4, handle_h, FOREGROUND_COLOR);
 }
 
 void Page::drawCentreString(String buf, int x, int y, bool textWrap) {

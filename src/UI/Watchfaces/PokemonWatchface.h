@@ -16,6 +16,8 @@
 class PokemonWatchface : public Watchface {
 
 	public:
+		String watchfaceName() { return "Pokemon2.0"; }
+
 		void draw();
 		
 		double randomDay(uint32_t d);

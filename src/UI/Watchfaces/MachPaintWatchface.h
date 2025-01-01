@@ -8,6 +8,8 @@
 
 class MacPaintWatchface : public Watchface {
 	public:
+		String watchfaceName() { return "MacPaint"; }
+
 		void draw();
 };
 

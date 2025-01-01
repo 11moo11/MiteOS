@@ -13,6 +13,8 @@
 
 class AnalogWatchface : public Watchface {
 	public:
+		String watchfaceName() { return "Analog"; }
+
 		void draw() {
 			//background
 			mDisplay.drawBitmap(0, 0, clockFace_square2, 200, 200, FOREGROUND_COLOR);

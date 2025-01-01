@@ -106,6 +106,12 @@ void PageManager::refreshPage(bool partialRefresh) {
 	mDisplay.screenshot();
 }
 
+Page* PageManager::getPage(uint8_t pageIndex) {
+	if(pageIndex < 0 || pageIndex >= PAGE_COUNT) return pages[0];
+
+	return pages[pageIndex];
+}
+
 void PageManager::showPage(uint8_t pageIndex) {
 	if(pageIndex < 0 || pageIndex >= PAGE_COUNT) return;
 	
@@ -113,6 +119,7 @@ void PageManager::showPage(uint8_t pageIndex) {
 		pageData = PageData();
 		pageData.subPageIndex = 0;
 		pageData.menuIndex = 0;
+		pageData.menuOffset = 0;
 		pages[pageIndex]->initPage();
 	}
 	

@@ -20,6 +20,7 @@
 typedef struct PageData {
 	uint8_t pageIndex; // Is used by the os
 	uint8_t menuIndex; // Is used by the os
+	uint8_t menuOffset; // Is used by the os
 	
 	// All these can be used by custom implementations, they are just here to have a central spot for the page that gets saved
 	uint8_t subPageIndex;
@@ -67,6 +68,7 @@ class Page {
 		
 		static void drawButtonIcon(uint8_t buttonIndex, const uint8_t bitmap[]);
 		static void drawScrollBar(uint8_t index, uint8_t count);
+		static void drawScrollBar(uint8_t index, uint8_t count, uint8_t bar_size);
 		static void drawCentreString(String buf, int x, int y, bool textWrap = true);
 		static void drawCentreString(const char *buf, int x, int y, bool textWrap = true);
 		static void print(const char *buf);

@@ -25,6 +25,7 @@
 #define TXT_CALENDAR "Calendar"
 
 #define TXT_ABOUT "About"
+#define TXT_WATCHFACE "Watchface"
 #define TXT_TIME "Time"
 #define TXT_NETWORK "Network"
 #define TXT_DISPLAY "Display"
@@ -43,6 +44,8 @@
 #define TXT_STATIC "Static"
 #define TXT_INTERACT_VIBRATE_ON_BTN "Button Vib."
 #define TXT_INTERACT_DBL_TAP "Double Tap"
+#define TXT_WATCHFACE_TOP_LEFT "Top Left"
+#define TXT_WATCHFACE_TOP_RIGHT "Top Right"
 
 #define TXT_STEPS "Steps"
 

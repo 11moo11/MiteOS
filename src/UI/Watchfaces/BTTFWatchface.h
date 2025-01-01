@@ -7,6 +7,8 @@
 class BTTFWatchface : public Watchface {
 
     public:
+		String watchfaceName() { return "BTTF"; }
+
         void draw();
         void drawTime();
         void drawDate();

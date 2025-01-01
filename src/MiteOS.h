@@ -9,9 +9,12 @@
 #include <Arduino.h>
 #include <bma.h>
 #include <GxEPD2_BW.h>
+
+// References to the base Watchy Libs
 #include <Display.h>
-#include <TimeLib.h>
 #include <WatchyRTC.h>
+
+#include <TimeLib.h>
 #include <Fonts/FreeMonoBold9pt7b.h>
 #include "UI/Page.h"
 #include "Data/Configuration.h"

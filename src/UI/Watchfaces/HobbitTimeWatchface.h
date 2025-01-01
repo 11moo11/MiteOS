@@ -9,6 +9,8 @@
 
 class HobbitTimeWatchface : public Watchface {
 	public:
+		String watchfaceName() { return "Hobbit"; }
+
 		void draw();
 };
 

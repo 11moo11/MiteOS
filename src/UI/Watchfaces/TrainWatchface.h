@@ -23,6 +23,8 @@ https://github.com/uCBill/Multi_face_Watchy/blob/main/train.h
 class TrainWatchface : public Watchface {
 
     public:
+		String watchfaceName() { return "Train"; }
+
         void draw();
         void drawTime();
         void drawDate();

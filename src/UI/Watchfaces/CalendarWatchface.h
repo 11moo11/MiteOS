@@ -12,6 +12,8 @@
 
 class CalendarWatchface : public Watchface {
 	public:
+		String watchfaceName() { return "Calendar"; }
+
 		void draw() { //override this method to customize how the watch face looks
 			int16_t  x1, y1;
 			uint16_t w, h;
