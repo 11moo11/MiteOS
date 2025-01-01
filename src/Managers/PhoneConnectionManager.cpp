@@ -68,10 +68,11 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 
 		if(BluetoothManager::lastResponse.length() > 0) {
 			json = JSON.parse(BluetoothManager::lastResponse);
-			FileManager::writeFile(PATH_PLAYBACK"dat", BluetoothManager::lastResponse);
+		}else{
+			return pbi;
 		}
 	}
-
+	
 	if(json.hasOwnProperty("title")) {
 		if(json.hasOwnProperty("title")) {
 			String str = JSONVar::stringify(json["title"]);
@@ -113,6 +114,10 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 			// Ineffiecient but works i guess
 			int size = decode_base64_length((const unsigned char*) art.c_str());
 			int binary_length = decode_base64((const unsigned char*) art.c_str(), pbi.image);
+		}
+
+		if(!cached) {
+			FileManager::writeFile(PATH_PLAYBACK"dat", BluetoothManager::lastResponse);
 		}
 	}else{
 		FileManager::deleteFile(PATH_PLAYBACK"dat");

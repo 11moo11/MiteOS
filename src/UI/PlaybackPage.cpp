@@ -118,6 +118,7 @@ bool PlaybackPage::onButtonPressed(uint8_t buttonIndex) {
 		}
 	}else{
 		if(buttonIndex == BTN_CONFIRM) {
+			FORCE_REQUERY = 1;
 			return true; // Just refresh the page
 		}
 	}
