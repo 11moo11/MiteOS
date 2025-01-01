@@ -26,6 +26,11 @@ Features
 ✅ Vibrate on Hour Change  
 ✅ Settings Menu on the watch (Still requires some stuff to be done through code or the app)  
 
+Disclaimer
+-----
+I have no idea what im doing, i never really did any micro controller development. Also, I don't have any experience in C++.  
+If my code is not following any code conventions, I'm sorry, I tried my best ^^
+It still works as it should, so at least that counts i guess.
 
 Planned Features
 -----

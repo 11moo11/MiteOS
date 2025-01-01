@@ -224,7 +224,7 @@ void BluetoothManager::parseCommand(String value) {
 	
 	BluetoothManager::lastResponse = BluetoothManager::lastResponse + value;
 	// Make sure the data has ended or is smaller than our MTU size (with some padding)
-	if(value.endsWith("}") || value.length() < MTU_SIZE - 6) {
+	if(value.endsWith("}") || value.length() < MTU_SIZE - 8) {
 		BluetoothManager::waitingForResponse = false;
 	}
 }

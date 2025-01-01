@@ -47,7 +47,7 @@ float PowerManager::getBatteryVoltage() {
 float PowerManager::getBatteryPercentage() {
 	long voltage = getBatteryVoltage() * 1000;
 	
-	double percentage = map(voltage, 3700, 4200, 0, 100);
+	double percentage = map(voltage, 3600, 4200, 0, 100);
 	
 	percentage = min(100.0, percentage);
 	percentage = max(  0.0, percentage);

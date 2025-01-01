@@ -13,8 +13,20 @@ void WeatherManager::timeTick() {
 	weatherCheckCounter += 1;
 }
 
+bool WeatherManager::isDataCurrent() {
+	return currentWeatherData.timestamp > 0 && hour(NOW - currentWeatherData.timestamp) <= WEATHER_DATA_MAX_AGE;
+}
+
+
+
 WeatherData WeatherManager::getWeatherData(bool cached) {
-	if(cached) return currentWeatherData;
+	// Check if weather data is current enough to be cached or just force an update
+	if(cached 
+	&& WeatherManager::isDataCurrent()
+	&& weatherCheckCounter <= WEATHER_UPDATE_INTERVAL
+	)
+		return currentWeatherData;
+
 	return _getWeatherData( Configuration::getCityID()
 						  , Configuration::getLat()
 						  , Configuration::getLon()
@@ -82,11 +94,6 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 			btStop();
 		}
 		
-		uint8_t chip_temperature = accSensor.readTemperature(); // celsius
-		if (!currentWeatherData.isMetric) {
-			chip_temperature = chip_temperature * 9. / 5. + 32.; // fahrenheit
-		}
-		currentWeatherData.chip_temperature = chip_temperature;
 		//currentWeatherData.weatherConditionCode = 800;
 		//currentWeatherData.external             = false;
 		//String(TXT_CHIP).toCharArray(currentWeatherData.weatherDescription, 20);
@@ -96,6 +103,13 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 	} else {
 		// weatherCheckCounter++;
 	}
+	
+	uint8_t chip_temperature = accSensor.readTemperature(); // celsius
+	if (!currentWeatherData.isMetric) {
+		chip_temperature = chip_temperature * 9. / 5. + 32.; // fahrenheit
+	}
+	currentWeatherData.chip_temperature = chip_temperature;
+
 	return currentWeatherData;
 }
 

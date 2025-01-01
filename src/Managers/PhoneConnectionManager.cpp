@@ -62,7 +62,11 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 	JSONVar json;
 
 	if(cached && FileManager::exists(PATH_PLAYBACK"dat")) {
-		json = JSON.parse(FileManager::readFile(PATH_PLAYBACK"dat"));
+		printDebug("Reading cached file...");
+		String str = FileManager::readFile(PATH_PLAYBACK"dat");
+		if(str.length() > 0) {
+			json = JSON.parse(str);
+		}
 	}else{
 		BluetoothManager::sendCommand("GET_PLAYBACK_INFO=");
 
@@ -73,54 +77,63 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 		}
 	}
 	
-	if(json.hasOwnProperty("title")) {
+	if(json != nullptr) {
 		if(json.hasOwnProperty("title")) {
-			String str = JSONVar::stringify(json["title"]);
-			str.substring(1, str.length() - 1).toCharArray(pbi.title, PLAYBACK_TEXT_LENGTH, 0);
-		}
-		if(json.hasOwnProperty("album")) {
-			String str = JSONVar::stringify(json["album"]);
-			str.substring(1, str.length() - 1).toCharArray(pbi.album, PLAYBACK_TEXT_LENGTH, 0);
-		}
-		if(json.hasOwnProperty("artist")) {
-			String str = JSONVar::stringify(json["artist"]);
-			str.substring(1, str.length() - 1).toCharArray(pbi.artist, PLAYBACK_TEXT_LENGTH, 0);
-		}
-		
-		if(json.hasOwnProperty("position")) {
-			pbi.position = long(json["position"]);
-		}
-		if(json.hasOwnProperty("duration")) {
-			pbi.duration = long(json["duration"]);
-		}
-		if(json.hasOwnProperty("timestamp") && json.hasOwnProperty("playing")) { // Check if the time should have already passed, then just get the current data
-			if(json["playing"]) {
-				pbi.playing = true;
-				long time_passed = NOW - ((unsigned long) json["timestamp"] + gmtTimeOffset);
-				if(time_passed < 0) time_passed = 0;
-				if(pbi.position + time_passed >= pbi.duration) {
-					if(cached) {
-						return RequestPlaybackInfo(false);
-					}
-				}
-				pbi.position += time_passed;
+			if(json.hasOwnProperty("title")) {
+				
+				String str = JSONVar::stringify(json["title"]);
+				str.substring(1, str.length() - 1).toCharArray(pbi.title, PLAYBACK_TEXT_LENGTH, 0);
 			}
-		}
-		
-		if(json.hasOwnProperty("art")) {
-			String art = JSONVar::stringify(json["art"]);
-			art = art.substring(1, art.length() - 1);
 			
-			// Ineffiecient but works i guess
-			int size = decode_base64_length((const unsigned char*) art.c_str());
-			int binary_length = decode_base64((const unsigned char*) art.c_str(), pbi.image);
-		}
+			if(json.hasOwnProperty("album")) {
+				String str = JSONVar::stringify(json["album"]);
+				str.substring(1, str.length() - 1).toCharArray(pbi.album, PLAYBACK_TEXT_LENGTH, 0);
+			}
+			
+			if(json.hasOwnProperty("artist")) {
+				String str = JSONVar::stringify(json["artist"]);
+				str.substring(1, str.length() - 1).toCharArray(pbi.artist, PLAYBACK_TEXT_LENGTH, 0);
+			}
+			
+			
+			if(json.hasOwnProperty("position")) {
+				pbi.position = long(json["position"]);
+			}
+			
+			if(json.hasOwnProperty("duration")) {
+				pbi.duration = long(json["duration"]);
+			}
+			
+			if(json.hasOwnProperty("timestamp") && json.hasOwnProperty("playing")) { // Check if the time should have already passed, then just get the current data
+				if(json["playing"]) {
+					pbi.playing = true;
+					long time_passed = NOW - ((unsigned long) json["timestamp"] + gmtTimeOffset);
+					if(time_passed < 0) time_passed = 0;
+					if(pbi.position + time_passed >= pbi.duration) {
+						if(cached) {
+							return RequestPlaybackInfo(false);
+						}
+					}
+					pbi.position += time_passed;
+				}
+			}
+			
+			if(json.hasOwnProperty("art")) {
+				String art = (String) json["art"];
+				
+				// Ineffiecient but works i guess
+				int size = decode_base64_length((const unsigned char*) art.c_str());
+				if(size <= PLAYBACK_IMAGE_SIZE * PLAYBACK_IMAGE_SIZE / 8 + 1) {
+					int binary_length = decode_base64((const unsigned char*) art.c_str(), pbi.image);
+				}
+			}
 
-		if(!cached) {
-			FileManager::writeFile(PATH_PLAYBACK"dat", BluetoothManager::lastResponse);
+			if(!cached) {
+				FileManager::writeFile(PATH_PLAYBACK"dat", BluetoothManager::lastResponse);
+			}
+		}else{
+			FileManager::deleteFile(PATH_PLAYBACK"dat");
 		}
-	}else{
-		FileManager::deleteFile(PATH_PLAYBACK"dat");
 	}
 	
 	return pbi;

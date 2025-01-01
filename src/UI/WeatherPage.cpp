@@ -44,10 +44,7 @@ bool WeatherPage::onButtonPressed(uint8_t buttonIndex) {
 }
 
 void WeatherPage::drawWeather() {
-	WeatherData currentWeather = WeatherManager::getWeatherData(true);
-	if(currentWeather.timestamp == 0) {
-		currentWeather = WeatherManager::getWeatherData(false);
-	}
+	WeatherData currentWeather = WeatherManager::getWeatherData();
 
 	if(currentWeather.weatherConditionCode <= 100) return;
 	

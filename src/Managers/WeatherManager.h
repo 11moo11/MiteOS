@@ -19,8 +19,10 @@ typedef struct WeatherData {
 
 class WeatherManager {
 	public:
-		static WeatherData getWeatherData(bool cached = false);
+		static WeatherData getWeatherData(bool cached = true);
 		static void timeTick();
+
+		static bool isDataCurrent();
 		
 		static float getMoonPhase();
 		static float getMoonPhase(uint8_t year, uint8_t month, uint8_t day, uint8_t hour = 0, uint8_t minute = 0);

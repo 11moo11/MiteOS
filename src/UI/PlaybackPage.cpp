@@ -4,6 +4,7 @@
 
 #include <Fonts/FreeSans9pt7b.h>
 #include <Fonts/FreeSansBold9pt7b.h>
+#include "../Fonts/FreeSans8pt7b.h"
 #include "../Fonts/FreeSans6pt7b.h"
 
 #include "../Images/menu_icons.h"
@@ -51,7 +52,7 @@ void PlaybackPage::drawPage() {
 		drawProgressBar(50, 105, 100, 12, percentage, FOREGROUND_COLOR);
 		
 		// Progress Texts
-		mDisplay.setFont(&FreeSans9pt7b);
+		mDisplay.setFont(&FreeSans8pt7b);
 		
 		String curPos = "";
 		curPos += String(pbi.position / 60);

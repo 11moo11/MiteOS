@@ -130,7 +130,7 @@ String FileManager::readFile(String path) {
     init();
     File file = LittleFS.open(path);
     
-    String str;
+    String str = "";
     if(file) {
         if(file.available()) {
             str = file.readString();

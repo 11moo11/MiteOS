@@ -119,7 +119,7 @@ void SEG7Watchface::drawBattery() {
 void SEG7Watchface::drawWeather(){
 	WeatherData currentWeather = WeatherManager::getWeatherData();
 	
-	int8_t temperature = currentWeather.temperature;
+	int8_t temperature = WeatherManager::isDataCurrent() ? currentWeather.temperature : currentWeather.chip_temperature;
 	int16_t weatherConditionCode = currentWeather.weatherConditionCode;
 	
 	mDisplay.setFont(&DSEG7_Classic_Regular_39);
@@ -137,7 +137,7 @@ void SEG7Watchface::drawWeather(){
 	mDisplay.drawBitmap(165, 110, currentWeather.isMetric ? celsius : fahrenheit, 26, 20, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
 	const unsigned char* weatherIcon;
 	
-	if(WifiConfigured){
+	if(WeatherManager::isDataCurrent()){
 		//https://openweathermap.org/weather-conditions
 		if(weatherConditionCode > 801){//Cloudy
 			weatherIcon = cloudy;
