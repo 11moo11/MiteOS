@@ -1,7 +1,7 @@
-#include "FurlyPage.h"
+#include "WoolyPage.h"
 
 #include "../Images/menu_icons.h"
-#include "../Images/furly_icons.h"
+#include "../Images/wooly_icons.h"
 #include "../Fonts/FreeMonoBold7pt7b.h"
 #include "../Fonts/FreeMonoBold10pt7b.h"
 #include "../MiteOS.h"
@@ -16,7 +16,7 @@
 
 // Random Name: Patata, Kevin, 
 
-// Idea: Furly can die, but you can choose to revive it instead of getting a new one
+// Idea: Wooly can die, but you can choose to revive it instead of getting a new one
 
 // Evolution Steps
 // Egg										- Only Warmth needed
@@ -33,7 +33,7 @@
 // Thirstiness
 // Education?
 
-#define FURLY_PAGE pageData.subPageIndex
+#define WOOLY_PAGE pageData.subPageIndex
 #define MAIN_SCROLL_OFFSET pageData.number0
 #define SUBPAGE_INDEX pageData.number1
 
@@ -50,37 +50,37 @@
 
 #define CREDITS pageData.number7
 
-#define FURLY_BORN pageData.largenumber9
+#define WOOLY_BORN pageData.largenumber9
 
-#define FURLY_PAGE_MAIN 0
-#define FURLY_PAGE_INFO 1
-#define FURLY_PAGE_SETTINGS 2
+#define WOOLY_PAGE_MAIN 0
+#define WOOLY_PAGE_INFO 1
+#define WOOLY_PAGE_SETTINGS 2
 
 #define WARMTH_REQUIRE 43200 // 12 hours
 #define FOOD_REQUIRE   43200 // 12 hours
 #define WATER_REQUIRE  43200 // 12 hours
 #define FUN_REQUIRE    86400 //  1 day
 
-#define FURLY_WARMTH_ID 2
-#define FURLY_HUNGER_ID 3
-#define FURLY_THIRST_ID 4
-#define FURLY_PLAY_ID 5
-#define FURLY_EDU_ID 6
-#define FURLY_WORK_ID 7
+#define WOOLY_WARMTH_ID 2
+#define WOOLY_HUNGER_ID 3
+#define WOOLY_THIRST_ID 4
+#define WOOLY_PLAY_ID 5
+#define WOOLY_EDU_ID 6
+#define WOOLY_WORK_ID 7
 
 
 #define MAIN_SELECTION_ICON_COUNT(level) (level == 3 ? 8 : (level == 2 ? 7 : (level == 1 ? 5 : 3)))
 #define CHECK_BIT(var, pos) ((var) & (1<<(pos)))
 
 const unsigned char* main_selection_icons[8] = {
-	icon_furly_gear,
-	icon_furly_info,
-	icon_furly_sun,
-	icon_furly_food,
-	icon_furly_bottle,
-	icon_furly_play,
-	icon_furly_edu,
-	icon_furly_work,
+	icon_wooly_gear,
+	icon_wooly_info,
+	icon_wooly_sun,
+	icon_wooly_food,
+	icon_wooly_bottle,
+	icon_wooly_play,
+	icon_wooly_edu,
+	icon_wooly_work,
 };
 
 const char active_selection[4] = {
@@ -100,29 +100,29 @@ const char active_selection[4] = {
 #define LEVEL_3_STEPS LEVEL_2_STEPS + 50000
 #endif
 
-void FurlyPage::initPage() {
+void WoolyPage::initPage() {
 	MAIN_SCROLL_OFFSET = 1; // Default to the info
 	
 	Configuration::init();
-	START_STEP_COUNTER = Configuration::preferences.getUInt("furly_init", 0);
+	START_STEP_COUNTER = Configuration::preferences.getUInt("wooly_init", 0);
 	LAST_LEVEL = Configuration::preferences.getUChar("last_level", (uint8_t) 0);
 	if(START_STEP_COUNTER == 0) {
-		Configuration::preferences.putUInt("furly_init", ActivityManager::getTotalStepCount());
+		Configuration::preferences.putUInt("wooly_init", ActivityManager::getTotalStepCount());
 		START_STEP_COUNTER = ActivityManager::getTotalStepCount();
 	}
 	
-	LAST_WARMTH = Configuration::preferences.getULong64("furly_warmth", 0);
-	if(LAST_WARMTH == 0) { Configuration::preferences.getULong64("furly_warmth", NOW); LAST_WARMTH = NOW; }
+	LAST_WARMTH = Configuration::preferences.getULong64("wooly_warmth", 0);
+	if(LAST_WARMTH == 0) { Configuration::preferences.getULong64("wooly_warmth", NOW); LAST_WARMTH = NOW; }
 	
-	LAST_FOOD   = Configuration::preferences.getULong64("furly_food", 0);
-	LAST_WATER  = Configuration::preferences.getULong64("furly_water", 0);
-	LAST_FUN    = Configuration::preferences.getULong64("furly_fun", 0);
+	LAST_FOOD   = Configuration::preferences.getULong64("wooly_food", 0);
+	LAST_WATER  = Configuration::preferences.getULong64("wooly_water", 0);
+	LAST_FUN    = Configuration::preferences.getULong64("wooly_fun", 0);
 	
-	EDU_START   = Configuration::preferences.getULong64("furly_edu", 0);
-	WORK_START  = Configuration::preferences.getULong64("furly_work", 0);
+	EDU_START   = Configuration::preferences.getULong64("wooly_edu", 0);
+	WORK_START  = Configuration::preferences.getULong64("wooly_work", 0);
 	
-	FURLY_BORN = Configuration::preferences.getULong64("furly_born", 0);
-	if(FURLY_BORN == 0) { Configuration::preferences.getULong64("furly_born", NOW); FURLY_BORN = NOW; }
+	WOOLY_BORN = Configuration::preferences.getULong64("wooly_born", 0);
+	if(WOOLY_BORN == 0) { Configuration::preferences.putULong64("wooly_born", NOW); WOOLY_BORN = NOW; }
 	
 	printDebug("Warmth: " + String(LAST_WARMTH));
 	printDebug("Hungry: " + String(LAST_FOOD));
@@ -130,7 +130,7 @@ void FurlyPage::initPage() {
 	printDebug("Fun " + String(LAST_FUN));
 }
 
-void FurlyPage::levelChanged() {
+void WoolyPage::levelChanged() {
 	uint8_t level = getLevel();
 	if(LAST_LEVEL != level) {
 		
@@ -146,41 +146,41 @@ void FurlyPage::levelChanged() {
 	}
 }
 
-void FurlyPage::refillState(uint8_t state) {
+void WoolyPage::refillState(uint8_t state) {
 	uint8_t level = getLevel();
 	
 	Configuration::init();
 
 	switch (state) {
-		case FURLY_WARMTH_ID:
+		case WOOLY_WARMTH_ID:
 			printDebug("Refuel Warmth");
 			LAST_WARMTH = NOW;
-			Configuration::preferences.putULong64("furly_warmth", LAST_WARMTH);
+			Configuration::preferences.putULong64("wooly_warmth", LAST_WARMTH);
 			break;
 		
-		case FURLY_HUNGER_ID:
+		case WOOLY_HUNGER_ID:
 			printDebug("Refuel Food");
 			LAST_FOOD = NOW;
-			Configuration::preferences.putULong64("furly_food", LAST_FOOD);
+			Configuration::preferences.putULong64("wooly_food", LAST_FOOD);
 			break;
 		
-		case FURLY_THIRST_ID:
+		case WOOLY_THIRST_ID:
 			printDebug("Refuel Water");
 			LAST_WATER = NOW;
-			Configuration::preferences.putULong64("furly_water", LAST_WATER);
+			Configuration::preferences.putULong64("wooly_water", LAST_WATER);
 			break;
 			
-		case FURLY_PLAY_ID:
+		case WOOLY_PLAY_ID:
 			printDebug("Refuel Fun");
 			LAST_FUN = NOW;
-			Configuration::preferences.putULong64("furly_fun", LAST_FUN);
+			Configuration::preferences.putULong64("wooly_fun", LAST_FUN);
 			break;
 		
 		default: break;
 	}
 }
 
-void FurlyPage::drawPage() {
+void WoolyPage::drawPage() {
 	if(LAST_LEVEL != getLevel()) {
 		levelChanged();
 	}
@@ -189,15 +189,15 @@ void FurlyPage::drawPage() {
 		TXT_TEST,
 		TXT_RESTART
 	};
-	switch(FURLY_PAGE) {
-		case FURLY_PAGE_MAIN:
+	switch(WOOLY_PAGE) {
+		case WOOLY_PAGE_MAIN:
 			SUBPAGE_INDEX = 0;
 			drawMainPage();
 			break;
-		case FURLY_PAGE_INFO:
+		case WOOLY_PAGE_INFO:
 			drawInfoPage();
 			break;
-		case FURLY_PAGE_SETTINGS:
+		case WOOLY_PAGE_SETTINGS:
 			showMenu(menuItems, 2, true, TXT_SETTINGS);
 			break;
 		default:
@@ -206,10 +206,10 @@ void FurlyPage::drawPage() {
 	}
 }
 
-bool FurlyPage::onButtonPressed(uint8_t buttonIndex) {
+bool WoolyPage::onButtonPressed(uint8_t buttonIndex) {
 	uint8_t level = getLevel();
-	switch(FURLY_PAGE) {
-		case FURLY_PAGE_MAIN:
+	switch(WOOLY_PAGE) {
+		case WOOLY_PAGE_MAIN:
 			switch(buttonIndex) {
 				case BTN_UP:
 					do{ MAIN_SCROLL_OFFSET--; if(MAIN_SCROLL_OFFSET > 8) MAIN_SCROLL_OFFSET = 7; }while(!CHECK_BIT(active_selection[level], MAIN_SCROLL_OFFSET));
@@ -220,27 +220,27 @@ bool FurlyPage::onButtonPressed(uint8_t buttonIndex) {
 				case BTN_CONFIRM:
 					switch(MAIN_SCROLL_OFFSET) {
 						case 0: // Gear
-							FURLY_PAGE = FURLY_PAGE_SETTINGS;
+							WOOLY_PAGE = WOOLY_PAGE_SETTINGS;
 							break;
 						
 						case 1: // Info
-							FURLY_PAGE = FURLY_PAGE_INFO;
+							WOOLY_PAGE = WOOLY_PAGE_INFO;
 							break;
 						
-						case FURLY_WARMTH_ID: // Warmth
-							refillState(FURLY_WARMTH_ID);
+						case WOOLY_WARMTH_ID: // Warmth
+							refillState(WOOLY_WARMTH_ID);
 							break;
 						
-						case FURLY_HUNGER_ID: // Food
-							refillState(FURLY_HUNGER_ID);
+						case WOOLY_HUNGER_ID: // Food
+							refillState(WOOLY_HUNGER_ID);
 							break;
 						
-						case FURLY_THIRST_ID: // Water
-							refillState(FURLY_THIRST_ID);
+						case WOOLY_THIRST_ID: // Water
+							refillState(WOOLY_THIRST_ID);
 							break;
 							
-						case FURLY_PLAY_ID: // Fun
-							refillState(FURLY_PLAY_ID);
+						case WOOLY_PLAY_ID: // Fun
+							refillState(WOOLY_PLAY_ID);
 							break;
 						
 						default: break;
@@ -249,7 +249,7 @@ bool FurlyPage::onButtonPressed(uint8_t buttonIndex) {
 			}
 			break;
 		
-		case FURLY_PAGE_INFO:
+		case WOOLY_PAGE_INFO:
 			switch(buttonIndex){
 				case BTN_UP:
 					SUBPAGE_INDEX--;
@@ -260,23 +260,23 @@ bool FurlyPage::onButtonPressed(uint8_t buttonIndex) {
 					if(SUBPAGE_INDEX > 1) SUBPAGE_INDEX = 0;
 					break;
 				case BTN_BACK:
-					FURLY_PAGE = FURLY_PAGE_MAIN;
+					WOOLY_PAGE = WOOLY_PAGE_MAIN;
 					break;
 				default: break;
 			}
 			return true;
 		
-		case FURLY_PAGE_SETTINGS:
+		case WOOLY_PAGE_SETTINGS:
 			if(handleMenuButtons(buttonIndex)) return true;
 			
 			switch(buttonIndex){
 				case BTN_BACK:
-					FURLY_PAGE = FURLY_PAGE_MAIN;
+					WOOLY_PAGE = WOOLY_PAGE_MAIN;
 					break;
 				
 				case BTN_CONFIRM:
 					if(pageData.menuIndex == 1) {
-						resetFurly();
+						resetWooly();
 					}
 					break;
 				
@@ -291,7 +291,7 @@ bool FurlyPage::onButtonPressed(uint8_t buttonIndex) {
 	return false;
 }
 
-void FurlyPage::drawMainPage() {
+void WoolyPage::drawMainPage() {
 	drawButtonIcon(BTN_BACK, icon_exit);
 	drawButtonIcon(BTN_CONFIRM, icon_checkmark);
 	drawButtonIcon(BTN_UP, icon_up);
@@ -327,48 +327,48 @@ void FurlyPage::drawMainPage() {
 	Page::drawDitherBox(161, 145, 38, 5, 1, 3);
 	
 	
-	drawFurly(80, 100);
+	drawWooly(80, 100);
 	drawStepProgressBar();
 }
 
-void FurlyPage::drawFurly(uint8_t x, uint8_t y, uint8_t gender) {
+void WoolyPage::drawWooly(uint8_t x, uint8_t y, uint8_t gender) {
 	uint8_t level = getLevel();
 	
 	switch(level) {
 		case 0:
-			mDisplay.drawBitmap(x - (FURLY_EGG_WIDTH / 2), y - (FURLY_EGG_HEIGHT / 2), furly_state_egg, FURLY_EGG_WIDTH, FURLY_EGG_HEIGHT, FOREGROUND_COLOR);
+			mDisplay.drawBitmap(x - (WOOLY_EGG_WIDTH / 2), y - (WOOLY_EGG_HEIGHT / 2), wooly_state_egg, WOOLY_EGG_WIDTH, WOOLY_EGG_HEIGHT, FOREGROUND_COLOR);
 			break;
 		
 		case 1:
-			mDisplay.drawBitmap(x - (FURLY_SMOL_WIDTH / 2), y - (FURLY_SMOL_HEIGHT / 2), furly_state_smol, FURLY_SMOL_WIDTH, FURLY_SMOL_HEIGHT, FOREGROUND_COLOR);
+			mDisplay.drawBitmap(x - (WOOLY_SMOL_WIDTH / 2), y - (WOOLY_SMOL_HEIGHT / 2), wooly_state_smol, WOOLY_SMOL_WIDTH, WOOLY_SMOL_HEIGHT, FOREGROUND_COLOR);
 			break;
 		case 2:
 		case 3:
-			mDisplay.drawBitmap(x - (FURLY_WIDTH / 2), y - (FURLY_HEIGHT / 2), furly_part_body, FURLY_WIDTH, FURLY_HEIGHT, FOREGROUND_COLOR);
+			mDisplay.drawBitmap(x - (WOOLY_WIDTH / 2), y - (WOOLY_HEIGHT / 2), wooly_part_body, WOOLY_WIDTH, WOOLY_HEIGHT, FOREGROUND_COLOR);
 			
-			mDisplay.drawBitmap(x -  4, y +  6, furly_part_nose, FURLY_NOSE_WIDTH, FURLY_NOSE_HEIGHT, FOREGROUND_COLOR); // NOSE
+			mDisplay.drawBitmap(x -  4, y +  6, wooly_part_nose, WOOLY_NOSE_WIDTH, WOOLY_NOSE_HEIGHT, FOREGROUND_COLOR); // NOSE
 			
-			mDisplay.drawBitmap(x - 20, y + 11, furly_part_mouth_happy, FURLY_MOUTH_WIDTH, FURLY_MOUTH_HEIGHT, FOREGROUND_COLOR); // MOUTH
+			mDisplay.drawBitmap(x - 20, y + 11, wooly_part_mouth_happy, WOOLY_MOUTH_WIDTH, WOOLY_MOUTH_HEIGHT, FOREGROUND_COLOR); // MOUTH
 			
 			if(gender == GENDER_MALE) {
-				mDisplay.drawBitmap(x - 22, y - 13, furly_part_eye_m, FURLY_EYE_WIDTH, FURLY_EYE_HEIGHT, FOREGROUND_COLOR); // LEFT EYE
-				mDisplay.drawBitmapFlippedH(x +  5, y - 13, furly_part_eye_m, FURLY_EYE_WIDTH, FURLY_EYE_HEIGHT, FOREGROUND_COLOR); // RIGHT EYE
+				mDisplay.drawBitmap(x - 22, y - 13, wooly_part_eye_m, WOOLY_EYE_WIDTH, WOOLY_EYE_HEIGHT, FOREGROUND_COLOR); // LEFT EYE
+				mDisplay.drawBitmapFlippedH(x +  5, y - 13, wooly_part_eye_m, WOOLY_EYE_WIDTH, WOOLY_EYE_HEIGHT, FOREGROUND_COLOR); // RIGHT EYE
 				
-				mDisplay.drawBitmap(x + 21, y + 4, furly_part_tail_m, FURLY_TAIL_WIDTH, FURLY_TAIL_HEIGHT, FOREGROUND_COLOR); // TAIL
+				mDisplay.drawBitmap(x + 21, y + 4, wooly_part_tail_m, WOOLY_TAIL_WIDTH, WOOLY_TAIL_HEIGHT, FOREGROUND_COLOR); // TAIL
 			}else if(gender == GENDER_FEMALE) {
-				mDisplay.drawBitmap(x - 22, y - 13, furly_part_eye_f, FURLY_EYE_WIDTH, FURLY_EYE_HEIGHT, FOREGROUND_COLOR); // LEFT EYE
-				mDisplay.drawBitmapFlippedH(x +  5, y - 13, furly_part_eye_f, FURLY_EYE_WIDTH, FURLY_EYE_HEIGHT, FOREGROUND_COLOR); // RIGHT EYE
+				mDisplay.drawBitmap(x - 22, y - 13, wooly_part_eye_f, WOOLY_EYE_WIDTH, WOOLY_EYE_HEIGHT, FOREGROUND_COLOR); // LEFT EYE
+				mDisplay.drawBitmapFlippedH(x +  5, y - 13, wooly_part_eye_f, WOOLY_EYE_WIDTH, WOOLY_EYE_HEIGHT, FOREGROUND_COLOR); // RIGHT EYE
 				
-				mDisplay.drawBitmap(x + 21, y + 4, furly_part_tail_f, FURLY_TAIL_WIDTH, FURLY_TAIL_HEIGHT, FOREGROUND_COLOR); // TAIL
+				mDisplay.drawBitmap(x + 21, y + 4, wooly_part_tail_f, WOOLY_TAIL_WIDTH, WOOLY_TAIL_HEIGHT, FOREGROUND_COLOR); // TAIL
 			}
 			break;
 	}
 }
 
-uint32_t FurlyPage::getLevelSteps() {
+uint32_t WoolyPage::getLevelSteps() {
 	return ActivityManager::getTotalStepCount() - START_STEP_COUNTER;
 }
-uint8_t FurlyPage::getLevel() {
+uint8_t WoolyPage::getLevel() {
 	uint32_t counter = getLevelSteps();
 	if(counter > LEVEL_3_STEPS) return 3;
 	if(counter > LEVEL_2_STEPS) return 2;
@@ -376,7 +376,7 @@ uint8_t FurlyPage::getLevel() {
 	return 0;
 }
 
-void FurlyPage::drawStepProgressBar() {
+void WoolyPage::drawStepProgressBar() {
 	uint8_t level = getLevel();
 	
 	mDisplay.setFont(&FreeMonoBold7pt7b);
@@ -393,11 +393,11 @@ void FurlyPage::drawStepProgressBar() {
 	if(MAIN_SCROLL_OFFSET >= 2 && MAIN_SCROLL_OFFSET <= 5) {
 		float progress = 0;
 		String txt;
-		     if(MAIN_SCROLL_OFFSET == FURLY_WARMTH_ID) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WARMTH) / (float) WARMTH_REQUIRE)); txt = TXT_WARMTH;    }
-		else if(MAIN_SCROLL_OFFSET == FURLY_HUNGER_ID) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FOOD  ) / (float) FOOD_REQUIRE  )); txt = TXT_HUNGER;    }
-		else if(MAIN_SCROLL_OFFSET == FURLY_THIRST_ID) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WATER ) / (float) WATER_REQUIRE )); txt = TXT_THIRST;    }
-		else if(MAIN_SCROLL_OFFSET == FURLY_PLAY_ID  ) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FUN   ) / (float) FUN_REQUIRE   )); txt = TXT_FUN;       }
-		else if(MAIN_SCROLL_OFFSET == FURLY_EDU_ID   ) { progress = 0.5f;                                                                   txt = TXT_EDUCATION; }
+		     if(MAIN_SCROLL_OFFSET == WOOLY_WARMTH_ID) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WARMTH) / (float) WARMTH_REQUIRE)); txt = TXT_WARMTH;    }
+		else if(MAIN_SCROLL_OFFSET == WOOLY_HUNGER_ID) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FOOD  ) / (float) FOOD_REQUIRE  )); txt = TXT_HUNGER;    }
+		else if(MAIN_SCROLL_OFFSET == WOOLY_THIRST_ID) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WATER ) / (float) WATER_REQUIRE )); txt = TXT_THIRST;    }
+		else if(MAIN_SCROLL_OFFSET == WOOLY_PLAY_ID  ) { progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FUN   ) / (float) FUN_REQUIRE   )); txt = TXT_FUN;       }
+		else if(MAIN_SCROLL_OFFSET == WOOLY_EDU_ID   ) { progress = 0.5f;                                                                   txt = TXT_EDUCATION; }
 		
 		Page::drawCentreString(txt, 100, 175);
 		Page::drawProgressBar(50, 180, 100, 10, progress, FOREGROUND_COLOR);
@@ -405,7 +405,7 @@ void FurlyPage::drawStepProgressBar() {
 }
 
 
-void FurlyPage::drawInfoPage() {
+void WoolyPage::drawInfoPage() {
 	drawButtonIcon(BTN_BACK, icon_left);
 	
 	drawButtonIcon(BTN_UP, icon_up);
@@ -444,12 +444,12 @@ void FurlyPage::drawInfoPage() {
 		offset_y += 18;
 		
 		mDisplay.setCursor(35, offset_y);
-		long l = FURLY_BORN;
-		mDisplay.print(day(FURLY_BORN));
+		long l = WOOLY_BORN;
+		mDisplay.print(day(WOOLY_BORN));
 		mDisplay.print(".");
-		mDisplay.print(month(FURLY_BORN));
+		mDisplay.print(month(WOOLY_BORN));
 		mDisplay.print(".");
-		mDisplay.print(year(FURLY_BORN));
+		mDisplay.print(year(WOOLY_BORN));
 		
 		offset_y += 25;
 		
@@ -461,7 +461,7 @@ void FurlyPage::drawInfoPage() {
 		offset_y += 18;
 		
 		mDisplay.setCursor(35, offset_y);
-		time_t b = FURLY_BORN;
+		time_t b = WOOLY_BORN;
 		time_t c = makeTime(MiteOS::currentTime);
 		int totalSeconds = c-b;
 		//int seconds = (totalSeconds % 60);
@@ -493,7 +493,7 @@ void FurlyPage::drawInfoPage() {
 		
 		float progress;
 		uint8_t hours;
-		if(CHECK_BIT(active_selection[level], FURLY_WARMTH_ID)) {
+		if(CHECK_BIT(active_selection[level], WOOLY_WARMTH_ID)) {
 			progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WARMTH) / (float) WARMTH_REQUIRE));
 			Page::drawProgressBar(35, offset_y, 100, 10, progress);
 			mDisplay.setFont(&FreeMonoBold10pt7b);
@@ -509,7 +509,7 @@ void FurlyPage::drawInfoPage() {
 			offset_y += 35;
 		}
 		
-		if(CHECK_BIT(active_selection[level], FURLY_HUNGER_ID)) {
+		if(CHECK_BIT(active_selection[level], WOOLY_HUNGER_ID)) {
 			progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FOOD) / (float) FOOD_REQUIRE));
 			Page::drawProgressBar(35, offset_y, 100, 10, progress);
 			mDisplay.setFont(&FreeMonoBold10pt7b);
@@ -525,7 +525,7 @@ void FurlyPage::drawInfoPage() {
 			offset_y += 35;
 		}
 		
-		if(CHECK_BIT(active_selection[level], FURLY_THIRST_ID)) {
+		if(CHECK_BIT(active_selection[level], WOOLY_THIRST_ID)) {
 			progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_WATER) / (float) WATER_REQUIRE));
 			Page::drawProgressBar(35, offset_y, 100, 10, progress);
 			mDisplay.setFont(&FreeMonoBold10pt7b);
@@ -541,7 +541,7 @@ void FurlyPage::drawInfoPage() {
 			offset_y += 35;
 		}
 		
-		if(CHECK_BIT(active_selection[level], FURLY_PLAY_ID)) {
+		if(CHECK_BIT(active_selection[level], WOOLY_PLAY_ID)) {
 			progress = min(1.0f, max(0.0f, 1 - (NOW - LAST_FUN) / (float) FUN_REQUIRE));
 			Page::drawProgressBar(35, offset_y, 100, 10, progress);
 			mDisplay.setFont(&FreeMonoBold10pt7b);
@@ -557,7 +557,7 @@ void FurlyPage::drawInfoPage() {
 			offset_y += 35;
 		}
 		
-		if(CHECK_BIT(active_selection[level], FURLY_EDU_ID)) {
+		if(CHECK_BIT(active_selection[level], WOOLY_EDU_ID)) {
 			Page::drawProgressBar(35, offset_y, 100, 10, 1);
 			mDisplay.setFont(&FreeMonoBold10pt7b);
 			mDisplay.setCursor(35, offset_y - 5);
@@ -566,16 +566,16 @@ void FurlyPage::drawInfoPage() {
 	}
 }
 
-void FurlyPage::resetFurly() {
+void WoolyPage::resetWooly() {
 	
 	Configuration::init();
 	
-	Configuration::preferences.putUInt("furly_init", 0);
+	Configuration::preferences.putUInt("wooly_init", 0);
 	Configuration::preferences.putUChar("last_level", (uint8_t) 0);
-	Configuration::preferences.getULong64("furly_warmth", NOW);
-	Configuration::preferences.getULong64("furly_born", 0);
+	Configuration::preferences.getULong64("wooly_warmth", NOW);
+	Configuration::preferences.getULong64("wooly_born", 0);
 	
-	FURLY_PAGE = FURLY_PAGE_MAIN;
+	WOOLY_PAGE = WOOLY_PAGE_MAIN;
 	
 	initPage();
 }

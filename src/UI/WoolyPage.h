@@ -1,20 +1,20 @@
-#ifndef FURLY_PAGE_H
-#define FURLY_PAGE_H
+#ifndef WOOLY_PAGE_H
+#define WOOLY_PAGE_H
 
 #include "Page.h"
 
 #define GENDER_MALE 0
 #define GENDER_FEMALE 1
 
-class FurlyPage : public Page {
+class WoolyPage : public Page {
 	public:
-		String pageName() override { return TXT_FURLY; };
+		String pageName() override { return TXT_WOOLY; };
     	void initPage() override;
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;
 		bool isPageable() { return false; };
 	private:
-		void drawFurly(uint8_t x, uint8_t y, uint8_t gender = 0);
+		void drawWooly(uint8_t x, uint8_t y, uint8_t gender = 0);
 		void drawMainPage();
 		void drawStepProgressBar();
 		void drawInfoPage();
@@ -25,7 +25,7 @@ class FurlyPage : public Page {
 		void levelChanged();
 		void refillState(uint8_t state);
 		
-		void resetFurly();
+		void resetWooly();
 };
 
 #endif

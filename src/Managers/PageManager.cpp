@@ -13,7 +13,7 @@
 #include "../UI/NotificationPage.h"
 #include "../UI/PlaybackPage.h"
 #include "../UI/HassPage.h"
-#include "../UI/FurlyPage.h"
+#include "../UI/WoolyPage.h"
 #include "../UI/TOTPPage.h"
 #include "../UI/CalendarPage.h"
 
@@ -29,7 +29,7 @@ PROGMEM BluetoothPage bluetoothPage;
 PROGMEM NotificationPage notificationPage;
 PROGMEM PlaybackPage playbackPage;
 PROGMEM HassPage hassPage;
-PROGMEM FurlyPage furlyPage;
+PROGMEM WoolyPage woolyPage;
 PROGMEM TOTPPage totpPage;
 PROGMEM CalendarPage calendarPage;
 PROGMEM Page* pages[] = {
@@ -45,7 +45,7 @@ PROGMEM Page* pages[] = {
 	&notificationPage,
 	&playbackPage,
 	&hassPage,
-	&furlyPage,
+	&woolyPage,
 	&totpPage,
 	&calendarPage,
 };
