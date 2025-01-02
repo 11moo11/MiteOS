@@ -35,6 +35,10 @@
 #define STEPS_PER_KM 1400
 #define KM_TO_MILES 0.621371
 
+
+#define ALARM_COUNT 3
+
+
 // This will dramatically reduce battery life and responsiveness of the watch
 // Should only be used for making screenshot and never for daily driving
 #define ENABLE_SCREENSHOTS true

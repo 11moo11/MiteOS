@@ -2,6 +2,7 @@
 #define ALARM_PAGE_H
 #include "Page.h"
 
+
 class AlarmPage : public Page {
 	public:
 		String pageName() override { return TXT_ALARM; };

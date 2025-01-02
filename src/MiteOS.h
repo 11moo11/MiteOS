@@ -94,8 +94,6 @@ extern RTC_DATA_ATTR bool AUTO_DARKMODE;
 extern RTC_DATA_ATTR bool PREF_DARKMODE;
 extern RTC_DATA_ATTR bool DARKMODE;
 
-#define ALARM_COUNT 3
-
 extern RTC_DATA_ATTR AlarmData timer;
 extern RTC_DATA_ATTR AlarmData alarms[ALARM_COUNT];
 

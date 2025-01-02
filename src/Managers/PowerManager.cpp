@@ -2,6 +2,12 @@
 
 #include "../MiteOS.h"
 
+#define MIN_VOLTAGE_CHANGE_CHARGING 300 	// 0.3V
+#define MIN_VOLTAGE_CHANGE_DISCHARGING 100 	// 0.1V
+
+RTC_DATA_ATTR bool isBatteryCharging = false;
+RTC_DATA_ATTR long lastVoltage = 0;
+
 void PowerManager::deepSleep() {
 	mDisplay.hibernate();
 	
@@ -53,4 +59,24 @@ float PowerManager::getBatteryPercentage() {
 	percentage = max(  0.0, percentage);
 	
 	return percentage;
+}
+
+void PowerManager::checkCharging() {
+	long voltage = getBatteryVoltage() * 1000;
+	if(lastVoltage == 0) lastVoltage = voltage;
+	
+	long diff = max(voltage, lastVoltage) - min(voltage, lastVoltage);
+	if(!isBatteryCharging && lastVoltage < voltage - MIN_VOLTAGE_CHANGE_CHARGING) {
+		isBatteryCharging = true;
+		printDebug("Watch is now charging.");
+	}else if(isBatteryCharging && lastVoltage > voltage + MIN_VOLTAGE_CHANGE_DISCHARGING) {
+		isBatteryCharging = false;
+		printDebug("Watch started discharging.");
+	}
+
+	lastVoltage = voltage;
+}
+
+bool PowerManager::isCharging() {
+	return isBatteryCharging;
 }

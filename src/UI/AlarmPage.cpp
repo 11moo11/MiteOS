@@ -4,10 +4,12 @@
 #include <DSEG7_Classic_Bold_53.h>
 #include "../Images/menu_icons.h"
 #include "../Images/app_icons.h"
+#include "../Data/DayMask.h"
 
 #define ALARM_PAGE_OVERVIEW 0
 #define ALARM_PAGE_CONFIGURATION 1
 #define ALARM_PAGE_SET_TIME 2
+#define ALARM_PAGE_SET_DAYS 3
 
 void AlarmPage::initPage() {
 	pageData.subPageIndex = ALARM_PAGE_OVERVIEW;
@@ -38,13 +40,32 @@ void AlarmPage::drawPage() {
 		const char *menuItems[] = {
 			(alarms[pageData.number2].enableAlarm ? TXT_ENABLE_ON : TXT_ENABLE_OFF),
 			TXT_SET_TIME,
-			(alarms[pageData.number2].mode == ALARM_MODE_ONCE ? TXT_OPTION_LEFT " " TXT_ONCE " " TXT_OPTION_RIGHT
-				: (alarms[pageData.number2].mode == ALARM_MODE_WORKDAY ? TXT_OPTION_LEFT " " TXT_WORKDAY " " TXT_OPTION_RIGHT
-					: (alarms[pageData.number2].mode == ALARM_MODE_WEEKEND ? TXT_OPTION_LEFT " " TXT_WEEKEND " " TXT_OPTION_RIGHT
-						: TXT_OPTION_LEFT " " TXT_EVERY_DAY " " TXT_OPTION_RIGHT))
-			)
+			TXT_DAYS
 		};
 		showMenu(menuItems, 3, true, TXT_ALARM " " + String(pageData.number2 + 1));
+	}else if(pageData.subPageIndex == ALARM_PAGE_SET_DAYS) {
+		DayMask dm = unpackDayMask(alarms[pageData.number2].mode);
+
+		if(dm.once) {
+			const char *menuItems[] = {
+				TXT_CHECKBOX_ON" "TXT_ONCE,
+			};
+
+			showMenu(menuItems, 1, true, TXT_DAYS);
+		}else{
+			const char *menuItems[] = {
+				TXT_CHECKBOX_OFF" "TXT_ONCE,
+				(dm.monday ? TXT_CHECKBOX_ON" "TXT_MONDAY : TXT_CHECKBOX_OFF" "TXT_MONDAY),
+				(dm.tuesday ? TXT_CHECKBOX_ON" "TXT_TUESDAY : TXT_CHECKBOX_OFF" "TXT_TUESDAY),
+				(dm.wednesday ? TXT_CHECKBOX_ON" "TXT_WEDNESDAY : TXT_CHECKBOX_OFF" "TXT_WEDNESDAY),
+				(dm.thursday ? TXT_CHECKBOX_ON" "TXT_THURSDAY : TXT_CHECKBOX_OFF" "TXT_THURSDAY),
+				(dm.friday ? TXT_CHECKBOX_ON" "TXT_FRIDAY : TXT_CHECKBOX_OFF" "TXT_FRIDAY),
+				(dm.saturday ? TXT_CHECKBOX_ON" "TXT_SATURDAY : TXT_CHECKBOX_OFF" "TXT_SATURDAY),
+				(dm.sunday ? TXT_CHECKBOX_ON" "TXT_SUNDAY : TXT_CHECKBOX_OFF" "TXT_SUNDAY),
+			};
+
+			showMenu(menuItems, 8, true, TXT_DAYS);
+		}
 	}
 	drawIcons();
 }
@@ -80,15 +101,40 @@ bool AlarmPage::onButtonPressed(uint8_t buttonIndex) {
 					setTime();
 					return true;
 				}else if(pageData.menuIndex == 2) { // Type Selection
-					alarms[pageData.number2].mode++;
-					if(alarms[pageData.number2].mode >= 4) alarms[pageData.number2].mode = 0;
+					pageData.subPageIndex = ALARM_PAGE_SET_DAYS;
 					return true;
 				}
 			}
 			break;
+		
 		case ALARM_PAGE_SET_TIME:
 			setTime();
 			break;
+		
+		case ALARM_PAGE_SET_DAYS:
+			if(handleMenuButtons(buttonIndex)) {
+				return true;
+			}else if(buttonIndex == BTN_BACK) {
+				pageData.subPageIndex = ALARM_PAGE_CONFIGURATION;
+				return true;
+			}else if(buttonIndex == BTN_CONFIRM) {
+				DayMask dm = unpackDayMask(alarms[pageData.number2].mode);
+				switch(pageData.menuIndex) {
+					case 0: dm.once      = !dm.once;      break;
+					case 1: dm.monday    = !dm.monday;    break;
+					case 2: dm.tuesday   = !dm.tuesday;   break;
+					case 3: dm.wednesday = !dm.wednesday; break;
+					case 4: dm.thursday  = !dm.thursday;  break;
+					case 5: dm.friday    = !dm.friday;    break;
+					case 6: dm.saturday  = !dm.saturday;  break;
+					case 7: dm.sunday    = !dm.sunday;    break;
+					default: break;
+				}
+				alarms[pageData.number2].mode = packDayMask(dm);
+				return true;
+			}
+			break;
+		
 		default: break;
 	}
 	
@@ -133,6 +179,12 @@ void AlarmPage::drawIcons() {
 			drawButtonIcon(BTN_DOWN, icon_down);
 			drawButtonIcon(BTN_MENU, icon_gear);
 			drawButtonIcon(BTN_BACK, icon_exit);
+			break;
+		case ALARM_PAGE_SET_DAYS:
+			drawButtonIcon(BTN_UP, icon_up);
+			drawButtonIcon(BTN_DOWN, icon_down);
+			drawButtonIcon(BTN_CONFIRM, icon_checkmark);
+			drawButtonIcon(BTN_BACK, icon_left);
 			break;
 		default: break;
 	}

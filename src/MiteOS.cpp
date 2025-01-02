@@ -1,6 +1,7 @@
 #include "MiteOS.h"
 
 #include "Managers/FileManager.h"
+#include "Managers/AlarmManager.h"
 
 WatchyRTC MiteOS::RTC;
 WatchyDisplay MiteOS::watchyDisplay {};
@@ -275,35 +276,10 @@ void MiteOS::checkTime() {
 		}
 	}
 
-	if(timer.triggered
-	|| (timer.enableAlarm && currentTime.Hour == timer.hour && currentTime.Minute == timer.minute)) {
-		timer.triggered = true;
-		pageData.pageIndex = GLOBAL_PAGE_TIMER;
-		AlertManager::vibMotor(100, 10);
-	}
-
-	for(uint8_t i = 0; i < ALARM_COUNT; i++) {
-		if(alarms[i].triggered
-		|| (alarms[i].enableAlarm && currentTime.Hour == alarms[i].hour && currentTime.Minute == alarms[i].minute)) {
-			if(alarms[i].mode == ALARM_MODE_ONCE) {
-				// Alarm should only be triggered once, so we disable it and save it to the settings file
-				alarms[i].enableAlarm = false;
-				Configuration::saveAlarms(); 
-			}else if(alarms[i].mode == ALARM_MODE_WEEKEND) {
-				if(currentTime.Wday != 1 && currentTime.Wday != 7) {
-					continue;
-				}
-			}else if(alarms[i].mode == ALARM_MODE_WORKDAY) {
-				if(currentTime.Wday == 1 || currentTime.Wday == 7) {
-					continue;
-				}
-			}
-			alarms[i].triggered = true;
-			
-			pageData.pageIndex = GLOBAL_PAGE_ALARM;
-		}
-	}
+	AlarmManager::checkTimers();
+	AlarmManager::checkAlarms();
 	
+	PowerManager::checkCharging();
 	WeatherManager::timeTick();
 	WeatherManager::getWeatherData();
 }
