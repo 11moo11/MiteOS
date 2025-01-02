@@ -61,11 +61,9 @@ bool NotificationPage::onButtonPressed(uint8_t buttonIndex) {
 		pageData.subPageIndex++;
 		if(pageData.subPageIndex >= PhoneConnectionManager::GetNotificationCount()) pageData.subPageIndex = 0;
 		return true;
-	} else if(buttonIndex == BTN_HOME) {
-		PageManager::showPage(GLOBAL_PAGE_WATCHFACE);
-		return true;
 	} else if(buttonIndex == BTN_CONFIRM) {
 		notificationRequeryCounter = -1;
 		return true;
 	}
+	return false;
 }

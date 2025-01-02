@@ -63,9 +63,6 @@ bool AlarmPage::onButtonPressed(uint8_t buttonIndex) {
 			}else if(buttonIndex == BTN_MENU) {
 				pageData.subPageIndex = ALARM_PAGE_CONFIGURATION;
 				return true;
-			}else if(buttonIndex == BTN_BACK) {
-				PageManager::showPage(GLOBAL_PAGE_APPS);
-				return true;
 			}
 			break;
 		case ALARM_PAGE_CONFIGURATION:

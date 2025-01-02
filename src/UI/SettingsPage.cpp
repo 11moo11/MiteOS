@@ -161,7 +161,7 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 		} else if(pageData.subPageIndex > 0) {
 			pageData.subPageIndex = 0;
 		}else{
-			PageManager::showPage(GLOBAL_PAGE_APPS);
+			return false;
 		}
 		return true;
 	}else if(buttonIndex == BTN_CONFIRM) {

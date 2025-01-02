@@ -27,6 +27,8 @@ class PageManager {
 		static void nextPage();
 		static void previousPage();
 
+		static void goBack();
+
 		static Page* getPage(uint8_t pageIndex);
 		static void showPage(uint8_t pageIndex);
 		
@@ -34,6 +36,8 @@ class PageManager {
 		static void handleButtonPress(uint8_t buttonIndex);
 		
 		static void showConnectionIcon(const unsigned char* icon);
+	private:
+		static bool returnToAppPage;
 };
 
 #endif

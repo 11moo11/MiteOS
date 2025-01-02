@@ -123,9 +123,6 @@ bool PlaybackPage::onButtonPressed(uint8_t buttonIndex) {
 			return true; // Just refresh the page
 		}
 	}
-	if(buttonIndex == BTN_BACK) {
-		PageManager::showPage(GLOBAL_PAGE_APPS);
-		return true;
-	}
+	
 	return false;
 }

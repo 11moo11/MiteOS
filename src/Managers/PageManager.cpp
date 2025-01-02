@@ -50,6 +50,7 @@ PROGMEM Page* pages[] = {
 	&calendarPage,
 };
 
+bool PageManager::returnToAppPage = false;
 
 void PageManager::handleButtonPress(uint8_t buttonIndex) {
 	if(buttonIndex == BTN_DOUBLE_TAP) {
@@ -73,10 +74,13 @@ void PageManager::handleButtonPress(uint8_t buttonIndex) {
 		refreshPage();
 		return;
 	}else if(buttonIndex == BTN_HOME) {
+		/*
 		if(pageData.pageIndex != GLOBAL_PAGE_APPS && !pages[pageData.pageIndex]->isPageable())
 			showPage(GLOBAL_PAGE_APPS);
 		else
 			showPage(GLOBAL_PAGE_WATCHFACE);
+		*/
+		goBack();
 
 		refreshPage();
 		return;
@@ -116,6 +120,9 @@ void PageManager::showPage(uint8_t pageIndex) {
 	if(pageIndex < 0 || pageIndex >= PAGE_COUNT) return;
 	
 	if(pageData.pageIndex != pageIndex) { // Reset the page data when its really changed
+		if(pageData.pageIndex == GLOBAL_PAGE_APPS && pageIndex != GLOBAL_PAGE_WATCHFACE)
+			PageManager::returnToAppPage = true;
+
 		pageData = PageData();
 		pageData.subPageIndex = 0;
 		pageData.menuIndex = 0;
@@ -125,6 +132,15 @@ void PageManager::showPage(uint8_t pageIndex) {
 	
 	pageData.pageIndex = pageIndex;
 	//osInstance->refreshPage();
+}
+
+void PageManager::goBack() {
+	if(PageManager::returnToAppPage) {
+		PageManager::returnToAppPage = false;
+		PageManager::showPage(GLOBAL_PAGE_APPS);
+	}else{
+		PageManager::showPage(GLOBAL_PAGE_WATCHFACE);
+	}
 }
 
 void PageManager::nextPage() {
