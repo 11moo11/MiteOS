@@ -62,24 +62,10 @@ bool HassPage::onButtonPressed(uint8_t buttonIndex) {
 			mDisplay.display(true);
 			
 			if(HassManager::toggle(getElement((pageData.number1 * 2) + 1 + (pageData.subPageIndex * 8)))) {
-				mDisplay.fillScreen(BACKGROUND_COLOR);
-				mDisplay.setFont(&FreeSans9pt7b);
-				
-				mDisplay.drawBitmap(80, 80, big_icon_checkmark, 40, 40, FOREGROUND_COLOR);
-				
-				drawCentreString(TXT_SUCCESS, 100, 150, false);
-				AlertManager::vibMotor(50, 2);
+				drawSuccess(true);
 			}else{
-				mDisplay.fillScreen(BACKGROUND_COLOR);
-				mDisplay.setFont(&FreeSans9pt7b);
-				
-				mDisplay.drawBitmap(80, 80, big_icon_x, 40, 40, FOREGROUND_COLOR);
-				
-				drawCentreString(TXT_FAILED, 100, 150, false);
-				AlertManager::vibMotor(200, 2);
+				drawSuccess(false);
 			}
-			mDisplay.display(true);
-			sleep(1);
 			
 			return true;
 		case BTN_DOWN:

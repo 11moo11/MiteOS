@@ -4,6 +4,7 @@
 #include <GxEPD2_EPD.h>
 #include <Fonts/FreeMonoBold9pt7b.h>
 #include "../Images/menu_icons.h"
+#include "../Images/big_icons.h"
 #include "glcdfont.c"
 
 #define ITEMS_ON_SCREEN (DISPLAY_HEIGHT / MENU_HEIGHT) - 1
@@ -275,4 +276,24 @@ void Page::drawDitherBox(int x, int y, int w, int h, uint8_t fillVal, uint8_t em
 
 		}
 	}
+}
+
+void Page::drawSuccess(bool success) {
+	mDisplay.fillScreen(BACKGROUND_COLOR);
+	mDisplay.setFont(&FreeMonoBold9pt7b);
+				
+	if(success) {
+		mDisplay.drawBitmap(80, 70, big_icon_checkmark, 40, 40, FOREGROUND_COLOR);
+		
+		drawCentreString(TXT_SUCCESS, 100, 130, false);
+		AlertManager::vibMotor(20, 2);
+	}else{
+		mDisplay.drawBitmap(80, 70, big_icon_x, 40, 40, FOREGROUND_COLOR);
+		
+		drawCentreString(TXT_FAILED, 100, 130, false);
+		AlertManager::vibMotor(150, 2);
+	}
+
+	mDisplay.display(true);
+	sleep(1);
 }

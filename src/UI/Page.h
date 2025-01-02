@@ -87,6 +87,8 @@ class Page {
 		static void drawDitherBox(int x, int y, int w, int h);
 		static void drawDitherBox(int x, int y, int w, int h, uint8_t fillVal, uint8_t emptyVal);
 		static void drawDitherBox(int x, int y, int w, int h, uint8_t fillVal, uint8_t emptyVal, uint16_t color);
+
+		static void drawSuccess(bool success);
 };
 
 #endif

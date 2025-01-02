@@ -32,14 +32,14 @@ struct PlaybackInfo {
 
 class PhoneConnectionManager {
 	public:
-		static void SyncNotifications(bool force = false);
+		static bool SyncNotifications(bool force = false);
 		static Notification GetNotification(uint8_t index);
 		static uint8_t GetNotificationCount();
 		
 		static PlaybackInfo RequestPlaybackInfo(bool cached = true);
 		
-		static void SyncConfiguration();
-		static void SyncCalendar();
+		static bool SyncConfiguration();
+		static bool SyncCalendar();
 };
 
 #endif

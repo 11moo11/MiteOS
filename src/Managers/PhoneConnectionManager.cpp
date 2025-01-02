@@ -9,18 +9,18 @@
 
 RTC_DATA_ATTR int8_t notificationRequeryCounter = -1;
 
-void PhoneConnectionManager::SyncNotifications(bool force) {
+bool PhoneConnectionManager::SyncNotifications(bool force) {
 	if(force) notificationRequeryCounter = -1;
 	
 	if(notificationRequeryCounter > 0) {
 		notificationRequeryCounter--;
-		return;
+		return false;
 	}
 	notificationRequeryCounter = 15;
 	
 	BluetoothManager::requestNotifications();
 	
-	if(!BluetoothManager::connected) return;
+	if(!BluetoothManager::connected) return false;
 	
 	if(BluetoothManager::lastResponse.length() > 0) {
 		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
@@ -34,8 +34,10 @@ void PhoneConnectionManager::SyncNotifications(bool force) {
 			for(uint8_t i = 0; i < count; i++) {
 				FileManager::writeFile(PATH_NOTIFICATIONS + String(i), JSON.stringify(json["nBundleList"][i]));
 			}
+			return true;
 		}
 	}
+	return false;
 }
 
 Notification PhoneConnectionManager::GetNotification(uint8_t index) {
@@ -139,13 +141,14 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 	return pbi;
 }
 
-void PhoneConnectionManager::SyncConfiguration() {
+bool PhoneConnectionManager::SyncConfiguration() {
 	printDebug("Requesting Configuration...");
 
 	BluetoothManager::sendCommand("GET_CONFIGURATION=");
 
 	Configuration::init();
 
+	bool success = false;
 	if(BluetoothManager::lastResponse.length() > 0) {
 		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
 		
@@ -165,6 +168,7 @@ void PhoneConnectionManager::SyncConfiguration() {
 					printDebug(entities);
 					HassManager::setEntities(entities);
 				}
+				success = true;
 				Configuration::saveHassConfig();
 			}
 		}
@@ -178,11 +182,13 @@ void PhoneConnectionManager::SyncConfiguration() {
 				tokens += (String) json["totp"][i]["token"];
 			}
 			printDebug(tokens);
+			success = true;
 			Configuration::preferences.putString("totp", tokens);
 		}
 	}
+	return success;
 }
-void PhoneConnectionManager::SyncCalendar() {
+bool PhoneConnectionManager::SyncCalendar() {
 	printDebug("Requesting Calendar...");
 
 	BluetoothManager::sendCommand("GET_CALENDAR=");
@@ -222,5 +228,7 @@ void PhoneConnectionManager::SyncCalendar() {
 				}
 			}
 		}
+		return true;
 	}
+	return false;
 }

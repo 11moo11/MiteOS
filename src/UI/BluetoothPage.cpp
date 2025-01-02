@@ -7,11 +7,10 @@
 void BluetoothPage::drawPage() {
 	const char *items[] = { 
 		(btDeviceRegistered ? TXT_UNBOND : TXT_BOND),
-		"Test",
-		"Sync Settings",
-		"Sync Calendar"
+		TXT_SYNC" "TXT_SETTINGS,
+		TXT_SYNC" "TXT_CALENDAR
 	};
-	showMenu(items, 4, true, TXT_BLUETOOTH);
+	showMenu(items, 3, true, TXT_BLUETOOTH);
 }
 
 bool BluetoothPage::onButtonPressed(uint8_t buttonIndex) {
@@ -33,27 +32,10 @@ bool BluetoothPage::onButtonPressed(uint8_t buttonIndex) {
 				
 				BluetoothManager::bondDevice();
 			}
-		}else if(pageData.menuIndex == 1 || pageData.menuIndex == 0) {
-			BluetoothManager::connectDevice();
-			uint8_t i = 0;
-			while(i < 1) {
-				i++;
-				if(BluetoothManager::connected) {
-					//BluetoothManager::requestNotifications();
-					PhoneConnectionManager::RequestPlaybackInfo();
-				}
-			}
-			delay(1000);
+		}else if(pageData.menuIndex == 1) {
+			drawSuccess(PhoneConnectionManager::SyncConfiguration());
 		}else if(pageData.menuIndex == 2) {
-			BluetoothManager::connectDevice();
-			if(BluetoothManager::connected) {
-				PhoneConnectionManager::SyncConfiguration();
-			}
-		}else if(pageData.menuIndex == 3) {
-			BluetoothManager::connectDevice();
-			if(BluetoothManager::connected) {
-				PhoneConnectionManager::SyncCalendar();
-			}
+			drawSuccess(PhoneConnectionManager::SyncCalendar());
 		}
 		
 		return true;
