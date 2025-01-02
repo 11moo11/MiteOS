@@ -38,6 +38,9 @@ Planned Features
 - Activity Tracking (like running and stuff, based on the amount of steps coming in per second)
 - Night-Mode (save battery at night or if it is not worn)
 - Google Health Syncing
+- Configurable Sleep Mode at Night
+- Standarize Watchfaces
+- Replace RTC Lib with the one from GuruSR
 
 
 Phone Companion
