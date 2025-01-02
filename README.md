@@ -1,5 +1,5 @@
 MiteOS  
-A Watchy OS
+A Firmware for Watchy
 ======
 
 Features
