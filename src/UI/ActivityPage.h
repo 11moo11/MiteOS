@@ -5,6 +5,7 @@
 
 class ActivityPage : public Page {
 	public:
+		String pageName() override { return TXT_ACTIVITY; };
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;
 	private:

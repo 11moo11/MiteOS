@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "../Images/menu_icons.h"
+#include "../Data/Configuration.h"
 
 #define BTN_BACK 1
 #define BTN_MENU 2
@@ -59,6 +60,7 @@ typedef struct PageData {
 class Page {
 	public:
 		Page() {};
+		virtual String pageName() { return "---"; }
 		virtual void initPage() {};
 		virtual void drawPage() {};
 		virtual bool onButtonPressed(uint8_t buttonIndex) { return false; };

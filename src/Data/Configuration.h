@@ -46,10 +46,15 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 #include <Preferences.h>
-#include "../MiteOS.h"
 #include "../lang/lang.h"
 
 #include "../Managers/PhoneConnectionManager.h"
+
+#if DEBUG == true
+#define printDebug(a) Serial.println(a)
+#else
+#define printDebug(a)
+#endif
 
 class Configuration : Preferences {
     public:

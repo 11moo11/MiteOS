@@ -12,6 +12,8 @@
 #include "Watchfaces/TrainWatchface.h"
 
 RTC_DATA_ATTR uint8_t watchFaceId = 0;
+RTC_DATA_ATTR uint8_t actionTopLeft = GLOBAL_PAGE_SETTINGS;
+RTC_DATA_ATTR uint8_t actionTopRight = GLOBAL_PAGE_NOTIFICATIONS;
 
 PROGMEM SEG7Watchface seg7Watchface;
 PROGMEM BTTFWatchface bttfWatchface;
@@ -43,13 +45,13 @@ void WatchfacePage::drawPage() {
 }
 
 bool WatchfacePage::onButtonPressed(uint8_t buttonIndex) {
-	if(buttonIndex == BTN_TOGGLE_BTN) {
-		// TODO: Add some function to it
+	if(buttonIndex == BTN_BACK) {
+		PageManager::showPage(actionTopLeft);
 		return true;
 	}
 	
 	if(buttonIndex == BTN_UP) {
-		PageManager::showPage(GLOBAL_PAGE_NOTIFICATIONS);
+		PageManager::showPage(actionTopRight);
 		return true;
 	}
 	

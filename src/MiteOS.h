@@ -6,6 +6,9 @@
 #define BACKGROUND_COLOR (DARKMODE ? GxEPD_BLACK : GxEPD_WHITE)
 #define FOREGROUND_COLOR (DARKMODE ? GxEPD_WHITE : GxEPD_BLACK)
 
+#include "Data/Configuration.h"
+#include "lang/lang.h"
+
 #include <Arduino.h>
 #include <bma.h>
 #include <GxEPD2_BW.h>
@@ -16,10 +19,6 @@
 
 #include <TimeLib.h>
 #include <Fonts/FreeMonoBold9pt7b.h>
-#include "UI/Page.h"
-#include "Data/Configuration.h"
-
-#include "lang/lang.h"
 
 // Manager
 #include "Managers/PageManager.h"
@@ -29,6 +28,8 @@
 #include "Managers/BluetoothManager.h"
 #include "Managers/WifiConnectionManager.h"
 #include "Managers/PowerManager.h"
+
+#include "UI/Page.h"
 
 #include "Display/MiteDisplay.h"
 
@@ -104,11 +105,5 @@ extern RTC_DATA_ATTR u_int8_t doubleTapBtn;
 
 #define mDisplay MiteOS::display
 #define mRTC MiteOS::RTC
-
-#if DEBUG == true
-#define printDebug(a) Serial.println(a)
-#else
-#define printDebug(a)
-#endif
 
 #endif

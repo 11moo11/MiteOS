@@ -130,12 +130,16 @@ void SettingsPage::drawPage() {
 		const char* menuItems[PAGE_COUNT];
 		String strings[PAGE_COUNT];
 
+		uint8_t index = 0;
 		for(uint8_t i = 0; i < PAGE_COUNT; i++) {
-			strings[i] = /*((i == watchFaceId ? TXT_CHECKBOX_ON : TXT_CHECKBOX_OFF) + */ PageManager::getPage(i);
-			menuItems[i] = strings[i].c_str();
+			if(!PageManager::getPage(i)->isPageable()) {
+				strings[index] = (i == (pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE_TOP_LEFT ? actionTopLeft : actionTopRight) ? TXT_CHECKBOX_ON : TXT_CHECKBOX_OFF) + PageManager::getPage(i)->pageName();
+				menuItems[index] = strings[index].c_str();
+				index++;
+			}
 		}
 
-		showMenu(menuItems, PAGE_COUNT, true, (pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE_TOP_LEFT ? TXT_WATCHFACE_TOP_LEFT : TXT_WATCHFACE_TOP_RIGHT));
+		showMenu(menuItems, index, true, (pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE_TOP_LEFT ? TXT_WATCHFACE_TOP_LEFT : TXT_WATCHFACE_TOP_RIGHT));
 	}
 }
 
@@ -148,6 +152,12 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 			pageData.subPageIndex = SETTINGS_PAGE_DISPLAY;
 		} else if(pageData.subPageIndex == SETTINGS_PAGE_DBL_TAP) { // Darkmode
 			pageData.subPageIndex = SETTINGS_PAGE_INTERACT;
+		} else if(pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE_SELECT) { // Watchface
+			pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE;
+		} else if(pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE_TOP_LEFT) { // Watchface
+			pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE;
+		} else if(pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE_TOP_RIGHT) { // Watchface
+			pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE;
 		} else if(pageData.subPageIndex > 0) {
 			pageData.subPageIndex = 0;
 		}else{
@@ -155,6 +165,7 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 		}
 		return true;
 	}else if(buttonIndex == BTN_CONFIRM) {
+		uint8_t index = 0;
 		switch(pageData.subPageIndex) {
 			case SETTINGS_PAGE_OVERVIEW:
 				if(pageData.menuIndex == 0) {
@@ -167,13 +178,13 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 			case SETTINGS_PAGE_WATCHFACE:
 				switch(pageData.menuIndex) {
 					case 0:
-						pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE_SELECT
+						pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE_SELECT;
 						return true;
 					case 1:
-						pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE_TOP_LEFT
+						pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE_TOP_LEFT;
 						return true;
 					case 2:
-						pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE_TOP_RIGHT
+						pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE_TOP_RIGHT;
 						return true;
 					
 					default: break;
@@ -290,6 +301,29 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 			
 			case SETTINGS_PAGE_WATCHFACE_SELECT:
 				watchFaceId = pageData.menuIndex;
+				Configuration::saveSettings();
+				return true;
+
+			case SETTINGS_PAGE_WATCHFACE_TOP_LEFT:
+			case SETTINGS_PAGE_WATCHFACE_TOP_RIGHT:
+
+				index = 0;
+				for(uint8_t i = 0; i < PAGE_COUNT; i++) {
+					if(!PageManager::getPage(i)->isPageable()) {
+						if(index == pageData.menuIndex) {
+							index = i;
+							break;
+						}
+						index++;
+					}
+				}
+
+				if(pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE_TOP_LEFT){
+					actionTopLeft = index;
+				}else{
+					actionTopRight = index;
+				}
+				
 				Configuration::saveSettings();
 				return true;
 			

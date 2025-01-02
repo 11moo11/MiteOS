@@ -7,6 +7,7 @@
 
 class WatchfacePage : public Page {
 	public:
+		String pageName() override { return TXT_WATCHFACE; };
 		WatchfacePage() {};
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;
@@ -14,4 +15,6 @@ class WatchfacePage : public Page {
 };
 
 extern RTC_DATA_ATTR uint8_t watchFaceId;
+extern RTC_DATA_ATTR uint8_t actionTopLeft;
+extern RTC_DATA_ATTR uint8_t actionTopRight;
 #endif

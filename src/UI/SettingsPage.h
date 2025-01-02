@@ -5,6 +5,7 @@
 
 class SettingsPage : public Page {
 	public:
+		String pageName() override { return TXT_SETTINGS; };
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;
 		bool isPageable() override { return false; };

@@ -1,5 +1,6 @@
 #include "Configuration.h"
 
+#include "../MiteOS.h"
 #include "../UI/WatchfacePage.h"
 #include "../Managers/BluetoothManager.h"
 #include "../Managers/HassManager.h"
@@ -70,6 +71,8 @@ void Configuration::saveSettings() {
 	preferences.putBool("btnvib",    btnFeedbackVibrate);
 	preferences.putUInt("dblTapBtn", doubleTapBtn);
 	preferences.putUInt("watchface", watchFaceId);
+	preferences.putUInt("actionTopLeft", actionTopLeft);
+	preferences.putUInt("actionTopRight", actionTopRight);
 	
 	printDebug("Saved Settings");
 }
@@ -82,6 +85,8 @@ void Configuration::loadSettings() {
 	btnFeedbackVibrate = preferences.getBool("btnvib", btnFeedbackVibrate);
 	doubleTapBtn       = preferences.getUInt("dblTapBtn", doubleTapBtn);
 	watchFaceId        = preferences.getUInt("watchface", watchFaceId);
+	actionTopLeft      = preferences.getUInt("actionTopLeft", actionTopLeft);
+	actionTopRight     = preferences.getUInt("actionTopRight", actionTopRight);
 	
 	printDebug("Loaded Settings");
 }

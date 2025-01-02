@@ -4,6 +4,7 @@
 
 class AboutPage : public Page {
 	public:
+		String pageName() override { return TXT_ABOUT; };
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;
 		bool isPageable() override { return false; };

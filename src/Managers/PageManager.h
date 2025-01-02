@@ -2,6 +2,7 @@
 #define MITEOS_PAGE_MANAGER_H
 
 #include "../MiteOS.h"
+#include "../UI/Page.h"
 
 #define GLOBAL_PAGE_WATCHFACE 0
 #define GLOBAL_PAGE_TIMER 1

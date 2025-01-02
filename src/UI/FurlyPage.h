@@ -8,6 +8,7 @@
 
 class FurlyPage : public Page {
 	public:
+		String pageName() override { return TXT_FURLY; };
     	void initPage() override;
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;

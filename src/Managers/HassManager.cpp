@@ -2,6 +2,7 @@
 #include <HTTPClient.h>
 #include "WifiConnectionManager.h"
 #include "../Data/Configuration.h"
+#include "../MiteOS.h"
 
 String HassManager::url = "";
 String HassManager::token = "";

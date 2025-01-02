@@ -23,8 +23,12 @@
 #define TXT_MEDIA "Medien"
 #define TXT_TOTP "TOTP"
 #define TXT_CALENDAR "Kalender"
+#define TXT_WEATHER "Wetter"
+#define TXT_APPS "Apps"
+#define TXT_ACTIVITY "Aktivität"
 
 #define TXT_ABOUT "Über"
+#define TXT_WATCHFACE "Ziffernblatt"
 #define TXT_TIME "Zeit"
 #define TXT_NETWORK "Netzwerk"
 #define TXT_DISPLAY "Display"
@@ -43,6 +47,8 @@
 #define TXT_STATIC "Statisch"
 #define TXT_INTERACT_VIBRATE_ON_BTN "Tasten Vib."
 #define TXT_INTERACT_DBL_TAP "Double Tap"
+#define TXT_WATCHFACE_TOP_LEFT "Oben Links"
+#define TXT_WATCHFACE_TOP_RIGHT "Oben Rechts"
 
 #define TXT_STEPS "Schritte"
 
@@ -67,7 +73,8 @@
 #define TXT_SYNCING "Lade..."
 #define TXT_NOTIFICATION "Nachrichten"
 #define TXT_NO_NOTIFICATION "Keine Benachrichtigungen"
-#define TXT_NO_PLAYBACK "Keine Wiedergabe"
+#define TXT_PLAYBACK "Wiedergabe"
+#define TXT_NO_PLAYBACK "Keine "TXT_PLAYBACK
 
 #define TXT_HASS "HA"
 #define TXT_WAIT "Warte..."

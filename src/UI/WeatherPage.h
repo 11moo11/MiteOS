@@ -5,6 +5,7 @@
 
 class WeatherPage : public Page {
 	public:
+		String pageName() override { return TXT_WEATHER; };
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;
 	private:

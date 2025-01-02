@@ -23,6 +23,9 @@
 #define TXT_MEDIA "Media"
 #define TXT_TOTP "TOTP"
 #define TXT_CALENDAR "Calendar"
+#define TXT_WEATHER "Weather"
+#define TXT_APPS "Apps"
+#define TXT_ACTIVITY "Activity"
 
 #define TXT_ABOUT "About"
 #define TXT_WATCHFACE "Watchface"
@@ -70,7 +73,8 @@
 #define TXT_SYNCING "Syncing..."
 #define TXT_NOTIFICATION "Notifications"
 #define TXT_NO_NOTIFICATION "No Notifications"
-#define TXT_NO_PLAYBACK "No Playback"
+#define TXT_PLAYBACK "Playback"
+#define TXT_NO_PLAYBACK "No "TXT_PLAYBACK
 
 #define TXT_HASS "HA"
 #define TXT_WAIT "Waiting..."

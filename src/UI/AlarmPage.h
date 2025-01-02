@@ -4,6 +4,7 @@
 
 class AlarmPage : public Page {
 	public:
+		String pageName() override { return TXT_ALARM; };
 		void initPage() override;
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;
