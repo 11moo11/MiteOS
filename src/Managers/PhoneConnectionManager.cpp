@@ -191,9 +191,10 @@ void PhoneConnectionManager::SyncCalendar() {
 		FileManager::init();
 
 		// Cleanup
-		File root = LittleFS.open(PATH_CALENDAR);
+		FileManager::emptyDir(PATH_CALENDAR);
+		
+		/*File root = LittleFS.open(PATH_CALENDAR);
 		File file = root.openNextFile();
-
     	while(file) {
 			String name = file.name();
 			long startTime = name.substring(0, name.indexOf("_")).toInt();
@@ -205,7 +206,7 @@ void PhoneConnectionManager::SyncCalendar() {
 				LittleFS.remove(path);
 			}
 			file = root.openNextFile();
-		}
+		}*/
 
 		// Write all the data
 		JSONVar json = JSON.parse(BluetoothManager::lastResponse);

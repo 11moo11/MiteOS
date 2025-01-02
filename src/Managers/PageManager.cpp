@@ -50,7 +50,7 @@ PROGMEM Page* pages[] = {
 	&calendarPage,
 };
 
-bool PageManager::returnToAppPage = false;
+RTC_DATA_ATTR bool returnToAppPage = false;
 
 void PageManager::handleButtonPress(uint8_t buttonIndex) {
 	if(buttonIndex == BTN_DOUBLE_TAP) {
@@ -121,7 +121,7 @@ void PageManager::showPage(uint8_t pageIndex) {
 	
 	if(pageData.pageIndex != pageIndex) { // Reset the page data when its really changed
 		if(pageData.pageIndex == GLOBAL_PAGE_APPS && pageIndex != GLOBAL_PAGE_WATCHFACE)
-			PageManager::returnToAppPage = true;
+			returnToAppPage = true;
 
 		pageData = PageData();
 		pageData.subPageIndex = 0;
@@ -135,8 +135,8 @@ void PageManager::showPage(uint8_t pageIndex) {
 }
 
 void PageManager::goBack() {
-	if(PageManager::returnToAppPage) {
-		PageManager::returnToAppPage = false;
+	if(returnToAppPage) {
+		returnToAppPage = false;
 		PageManager::showPage(GLOBAL_PAGE_APPS);
 	}else{
 		PageManager::showPage(GLOBAL_PAGE_WATCHFACE);

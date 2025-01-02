@@ -22,6 +22,8 @@
 
 #define PAGE_COUNT 15
 
+extern RTC_DATA_ATTR bool returnToAppPage;
+
 class PageManager {
 	public:
 		static void nextPage();
@@ -36,8 +38,6 @@ class PageManager {
 		static void handleButtonPress(uint8_t buttonIndex);
 		
 		static void showConnectionIcon(const unsigned char* icon);
-	private:
-		static bool returnToAppPage;
 };
 
 #endif

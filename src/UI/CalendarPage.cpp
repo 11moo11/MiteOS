@@ -58,7 +58,7 @@ bool CalendarPage::onButtonPressed(uint8_t buttonIndex) {
 }
 
 void CalendarPage::drawMonth() {
-    drawButtonIcon(BTN_BACK, icon_home);
+    drawButtonIcon(BTN_BACK, icon_exit);
     drawButtonIcon(BTN_UP, icon_up);
     drawButtonIcon(BTN_DOWN, icon_down);
     drawButtonIcon(BTN_CONFIRM, icon_switch);
@@ -155,7 +155,7 @@ void CalendarPage::drawMonth() {
 }
 
 void CalendarPage::drawAppointment() {
-    drawButtonIcon(BTN_BACK, icon_home);
+    drawButtonIcon(BTN_BACK, icon_exit);
     drawButtonIcon(BTN_UP, icon_up);
     drawButtonIcon(BTN_DOWN, icon_down);
     drawButtonIcon(BTN_CONFIRM, icon_switch);
@@ -169,42 +169,40 @@ void CalendarPage::drawAppointment() {
     APPOINTMENT_COUNT = 0;
     while(file) {
         APPOINTMENT_COUNT++;
-        if(offset_y < 180 && APPOINTMENT_COUNT - 1 > APPOINTMENT_PAGE * 3) {
+        if(offset_y < 180 && APPOINTMENT_COUNT - 1 >= APPOINTMENT_PAGE * 3) {
             String name = file.name();
             long startTime = name.substring(0, name.indexOf("_")).toInt();
 
-            if(startTime > NOW && offset_y < 180) {
-                if(file.available()) {
-                    String line = file.readStringUntil('\n');
-                    
-                    // {"id":34,"title":"My Appointment","startTime":1736353800000,"endTime":1736361000000,"allDay":false,"calendarId":"13","calendarName":"calendar name"}
-                    JSONVar json = JSON.parse(line);
-                    if(json.hasOwnProperty("startTime")) {
-                        mDisplay.setCursor(10, offset_y);
-                        mDisplay.setTextWrap(false);
-                        mDisplay.println((String) json["title"]);
+            if(file.available()) {
+                String line = file.readStringUntil('\n');
+                
+                // {"id":34,"title":"My Appointment","startTime":1736353800000,"endTime":1736361000000,"allDay":false,"calendarId":"13","calendarName":"calendar name"}
+                JSONVar json = JSON.parse(line);
+                if(json.hasOwnProperty("startTime")) {
+                    mDisplay.setCursor(10, offset_y);
+                    mDisplay.setTextWrap(false);
+                    mDisplay.println((String) json["title"]);
 
-                        tmElements_t startTime;
-                        breakTime((unsigned long) json["startTime"], startTime);
+                    tmElements_t startTime;
+                    breakTime((unsigned long) json["startTime"], startTime);
 
-                        mDisplay.setCursor(10, offset_y + 20);
-                        mDisplay.print(String(startTime.Day) + ". " + String(monthShortStr(startTime.Month)) + " " + String(startTime.Year + 1970) );
-                        if(!json["allDay"]) {
-                            tmElements_t endTime;
-                            breakTime((unsigned long) json["endTime"], endTime);
+                    mDisplay.setCursor(10, offset_y + 20);
+                    mDisplay.print(String(startTime.Day) + ". " + String(monthShortStr(startTime.Month)) + " " + String(startTime.Year + 1970) );
+                    if(!json["allDay"]) {
+                        tmElements_t endTime;
+                        breakTime((unsigned long) json["endTime"], endTime);
 
-                            mDisplay.print("   ");
-                            mDisplay.print(String(startTime.Hour) + ":" + (startTime.Minute < 10 ? "0" : "") + String(startTime.Minute));
-                            mDisplay.print(" - ");
-                            mDisplay.println(String(endTime.Hour) + ":" + (startTime.Minute < 10 ? "0" : "") + String(endTime.Minute));
-                            //mDisplay.println(json["title"]);
-                        }
-
-                        offset_y += 50;
+                        mDisplay.print("   ");
+                        mDisplay.print(String(startTime.Hour) + ":" + (startTime.Minute < 10 ? "0" : "") + String(startTime.Minute));
+                        mDisplay.print(" - ");
+                        mDisplay.println(String(endTime.Hour) + ":" + (startTime.Minute < 10 ? "0" : "") + String(endTime.Minute));
+                        //mDisplay.println(json["title"]);
                     }
+
+                    offset_y += 50;
                 }
-                file.close();
             }
+            file.close();
         }
         file = root.openNextFile();
     }
