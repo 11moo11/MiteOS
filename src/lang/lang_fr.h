@@ -23,6 +23,9 @@
 #define TXT_MEDIA "Médias"
 #define TXT_TOTP "TOTP"
 #define TXT_CALENDAR "Calendrier"
+#define TXT_WEATHER "Météo"
+#define TXT_APPS "Apps"
+#define TXT_ACTIVITY "Activité"
 
 #define TXT_ABOUT "Sur"
 #define TXT_TIME "Temps"
@@ -43,6 +46,10 @@
 #define TXT_STATIC "Statique"
 #define TXT_INTERACT_VIBRATE_ON_BTN "Boutons Vib."
 #define TXT_INTERACT_DBL_TAP "Double tape"
+#define TXT_INTERACT_VIBRATE_ON_BTN "Button Vib."
+#define TXT_INTERACT_DBL_TAP "Double Tap"
+#define TXT_WATCHFACE_TOP_LEFT "Top Left"
+#define TXT_WATCHFACE_TOP_RIGHT "Top Right"
 
 #define TXT_STEPS "Etapes"
 
@@ -67,6 +74,7 @@
 #define TXT_SYNCING "Chargement..."
 #define TXT_NOTIFICATION "Nouvelles"
 #define TXT_NO_NOTIFICATION "Aucune notification"
+#define TXT_PLAYBACK "Playback"
 #define TXT_NO_PLAYBACK "Pas de lecture"
 
 #define TXT_HASS "HA"
@@ -87,6 +95,20 @@
 #define TXT_ENABLE_OFF TXT_CHECKBOX_OFF " " TXT_ACTIVE
 
 #define TXT_ERR "Err"
+
+// Tamagotchi App
+#define TXT_FURLY "Wooly"
+#define TXT_WARMTH "Warmth"
+#define TXT_HUNGER "Hunger"
+#define TXT_THIRST "Thirst"
+#define TXT_FUN "Fun"
+#define TXT_EDUCATION "Education"
+#define TXT_SICK "Sick"
+#define TXT_LEVEL "Level"
+#define TXT_MOOD "Mood"
+#define TXT_BIRTHDATE "Birthdate"
+#define TXT_AGE "Age"
+#define TXT_RESTART "Restart"
 
 // Month and Day Stuff
 #define TXT_DAYS "Jours"
