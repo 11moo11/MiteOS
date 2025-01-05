@@ -64,11 +64,11 @@ void WifiConnectionManager::registerNewWifiConnection() {
 		mDisplay.println(WiFi.SSID());
 		mDisplay.println("Local IP:");
 		mDisplay.println(WiFi.localIP());
-		
-		weatherCheckCounter = -1; // Reset to force weather to be read again
-		
+
 		lastWifiIPAddress = WiFi.localIP();
 		WiFi.SSID().toCharArray(lastWifiSSID, 30);
+		
+		WeatherManager::getWeatherData();
 	}
 	mDisplay.display(false); // full refresh
 	

@@ -9,13 +9,13 @@
 #include "../Images/menu_icons.h"
 
 void NotificationPage::drawPage() {
-	if(notificationRequeryCounter <= 0) {
+	if(lastNotificationCheck <= 0) {
 		mDisplay.setFont(&FreeSansBold9pt7b);
 		drawCentreString(TXT_SYNCING, 100, 100, false);
 		
 		mDisplay.display(true);
 		
-		PhoneConnectionManager::SyncNotifications();
+		PhoneConnectionManager::SyncNotifications(true);
 	}
 	
 	mDisplay.fillScreen(BACKGROUND_COLOR);
@@ -62,7 +62,7 @@ bool NotificationPage::onButtonPressed(uint8_t buttonIndex) {
 		if(pageData.subPageIndex >= PhoneConnectionManager::GetNotificationCount()) pageData.subPageIndex = 0;
 		return true;
 	} else if(buttonIndex == BTN_CONFIRM) {
-		notificationRequeryCounter = -1;
+		lastNotificationCheck = -1;
 		return true;
 	}
 	return false;

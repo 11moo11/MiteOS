@@ -31,7 +31,6 @@ void WeatherPage::drawPage() {
 
 bool WeatherPage::onButtonPressed(uint8_t buttonIndex) {
 	if(buttonIndex == BTN_UP) {
-		weatherCheckCounter = WEATHER_UPDATE_INTERVAL;
 		WeatherManager::getWeatherData(false);
 		return true;
 	}else if(buttonIndex == BTN_CONFIRM) {

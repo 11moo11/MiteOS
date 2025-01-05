@@ -248,6 +248,7 @@ void MiteOS::handleButtonPress() {
 	}
 }
 
+// Making sure all time events are set to work even when the watch wakes from deep sleep only every hour
 void MiteOS::checkTime() {
 	if (hourVibrate) {
 		if (currentTime.Minute == 0) {
@@ -262,26 +263,19 @@ void MiteOS::checkTime() {
 		ActivityManager::saveSteps();
 	}
 
-	if(currentTime.Hour == 2 && currentTime.Minute == 1) {
+	if(currentTime.Hour == 2 && currentTime.Minute == 0) {
 		if(WifiConnectionManager::connectWifi()) {
 			WifiConnectionManager::syncNTP();
 		}
 	}
 	
-	if(AUTO_DARKMODE) {
-		if(MiteOS::currentTime.Hour == Configuration::getDarkmodeStartH() && MiteOS::currentTime.Minute == Configuration::getDarkmodeStartM()) {
-			DARKMODE = !Configuration::getInverseDarkMode();
-		}else if(MiteOS::currentTime.Hour == Configuration::getDarkmodeEndH() && MiteOS::currentTime.Minute == Configuration::getDarkmodeEndM()) {
-			DARKMODE = Configuration::getInverseDarkMode();
-		}
-	}
+	initDarkmode();
 
 	AlarmManager::checkTimers();
 	AlarmManager::checkAlarms();
 	
-	PowerManager::checkCharging();
-	WeatherManager::timeTick();
-	WeatherManager::getWeatherData();
+	PowerManager::checkCharging(); // Not really working
+	WeatherManager::getWeatherData(); // Just check the weather with mode cached = true to make sure its only getting refreshed if it needs to
 }
 
 void MiteOS::initDarkmode() {
@@ -297,7 +291,6 @@ void MiteOS::initDarkmode() {
 		DARKMODE = PREF_DARKMODE;
 	}
 	printDebug("DARKMODE " + String(DARKMODE));
-	
 }
 
 uint16_t MiteOS::_readRegister(uint8_t address, uint8_t reg, uint8_t *data, uint16_t len) {

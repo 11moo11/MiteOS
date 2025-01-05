@@ -16,6 +16,8 @@
 #define WEATHER_UPDATE_INTERVAL 30 //must be greater than 5, smaller than 255, measured in minutes
 #define WEATHER_DATA_MAX_AGE 3 // in hours
 
+#define NOTIFICATION_UPDATE_INTERVAL 15 //must be greater than 1, smaller than 255, measured in minutes
+
 //NTP Settings
 #define NTP_SERVER "pool.ntp.org"
 #define GMT_OFFSET_SEC 3600 * 0 //New York is UTC -5 EST, -4 EDT, will be overwritten by weather data
@@ -36,13 +38,13 @@
 #define KM_TO_MILES 0.621371
 
 
-#define ALARM_COUNT 3
+#define ALARM_COUNT 6
 
 
 // This will dramatically reduce battery life and responsiveness of the watch
 // Should only be used for making screenshot and never for daily driving
-#define ENABLE_SCREENSHOTS true
-#define DEBUG true
+#define ENABLE_SCREENSHOTS false
+#define DEBUG false
 
 
 

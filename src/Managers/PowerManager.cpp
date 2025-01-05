@@ -26,7 +26,6 @@ void PowerManager::deepSleep() {
 		mRTC.nextMinuteWake(true);
 	}else if(currentPowerMode == POWER_MODE_HOURLY) {
 		AlarmData nextAlarm = AlarmManager::getNextAlarm();
-		Serial.println(String(nextAlarm.hour) + " " + String(nextAlarm.minute));
 		if(nextAlarm.enableAlarm) {
 			long diff = TimeFunc::timeDiff(nextAlarm);
 			if(diff < 60) {
@@ -42,7 +41,7 @@ void PowerManager::deepSleep() {
 		if(nextAlarm.enableAlarm) {
 			mRTC.atTimeWake(nextAlarm.hour, nextAlarm.minute);
 		}else{
-			mRTC.nextMinuteWake(false);
+			mRTC.atTimeWake(0, 0);
 		}
 	}
 	

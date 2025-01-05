@@ -12,7 +12,7 @@
 #define PLAYBACK_TEXT_LENGTH 30
 #define PLAYBACK_IMAGE_SIZE 96
 
-extern RTC_DATA_ATTR int8_t notificationRequeryCounter;
+extern RTC_DATA_ATTR long lastNotificationCheck;
 
 struct Notification {
 	char app_name[NOTIFICATION_APP_NAME_LENGTH] = "";

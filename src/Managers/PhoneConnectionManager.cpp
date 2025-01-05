@@ -7,16 +7,14 @@
 #include "../Data/Base64.hpp"
 #include "../Managers/FileManager.h"
 
-RTC_DATA_ATTR int8_t notificationRequeryCounter = -1;
+RTC_DATA_ATTR long lastNotificationCheck = 0;
 
 bool PhoneConnectionManager::SyncNotifications(bool force) {
-	if(force) notificationRequeryCounter = -1;
+	if(force) lastNotificationCheck = 0;
 	
-	if(notificationRequeryCounter > 0) {
-		notificationRequeryCounter--;
+	if((NOW - lastNotificationCheck) / 60 <= NOTIFICATION_UPDATE_INTERVAL) {
 		return false;
 	}
-	notificationRequeryCounter = 15;
 	
 	BluetoothManager::requestNotifications();
 	

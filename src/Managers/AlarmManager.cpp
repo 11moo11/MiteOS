@@ -55,7 +55,6 @@ AlarmData AlarmManager::getNextAlarm() {
 	if(timer.enableAlarm) {
 		ad = timer;
 		lowest = TimeFunc::timeDiff(timer);
-		Serial.println("Timer " + String(ad.hour) + ":" + String(ad.minute));
 	}
 	
 	for(uint8_t i = 0; i < ALARM_COUNT; i++) {

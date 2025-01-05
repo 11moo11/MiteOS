@@ -7,11 +7,7 @@
 
 RTC_DATA_ATTR WeatherData currentWeatherData;
 
-RTC_DATA_ATTR uint8_t weatherCheckCounter = 250;
-
-void WeatherManager::timeTick() {
-	weatherCheckCounter += 1;
-}
+RTC_DATA_ATTR long lastWeatherCheck = 0;
 
 bool WeatherManager::isDataCurrent() {
 	return currentWeatherData.timestamp > 0 && hour(NOW - currentWeatherData.timestamp) <= WEATHER_DATA_MAX_AGE;
@@ -23,7 +19,7 @@ WeatherData WeatherManager::getWeatherData(bool cached) {
 	// Check if weather data is current enough to be cached or just force an update
 	if(cached 
 	&& WeatherManager::isDataCurrent()
-	&& weatherCheckCounter <= WEATHER_UPDATE_INTERVAL
+	&& (NOW - lastWeatherCheck) / 60 <= WEATHER_UPDATE_INTERVAL
 	)
 		return currentWeatherData;
 
@@ -34,76 +30,65 @@ WeatherData WeatherManager::getWeatherData(bool cached) {
 						  , Configuration::getWeatherLang()
 						  , Configuration::getWeatherURL()
 						  , Configuration::getWeatherAPIKey()
-						  , Configuration::getWeatherUpdateInterval()
 						  );
 }
 
-WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lon, String units, String lang,
-											String url, String apiKey,
-											uint8_t updateInterval) {
+WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lon, String units, String lang, String url, String apiKey) {
 	
 	currentWeatherData.isMetric = units == String("metric");
-	
-	if (weatherCheckCounter >= updateInterval) { // only update if WEATHER_UPDATE_INTERVAL has elapsed
-												 // i.e. 30 minutes
-		if (WifiConnectionManager::connectWifi()) {
-			HTTPClient http; // Use Weather API for live data if WiFi is connected
-			http.setConnectTimeout(3000); // 3 second max timeout
-			String weatherQueryURL = url;
-			
-			if(cityID != ""){
-				weatherQueryURL.replace("{cityID}", cityID);
-			}else{
-				weatherQueryURL.replace("{lat}", lat);
-				weatherQueryURL.replace("{lon}", lon);
-			}
-			
-			weatherQueryURL.replace("{units}", units);
-			weatherQueryURL.replace("{lang}", lang);
-			weatherQueryURL.replace("{apiKey}", apiKey);
-			
-			http.begin(weatherQueryURL.c_str());
-			
-			int httpResponseCode = http.GET();
-			if (httpResponseCode == 200) {
-				String payload             = http.getString();
-				
-				JSONVar responseObject     = JSON.parse(payload);
-				currentWeatherData.temperature = int(responseObject["main"]["temp"]);
-				currentWeatherData.weatherConditionCode = int(responseObject["weather"][0]["id"]);
-				String desc = JSONVar::stringify(responseObject["weather"][0]["description"]);
-				desc.substring(1, desc.length() - 1).toCharArray(currentWeatherData.weatherDescription, 30);
-				//currentWeatherData.external = true;
-				
-				gmtTimeOffset = int(responseObject["timezone"]);
 
-				breakTime((time_t)(int)responseObject["sys"]["sunrise"] + gmtTimeOffset, currentWeatherData.sunrise);
-				breakTime((time_t)(int)responseObject["sys"]["sunset"] + gmtTimeOffset, currentWeatherData.sunset);
-				
-				currentWeatherData.timestamp = NOW;
+	lastWeatherCheck = NOW;
 
-				// sync NTP during weather API call and use timezone of lat & lon
-				WifiConnectionManager::syncNTP(gmtTimeOffset);
-			} else {
-				// http error
-			}
-			http.end();
-			
-			// turn off radios
-			WiFi.mode(WIFI_OFF);
-			btStop();
+	if (WifiConnectionManager::connectWifi()) {
+		HTTPClient http; // Use Weather API for live data if WiFi is connected
+		http.setConnectTimeout(3000); // 3 second max timeout
+		String weatherQueryURL = url;
+		
+		if(cityID != ""){
+			weatherQueryURL.replace("{cityID}", cityID);
+		}else{
+			weatherQueryURL.replace("{lat}", lat);
+			weatherQueryURL.replace("{lon}", lon);
 		}
 		
-		//currentWeatherData.weatherConditionCode = 800;
-		//currentWeatherData.external             = false;
-		//String(TXT_CHIP).toCharArray(currentWeatherData.weatherDescription, 20);
+		weatherQueryURL.replace("{units}", units);
+		weatherQueryURL.replace("{lang}", lang);
+		weatherQueryURL.replace("{apiKey}", apiKey);
 		
-		WifiConnectionManager::powerOff();
-		weatherCheckCounter = 0;
-	} else {
-		// weatherCheckCounter++;
+		http.begin(weatherQueryURL.c_str());
+		
+		int httpResponseCode = http.GET();
+		if (httpResponseCode == 200) {
+			String payload             = http.getString();
+			
+			JSONVar responseObject     = JSON.parse(payload);
+			currentWeatherData.temperature = int(responseObject["main"]["temp"]);
+			currentWeatherData.weatherConditionCode = int(responseObject["weather"][0]["id"]);
+			String desc = JSONVar::stringify(responseObject["weather"][0]["description"]);
+			desc.substring(1, desc.length() - 1).toCharArray(currentWeatherData.weatherDescription, 30);
+			//currentWeatherData.external = true;
+			
+			gmtTimeOffset = int(responseObject["timezone"]);
+
+			breakTime((time_t)(int)responseObject["sys"]["sunrise"] + gmtTimeOffset, currentWeatherData.sunrise);
+			breakTime((time_t)(int)responseObject["sys"]["sunset"] + gmtTimeOffset, currentWeatherData.sunset);
+			
+			currentWeatherData.timestamp = NOW;
+
+			// sync NTP during weather API call and use timezone of lat & lon
+			WifiConnectionManager::syncNTP(gmtTimeOffset);
+		} else {
+			// http error
+		}
+		http.end();
+		
+		// turn off radios
+		WiFi.mode(WIFI_OFF);
+		btStop();
 	}
 	
+	WifiConnectionManager::powerOff();
+
 	uint8_t chip_temperature = accSensor.readTemperature(); // celsius
 	if (!currentWeatherData.isMetric) {
 		chip_temperature = chip_temperature * 9. / 5. + 32.; // fahrenheit
