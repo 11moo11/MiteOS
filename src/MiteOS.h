@@ -15,7 +15,9 @@
 
 // References to the base Watchy Libs
 #include <Display.h>
-#include <WatchyRTC.h>
+
+// Watchy Time Lib by GuruSR
+#include <SmallRTC.h>
 
 #include <TimeLib.h>
 #include <Fonts/FreeMonoBold9pt7b.h>
@@ -28,6 +30,7 @@
 #include "Managers/BluetoothManager.h"
 #include "Managers/WifiConnectionManager.h"
 #include "Managers/PowerManager.h"
+#include "Managers/AlarmManager.h"
 
 #include "UI/Page.h"
 
@@ -40,27 +43,13 @@
 
 static bool displayPoweredOn = false;
 
-
-#define ALARM_MODE_ONCE 0
-#define ALARM_MODE_WORKDAY 1
-#define ALARM_MODE_WEEKEND 2
-#define ALARM_MODE_DAILY 3
-
-typedef struct AlarmData {
-	bool enableAlarm;
-	bool triggered;
-	uint8_t mode;
-	uint8_t hour;
-	uint8_t minute;
-} AlarmData;
-
 #define NOW makeTime(MiteOS::currentTime)
 
 class MiteOS {
 	public:
 		static WatchyDisplay watchyDisplay;
 		static MiteDisplay<WatchyDisplay, WatchyDisplay::HEIGHT> display;
-		static WatchyRTC RTC;
+		static SmallRTC RTC;
 		static tmElements_t currentTime;
 		static MiteOS *instance;
 

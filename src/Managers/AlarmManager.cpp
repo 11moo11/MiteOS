@@ -3,6 +3,7 @@
 #include "../MiteOS.h"
 #include "../UI/Page.h"
 #include "../Data/DayMask.h"
+#include "../func/TimeFunc.h"
 
 void AlarmManager::checkTimers() {
 	if(timer.triggered
@@ -46,4 +47,26 @@ void AlarmManager::checkAlarms() {
 			pageData.pageIndex = GLOBAL_PAGE_ALARM;
 		}
 	}
+}
+
+AlarmData AlarmManager::getNextAlarm() {
+	AlarmData ad;
+	uint16_t lowest = 10000;
+	if(timer.enableAlarm) {
+		ad = timer;
+		lowest = TimeFunc::timeDiff(timer);
+		Serial.println("Timer " + String(ad.hour) + ":" + String(ad.minute));
+	}
+	
+	for(uint8_t i = 0; i < ALARM_COUNT; i++) {
+		if(alarms[i].enableAlarm) {
+			uint16_t diff = TimeFunc::timeDiff(alarms[i]);
+			if(diff < lowest) {
+				lowest = diff;
+				ad = alarms[i];
+			}
+		}
+	}
+
+	return ad;
 }

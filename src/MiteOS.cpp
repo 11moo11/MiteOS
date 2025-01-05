@@ -3,7 +3,7 @@
 #include "Managers/FileManager.h"
 #include "Managers/AlarmManager.h"
 
-WatchyRTC MiteOS::RTC;
+SmallRTC MiteOS::RTC;
 WatchyDisplay MiteOS::watchyDisplay {};
 MiteDisplay<WatchyDisplay, WatchyDisplay::HEIGHT> MiteOS::display(watchyDisplay);
 MiteOS *MiteOS::instance;

@@ -5,6 +5,7 @@
 
 extern RTC_DATA_ATTR bool isBatteryCharging;
 extern RTC_DATA_ATTR long lastVoltage;
+extern RTC_DATA_ATTR long currentPowerMode;
 
 class PowerManager {
 	public:
