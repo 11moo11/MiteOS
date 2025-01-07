@@ -16,9 +16,10 @@ bool WeatherManager::isDataCurrent() {
 
 
 WeatherData WeatherManager::getWeatherData(bool cached) {
+	if(!cached) lastWeatherCheck = 0;
+
 	// Check if weather data is current enough to be cached or just force an update
-	if(cached 
-	&& WeatherManager::isDataCurrent()
+	if( WeatherManager::isDataCurrent()
 	&& (NOW - lastWeatherCheck) / 60 <= WEATHER_UPDATE_INTERVAL
 	)
 		return currentWeatherData;
@@ -37,57 +38,59 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 	
 	currentWeatherData.isMetric = units == String("metric");
 
-	lastWeatherCheck = NOW;
+	if((NOW - lastWeatherCheck) / 60 > WEATHER_UPDATE_INTERVAL) {
+		lastWeatherCheck = NOW;
 
-	if (WifiConnectionManager::connectWifi()) {
-		HTTPClient http; // Use Weather API for live data if WiFi is connected
-		http.setConnectTimeout(3000); // 3 second max timeout
-		String weatherQueryURL = url;
-		
-		if(cityID != ""){
-			weatherQueryURL.replace("{cityID}", cityID);
-		}else{
-			weatherQueryURL.replace("{lat}", lat);
-			weatherQueryURL.replace("{lon}", lon);
+		if (WifiConnectionManager::connectWifi()) {
+			HTTPClient http; // Use Weather API for live data if WiFi is connected
+			http.setConnectTimeout(3000); // 3 second max timeout
+			String weatherQueryURL = url;
+			
+			if(cityID != ""){
+				weatherQueryURL.replace("{cityID}", cityID);
+			}else{
+				weatherQueryURL.replace("{lat}", lat);
+				weatherQueryURL.replace("{lon}", lon);
+			}
+			
+			weatherQueryURL.replace("{units}", units);
+			weatherQueryURL.replace("{lang}", lang);
+			weatherQueryURL.replace("{apiKey}", apiKey);
+			
+			http.begin(weatherQueryURL.c_str());
+			
+			int httpResponseCode = http.GET();
+			if (httpResponseCode == 200) {
+				String payload             = http.getString();
+				
+				JSONVar responseObject     = JSON.parse(payload);
+				currentWeatherData.temperature = int(responseObject["main"]["temp"]);
+				currentWeatherData.weatherConditionCode = int(responseObject["weather"][0]["id"]);
+				String desc = JSONVar::stringify(responseObject["weather"][0]["description"]);
+				desc.substring(1, desc.length() - 1).toCharArray(currentWeatherData.weatherDescription, 30);
+				//currentWeatherData.external = true;
+				
+				gmtTimeOffset = int(responseObject["timezone"]);
+
+				breakTime((time_t)(int)responseObject["sys"]["sunrise"] + gmtTimeOffset, currentWeatherData.sunrise);
+				breakTime((time_t)(int)responseObject["sys"]["sunset"] + gmtTimeOffset, currentWeatherData.sunset);
+				
+				currentWeatherData.timestamp = NOW;
+
+				// sync NTP during weather API call and use timezone of lat & lon
+				WifiConnectionManager::syncNTP(gmtTimeOffset);
+			} else {
+				// http error
+			}
+			http.end();
+			
+			// turn off radios
+			WiFi.mode(WIFI_OFF);
+			btStop();
 		}
-		
-		weatherQueryURL.replace("{units}", units);
-		weatherQueryURL.replace("{lang}", lang);
-		weatherQueryURL.replace("{apiKey}", apiKey);
-		
-		http.begin(weatherQueryURL.c_str());
-		
-		int httpResponseCode = http.GET();
-		if (httpResponseCode == 200) {
-			String payload             = http.getString();
-			
-			JSONVar responseObject     = JSON.parse(payload);
-			currentWeatherData.temperature = int(responseObject["main"]["temp"]);
-			currentWeatherData.weatherConditionCode = int(responseObject["weather"][0]["id"]);
-			String desc = JSONVar::stringify(responseObject["weather"][0]["description"]);
-			desc.substring(1, desc.length() - 1).toCharArray(currentWeatherData.weatherDescription, 30);
-			//currentWeatherData.external = true;
-			
-			gmtTimeOffset = int(responseObject["timezone"]);
-
-			breakTime((time_t)(int)responseObject["sys"]["sunrise"] + gmtTimeOffset, currentWeatherData.sunrise);
-			breakTime((time_t)(int)responseObject["sys"]["sunset"] + gmtTimeOffset, currentWeatherData.sunset);
-			
-			currentWeatherData.timestamp = NOW;
-
-			// sync NTP during weather API call and use timezone of lat & lon
-			WifiConnectionManager::syncNTP(gmtTimeOffset);
-		} else {
-			// http error
-		}
-		http.end();
-		
-		// turn off radios
-		WiFi.mode(WIFI_OFF);
-		btStop();
-	}
 	
-	WifiConnectionManager::powerOff();
+		WifiConnectionManager::powerOff();
+	}
 
 	uint8_t chip_temperature = accSensor.readTemperature(); // celsius
 	if (!currentWeatherData.isMetric) {

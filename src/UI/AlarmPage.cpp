@@ -11,6 +11,8 @@
 #define ALARM_PAGE_SET_TIME 2
 #define ALARM_PAGE_SET_DAYS 3
 
+#define ALARM_SELECTION_INDEX pageData.number2
+
 void AlarmPage::initPage() {
 	pageData.subPageIndex = ALARM_PAGE_OVERVIEW;
 }
@@ -74,12 +76,12 @@ bool AlarmPage::onButtonPressed(uint8_t buttonIndex) {
 	switch(pageData.subPageIndex){
 		case ALARM_PAGE_OVERVIEW:
 			if(buttonIndex == BTN_DOWN) {
-				pageData.number2++;
-				if(pageData.number2 >= ALARM_COUNT) pageData.number2 = 0;
+				ALARM_SELECTION_INDEX++;
+				if(ALARM_SELECTION_INDEX >= ALARM_COUNT) ALARM_SELECTION_INDEX = 0;
 				return true;
 			}else if(buttonIndex == BTN_UP) {
-				pageData.number2--;
-				if(pageData.number2 > 250) pageData.number2 = ALARM_COUNT - 1;
+				ALARM_SELECTION_INDEX--;
+				if(ALARM_SELECTION_INDEX > 250) ALARM_SELECTION_INDEX = ALARM_COUNT - 1;
 				return true;
 			}else if(buttonIndex == BTN_MENU) {
 				pageData.subPageIndex = ALARM_PAGE_CONFIGURATION;
@@ -145,9 +147,17 @@ void AlarmPage::drawOverview() {
 	int16_t x1, y1;
 	uint16_t w, h;
 	
+	uint8_t page = ALARM_SELECTION_INDEX / 3;
+	uint8_t pages = (ALARM_COUNT + 2) / 3;
+
+	if(pages > 1) 
+		drawScrollBar(page, pages);
+
 	mDisplay.setFont(&DSEG7_Classic_Bold_25);
-	for(uint8_t i = 0; i < 3; i++) {
-		uint8_t yPos = 18 + (55 * i);
+	for(uint8_t i = page * 3; i < page * 3 + 3; i++) {
+		if(i >= ALARM_COUNT) continue;;
+		
+		uint8_t yPos = 18 + (55 * (i - page * 3));
 		
 		String item = "";
 		if(alarms[i].hour < 10) item += "0";

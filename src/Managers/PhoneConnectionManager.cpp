@@ -16,10 +16,12 @@ bool PhoneConnectionManager::SyncNotifications(bool force) {
 		return false;
 	}
 	
+	lastNotificationCheck = NOW;
+	
 	BluetoothManager::requestNotifications();
 	
 	if(!BluetoothManager::connected) return false;
-	
+
 	if(BluetoothManager::lastResponse.length() > 0) {
 		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
 		
@@ -32,6 +34,7 @@ bool PhoneConnectionManager::SyncNotifications(bool force) {
 			for(uint8_t i = 0; i < count; i++) {
 				FileManager::writeFile(PATH_NOTIFICATIONS + String(i), JSON.stringify(json["nBundleList"][i]));
 			}
+
 			return true;
 		}
 	}

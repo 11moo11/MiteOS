@@ -7,6 +7,7 @@ RTC_DATA_ATTR uint32_t stepOffset = 0;
 void ActivityManager::restoreSteps() {
 	uint8_t dow = MiteOS::currentTime.Wday;
 	stepOffset = Configuration::loadSteps(false)[dow - 1];
+	if(stepOffset > 1000000) stepOffset = 0;
 	printDebug("Restored Steps: " + String(stepOffset));
 }
 
@@ -25,7 +26,9 @@ void ActivityManager::saveSteps() {
 
 uint32_t ActivityManager::getStepCount() {
 	uint32_t stepCount = accSensor.getCounter();
+	if(stepCount > 1000000) stepCount = 0;
 	stepCount += stepOffset;
+
 	return stepCount;
 }
 
