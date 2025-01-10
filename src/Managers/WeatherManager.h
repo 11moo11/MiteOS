@@ -18,7 +18,19 @@ typedef struct WeatherData {
 } WeatherData;
 
 class WeatherManager {
+	private:
+		static String city;
+		static String unit;
+		static String token;
+	
 	public:
+		static void setCity(String city)   { WeatherManager::city  = city; }
+		static void setUnit(String unit)   { WeatherManager::unit  = unit; }
+		static void setToken(String token) { WeatherManager::token = token; }
+		static String getCity()  { return WeatherManager::city; }
+		static String getUnit()  { return WeatherManager::unit; }
+		static String getToken() { return WeatherManager::token; }
+		
 		static WeatherData getWeatherData(bool cached = true);
 
 		static bool isDataCurrent();
@@ -26,7 +38,7 @@ class WeatherManager {
 		static float getMoonPhase();
 		static float getMoonPhase(uint8_t year, uint8_t month, uint8_t day, uint8_t hour = 0, uint8_t minute = 0);
 	private:
-		static WeatherData _getWeatherData(String cityID, String lat, String lon, String units, String lang, String url, String apiKey);
+		static WeatherData _getWeatherData(String cityID, String units, String lang, String url, String apiKey);
 		static double _Julian(int32_t year, int32_t month, const double &day);
 };
 

@@ -9,6 +9,10 @@ RTC_DATA_ATTR WeatherData currentWeatherData;
 
 RTC_DATA_ATTR long lastWeatherCheck = 0;
 
+String WeatherManager::city;
+String WeatherManager::unit;
+String WeatherManager::token;
+
 bool WeatherManager::isDataCurrent() {
 	return currentWeatherData.timestamp > 0 && hour(NOW - currentWeatherData.timestamp) <= WEATHER_DATA_MAX_AGE;
 }
@@ -24,21 +28,21 @@ WeatherData WeatherManager::getWeatherData(bool cached) {
 	)
 		return currentWeatherData;
 
-	return _getWeatherData( Configuration::getCityID()
-						  , Configuration::getLat()
-						  , Configuration::getLon()
-						  , Configuration::getWeatherUnit()
+	Configuration::loadOwmConfig();
+
+	return _getWeatherData( WeatherManager::getCity()
+						  , WeatherManager::getUnit()
 						  , Configuration::getWeatherLang()
 						  , Configuration::getWeatherURL()
-						  , Configuration::getWeatherAPIKey()
+						  , WeatherManager::getToken()
 						  );
 }
 
-WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lon, String units, String lang, String url, String apiKey) {
+WeatherData WeatherManager::_getWeatherData(String cityID, String units, String lang, String url, String apiKey) {
 	
 	currentWeatherData.isMetric = units == String("metric");
 
-	if((NOW - lastWeatherCheck) / 60 > WEATHER_UPDATE_INTERVAL) {
+	if((NOW - lastWeatherCheck) / 60 > WEATHER_UPDATE_INTERVAL && apiKey.length() > 0 && cityID.length() > 0 && units.length() > 0) {
 		lastWeatherCheck = NOW;
 
 		if (WifiConnectionManager::connectWifi()) {
@@ -46,17 +50,13 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 			http.setConnectTimeout(3000); // 3 second max timeout
 			String weatherQueryURL = url;
 			
-			if(cityID != ""){
-				weatherQueryURL.replace("{cityID}", cityID);
-			}else{
-				weatherQueryURL.replace("{lat}", lat);
-				weatherQueryURL.replace("{lon}", lon);
-			}
-			
+			weatherQueryURL.replace("{cityID}", cityID);
 			weatherQueryURL.replace("{units}", units);
 			weatherQueryURL.replace("{lang}", lang);
 			weatherQueryURL.replace("{apiKey}", apiKey);
 			
+			printDebug(weatherQueryURL);
+
 			http.begin(weatherQueryURL.c_str());
 			
 			int httpResponseCode = http.GET();
@@ -75,10 +75,10 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String lat, String lo
 				breakTime((time_t)(int)responseObject["sys"]["sunrise"] + gmtTimeOffset, currentWeatherData.sunrise);
 				breakTime((time_t)(int)responseObject["sys"]["sunset"] + gmtTimeOffset, currentWeatherData.sunset);
 				
-				currentWeatherData.timestamp = NOW;
-
 				// sync NTP during weather API call and use timezone of lat & lon
 				WifiConnectionManager::syncNTP(gmtTimeOffset);
+
+				currentWeatherData.timestamp = NOW;
 			} else {
 				// http error
 			}

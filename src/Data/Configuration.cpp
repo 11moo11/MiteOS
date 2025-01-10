@@ -4,6 +4,7 @@
 #include "../UI/WatchfacePage.h"
 #include "../Managers/BluetoothManager.h"
 #include "../Managers/HassManager.h"
+#include "../Managers/WeatherManager.h"
 
 #include <nvs.h>
 
@@ -188,6 +189,8 @@ void Configuration::saveHassConfig() {
 	Configuration::preferences.putString("hassUrl", HassManager::     getURL());
 	Configuration::preferences.putString("hassTkn", HassManager::   getToken());
 	Configuration::preferences.putString("hassEnt", HassManager::getEntities());
+
+	printDebug("Saved Hass Config");
 }
 
 void Configuration::loadHassConfig() {
@@ -196,6 +199,23 @@ void Configuration::loadHassConfig() {
 	HassManager::     setURL(Configuration::preferences.getString("hassUrl"));
 	HassManager::   setToken(Configuration::preferences.getString("hassTkn"));
 	HassManager::setEntities(Configuration::preferences.getString("hassEnt"));
+}
+
+void Configuration::saveOwmConfig() {
+	if(!initialized) init();
+
+	Configuration::preferences.putString("owmCity", WeatherManager:: getCity());
+	Configuration::preferences.putString("owmUnit", WeatherManager:: getUnit());
+	Configuration::preferences.putString("owmApi",  WeatherManager::getToken());
+	
+	printDebug("Saved OWM Config");
+}
+void Configuration::loadOwmConfig() {
+	if(!initialized) init();
+	
+	WeatherManager:: setCity(Configuration::preferences.getString("owmCity"));
+	WeatherManager:: setUnit(Configuration::preferences.getString("owmUnit"));
+	WeatherManager::setToken(Configuration::preferences.getString("owmApi"));
 }
 
 

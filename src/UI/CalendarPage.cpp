@@ -17,6 +17,17 @@
 #define PAGE_INDEX_CALENDAR 0
 #define PAGE_INDEX_APPOINTMENTS 1
 
+void CalendarPage::initPage() {
+    Configuration::init();
+    long last_sync = Configuration::preferences.getLong64("lastCalSync", 0);
+    printDebug(last_sync);
+    printDebug(NOW);
+    if(last_sync < NOW - (60 * 24 * 1000)) {
+        PhoneConnectionManager::SyncCalendar();
+        Configuration::preferences.putLong64("lastCalSync", NOW);
+    }
+}
+
 void CalendarPage::drawPage() {
     if(PAGE_INDEX == PAGE_INDEX_CALENDAR)
         drawMonth();
@@ -88,8 +99,8 @@ void CalendarPage::drawMonth() {
     // Day Names
     drawCentreString(TXT_MONDAY_SHORT,     16, 47);
     drawCentreString(TXT_TUESDAY_SHORT,    44, 47);
-    drawCentreString(TXT_THURSDAY_SHORT,   72, 47);
-    drawCentreString(TXT_WEDNESDAY_SHORT, 100, 47);
+    drawCentreString(TXT_WEDNESDAY_SHORT,  72, 47);
+    drawCentreString(TXT_THURSDAY_SHORT,  100, 47);
     drawCentreString(TXT_FRIDAY_SHORT,    128, 47);
     drawCentreString(TXT_SATURDAY_SHORT,  156, 47);
     drawCentreString(TXT_SUNDAY_SHORT,    184, 47);

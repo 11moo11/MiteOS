@@ -59,6 +59,7 @@ void TrainWatchface::draw(){
 	mDisplay.setTextColor(FOREGROUND_COLOR);
 	mDisplay.print(textstring);
 
+	printDebug(MiteOS::currentTime.Wday);
 	// draw day of week
 	textstring = Lang::dayStr(MiteOS::currentTime.Wday);
 	mDisplay.getTextBounds(textstring, 0, 0, &x1, &y1, &w, &h);

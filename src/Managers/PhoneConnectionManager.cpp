@@ -6,6 +6,7 @@
 #include <JSON.h>
 #include "../Data/Base64.hpp"
 #include "../Managers/FileManager.h"
+#include "WeatherManager.h"
 
 RTC_DATA_ATTR long lastNotificationCheck = 0;
 
@@ -185,6 +186,17 @@ bool PhoneConnectionManager::SyncConfiguration() {
 			printDebug(tokens);
 			success = true;
 			Configuration::preferences.putString("totp", tokens);
+		}
+
+		if(json.hasOwnProperty("owmApi")) {
+			if(json.hasOwnProperty("owmUnit")) {
+				if(json.hasOwnProperty("owmCity")) {
+					WeatherManager::setCity(json["owmCity"]);
+					WeatherManager::setToken(json["owmApi"]);
+					WeatherManager::setUnit(json["owmUnit"]);
+					Configuration::saveOwmConfig();
+				}
+			}
 		}
 	}
 	return success;

@@ -1,21 +1,9 @@
 //Weather Settings
-#define CITY_ID "2948825" //New York City https://openweathermap.org/current#cityid
-
-//You can also use LAT,LON for your location instead of CITY_ID, but not both
-//#define LAT "40.7127" //New York City, Looked up on https://www.latlong.net/
-//#define LON "-74.0059"
-
-#ifdef CITY_ID
-	#define OPENWEATHERMAP_URL "http://api.openweathermap.org/data/2.5/weather?id={cityID}&lang={lang}&units={units}&appid={apiKey}" //open weather api using city ID
-#else
-	#define OPENWEATHERMAP_URL "http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&lang={lang}&units={units}&appid={apiKey}" //open weather api using lat lon
-#endif
-
-#define OPENWEATHERMAP_APIKEY "f058fe1cad2afe8e2ddc5d063a64cecb" //use your own API key :)
-#define TEMP_UNIT "metric" //metric = Celsius , imperial = Fahrenheit
+#define OPENWEATHERMAP_URL "http://api.openweathermap.org/data/2.5/weather?id={cityID}&lang={lang}&units={units}&appid={apiKey}" //open weather api using city ID
 #define WEATHER_UPDATE_INTERVAL 30 //must be greater than 5, smaller than 255, measured in minutes
 #define WEATHER_DATA_MAX_AGE 3 // in hours
 
+//Notification Settings
 #define NOTIFICATION_UPDATE_INTERVAL 15 //must be greater than 1, smaller than 255, measured in minutes
 
 //NTP Settings
@@ -82,6 +70,9 @@ class Configuration : Preferences {
         
         static void saveHassConfig();
         static void loadHassConfig();
+
+        static void saveOwmConfig();
+        static void loadOwmConfig();
         
         static void saveNotification(uint8_t index, Notification n);
         static Notification loadNotification(uint8_t index);
@@ -92,18 +83,7 @@ class Configuration : Preferences {
         static uint32_t loadTotalSteps();
         
         // Settings functions - TODO: Replace with App Settings
-        #ifdef CITY_ID
-        static String getCityID() { return CITY_ID; };
-        static String getLat() { return ""; };
-        static String getLon() { return ""; };
-        #else
-        static String getCityID() { return ""; };
-        static String getLat() { return LAT; };
-        static String getLon() { return LON; };
-        #endif
-        static String getWeatherAPIKey() { return OPENWEATHERMAP_APIKEY; };
         static String getWeatherURL() { return OPENWEATHERMAP_URL; };
-        static String getWeatherUnit() { return TEMP_UNIT; };
         static String getWeatherLang() { return TEMP_LANG; };
         static uint8_t getWeatherUpdateInterval() { return WEATHER_UPDATE_INTERVAL; };
         

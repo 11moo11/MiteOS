@@ -86,7 +86,7 @@ class Lang {
 		
 		static char* dayShortStr(uint8_t day) {
 			uint8_t index = day*dt_SHORT_STR_LEN;
-			for (int i=0; i < dt_SHORT_STR_LEN; i++)      
+			for (int i = 0; i < dt_SHORT_STR_LEN; i++)      
 				buffer[i] = pgm_read_byte(&(dayShortNames_P[index + i]));  
 			buffer[dt_SHORT_STR_LEN] = 0; 
 			return buffer;

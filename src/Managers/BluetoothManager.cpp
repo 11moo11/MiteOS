@@ -116,6 +116,7 @@ void BluetoothManager::bondDevice() {
 	while(!btDeviceRegistered && wait < 300) { // Wait for bonding or half a minute, whatever comes first
 		delay(100);
 		wait++;
+		if(pServer->getConnectedCount() > 0) break; // Device connected instead of bonding, probably already bonded?
 	}
 	
 	connected = pServer->getConnectedCount() > 0;

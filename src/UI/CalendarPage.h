@@ -5,6 +5,7 @@
 
 class CalendarPage : public Page {
 	public:
+		void initPage() override;
 		String pageName() override { return TXT_CALENDAR; };
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;
