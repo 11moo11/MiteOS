@@ -462,7 +462,7 @@ void WoolyPage::drawInfoPage() {
 		
 		mDisplay.setCursor(35, offset_y);
 		time_t b = WOOLY_BORN;
-		time_t c = makeTime(MiteOS::currentTime);
+		time_t c = NOW;
 		int totalSeconds = c-b;
 		//int seconds = (totalSeconds % 60);
 		int minutes = (totalSeconds % 3600) / 60;
@@ -572,8 +572,8 @@ void WoolyPage::resetWooly() {
 	
 	Configuration::preferences.putUInt("wooly_init", 0);
 	Configuration::preferences.putUChar("last_level", (uint8_t) 0);
-	Configuration::preferences.getULong64("wooly_warmth", NOW);
-	Configuration::preferences.getULong64("wooly_born", 0);
+	Configuration::preferences.putULong64("wooly_warmth", NOW);
+	Configuration::preferences.putULong64("wooly_born", NOW);
 	
 	WOOLY_PAGE = WOOLY_PAGE_MAIN;
 	
