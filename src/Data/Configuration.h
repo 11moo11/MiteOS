@@ -17,7 +17,7 @@
 #define DARKMODE_END_H 6
 #define DARKMODE_END_M 30
 
-//#define SUNDAY_IS_ZERO // if this is defined, then wday sunday = 0 and not wday sunday = 1
+#define SUNDAY_IS_ZERO // if this is defined, then wday sunday = 0 and not wday sunday = 1
 
 // Possible Values LANG_EN, LANG_DE, LANG_FR
 #define LANG_EN

@@ -43,7 +43,7 @@
 
 static bool displayPoweredOn = false;
 
-#define NOW mRTC.doMakeTime(MiteOS::currentTime)
+#define NOW makeTime(MiteOS::currentTime)
 
 class MiteOS {
 	public:

@@ -68,19 +68,11 @@ const char dayShortNames_P[] PROGMEM = TXT_ERR TXT_SUNDAY_SHORT TXT_MONDAY_SHORT
 class Lang {
 	public:
 		static char* monthStr(uint8_t month) {
-			#ifdef SUNDAY_IS_ZERO
-			month += 1;
-			#endif
-
 			strcpy_P(buffer, (PGM_P)pgm_read_ptr(&(monthNames_P[month])));
 			return buffer;
 		};
 		
 		static char* monthShortStr(uint8_t month) {
-			#ifdef SUNDAY_IS_ZERO
-			month += 1;
-			#endif
-
 			for (int i=0; i < dt_SHORT_STR_LEN; i++)      
 				buffer[i] = pgm_read_byte(&(monthShortNames_P[i+ (month*dt_SHORT_STR_LEN)]));  
 			buffer[dt_SHORT_STR_LEN] = 0;
@@ -88,19 +80,11 @@ class Lang {
 		};
 		
 		static char* dayStr(uint8_t day) {
-			#ifdef SUNDAY_IS_ZERO
-			day += 1;
-			#endif
-
 			strcpy_P(buffer, (PGM_P)pgm_read_ptr(&(dayNames_P[day])));
 			return buffer;
 		};
 		
 		static char* dayShortStr(uint8_t day) {
-			#ifdef SUNDAY_IS_ZERO
-			day += 1;
-			#endif
-
 			uint8_t index = day*dt_SHORT_STR_LEN;
 			for (int i = 0; i < dt_SHORT_STR_LEN; i++)      
 				buffer[i] = pgm_read_byte(&(dayShortNames_P[index + i]));  

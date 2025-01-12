@@ -56,8 +56,10 @@ void MiteOS::init() {
 	display.epd2.initWatchy();
 	mDisplay.cp437(true);
 	RTC.read(currentTime);
+	#if SUNDAY_IS_ZERO
 	currentTime.Wday = (currentTime.Wday + 1) % 8;
 	currentTime.Month = (currentTime.Month + 1) % 13;
+	#endif
 
 	switch (wakeup_reason) {
 		case ESP_SLEEP_WAKEUP_EXT0: // RTC Alarm
