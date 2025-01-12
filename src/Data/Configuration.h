@@ -17,6 +17,7 @@
 #define DARKMODE_END_H 6
 #define DARKMODE_END_M 30
 
+//#define SUNDAY_IS_ZERO // if this is defined, then wday sunday = 0 and not wday sunday = 1
 
 // Possible Values LANG_EN, LANG_DE, LANG_FR
 #define LANG_EN
@@ -31,8 +32,8 @@
 
 // This will dramatically reduce battery life and responsiveness of the watch
 // Should only be used for making screenshot and never for daily driving
-#define ENABLE_SCREENSHOTS true
-#define DEBUG true
+#define ENABLE_SCREENSHOTS false
+#define DEBUG false
 
 
 

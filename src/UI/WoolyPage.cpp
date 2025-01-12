@@ -112,7 +112,7 @@ void WoolyPage::initPage() {
 	}
 	
 	LAST_WARMTH = Configuration::preferences.getULong64("wooly_warmth", 0);
-	if(LAST_WARMTH == 0) { Configuration::preferences.getULong64("wooly_warmth", NOW); LAST_WARMTH = NOW; }
+	if(LAST_WARMTH == 0) { Configuration::preferences.putULong64("wooly_warmth", NOW); LAST_WARMTH = NOW; }
 	
 	LAST_FOOD   = Configuration::preferences.getULong64("wooly_food", 0);
 	LAST_WATER  = Configuration::preferences.getULong64("wooly_water", 0);

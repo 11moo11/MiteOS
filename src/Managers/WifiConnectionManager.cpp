@@ -163,7 +163,8 @@ bool WifiConnectionManager::syncNTP(long gmt, String ntpServer) {
 		return false; // NTP sync failed
 	}
 	tmElements_t tm;
-	breakTime((time_t)timeClient.getEpochTime(), tm);
+	time_t t = timeClient.getEpochTime();
+	mRTC.doBreakTime(t, tm);
 	mRTC.set(tm);
 	
 	return true;

@@ -108,11 +108,16 @@ void CalendarPage::drawMonth() {
 
     uint8_t y_offset = 67;
     tmElements_t elem = MiteOS::currentTime;
-    elem.Month = elem.Month + MONTH_OFFSET;
-    while(elem.Month > 12) {
+    int16_t month = elem.Month + MONTH_OFFSET;
+    while(month > 12) {
         elem.Year++;
-        elem.Month -= 12;
+        month -= 12;
     }
+    while(month <= 0) {
+        elem.Year--;
+        month += 12;
+    }
+    elem.Month = month;
 
     mDisplay.setFont(&Teko_Regular12pt7b);
     for(uint8_t day = 1; day <= 32; day++) { // Loop through all possible 31 days

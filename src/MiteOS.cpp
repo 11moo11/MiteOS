@@ -56,6 +56,8 @@ void MiteOS::init() {
 	display.epd2.initWatchy();
 	mDisplay.cp437(true);
 	RTC.read(currentTime);
+	currentTime.Wday = (currentTime.Wday + 1) % 8;
+	currentTime.Month = (currentTime.Month + 1) % 13;
 
 	switch (wakeup_reason) {
 		case ESP_SLEEP_WAKEUP_EXT0: // RTC Alarm
@@ -414,7 +416,7 @@ void MiteOS::_bmaConfig() {
 	__devFptr.resolution     = 12;
 	__devFptr.feature_len    = BMA423_FEATURE_SIZE;
 	bma423_wakeup_set_sensitivity(7, &__devFptr);
-	bma423_tap_selection(0x01, &__devFptr);
+	bma423_tap_selection(0x00, &__devFptr);
 	
 	// Enable BMA423 isStepCounter feature
 	accSensor.enableFeature(BMA423_STEP_CNTR, true);
