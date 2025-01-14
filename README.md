@@ -26,8 +26,8 @@ Features
 ✅ App-Menu  
 ✅ NTP Time Syncing  
 ✅ Vibrate on Hour Change  
-✅ Settings Menu on the watch (Still requires some stuff to be done through code or the app)  
-✅ Streamlined Interface  
+✅ Settings Menu on the watch (Still requires some stuff to be done through code or the app) [Check here](docs/Settings.md)  
+✅ [Streamlined Interface](docs/Controls.md)  
 
 Disclaimer
 -----
@@ -44,6 +44,10 @@ Planned Features
 - Standarize Watchfaces
 - Replace RTC Lib with the one from GuruSR
 
+Docs
+----
+- [Overview of Settings](docs/Settings.md)
+- [Controls / Navigation](docs/Controls.md)
 
 Phone Companion
 -----
