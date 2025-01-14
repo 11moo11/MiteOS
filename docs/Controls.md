@@ -1,10 +1,10 @@
 # Controls
 
-This firmware tries to keep it simple, most of the time the inputs are the same:
-![General Controls](img/general_controls.jpg)
+This firmware tries to keep it simple, most of the time the inputs are the same:  
+![General Controls](img/general_controls.jpg)  
 
-The Watchface deviates from this to allow for the action buttons:
-![Watchface Controls](img/watchface.jpg)
+The Watchface deviates from this to allow for the action buttons:  
+![Watchface Controls](img/watchface.jpg)  
 
 # Navigation
 The firmware consists of 2 main areas, for once are navigatable pages, these are the Watchface, Weather and Step Counter. These are navigated by the watchface controls "Next Page" button.  
