@@ -9,6 +9,7 @@
 RTC_DATA_ATTR bool isBatteryCharging = false;
 RTC_DATA_ATTR long lastVoltage = 0;
 RTC_DATA_ATTR long currentPowerMode = POWER_MODE_MINUTLY;
+RTC_DATA_ATTR uint8_t powerMap[24];
 
 void PowerManager::deepSleep() {
 	mDisplay.hibernate();

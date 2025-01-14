@@ -7,15 +7,17 @@ Features
 
 ✅ Multiple [Watchfaces](#builtin-watchfaces) (from other creators / relatively easy to add your own)  
 ✅ Timer  
-✅ Alarm (up to 3 at a time)  
+✅ Up to 6 Alarms by default (can be changed to any value when compiling)  
 ✅ Step Tracking (Remembers the Last 7 days)  
-✅ Weather Information (Temperature / Moon Phase) **  
+✅ Weather Information (Temperature / Moon Phase) \*/\*\*    
+✅ Calendar with Appointment Syncing*  
 ✅ TOTP Token Storage*  
 ✅ Check Phone Notifications*  
 ✅ Media-Playback Info*  
 ✅ Home Assistant Integration (Lights / Switches) \*/\*\*  
 ✅ Dark-/Lightmode (Static or Timed)  
 ✅ Configure Settings through Companion App*  
+✅ 2 configurable Shortcut-Buttons on the Watchface (Top Left and Top Right)  
 
 \(*) Requires the Phone Companion App (see [Phone Companion](#phone-companion) for Restrictions)  
 \(**) Requires a WiFi Connection
@@ -25,6 +27,7 @@ Features
 ✅ NTP Time Syncing  
 ✅ Vibrate on Hour Change  
 ✅ Settings Menu on the watch (Still requires some stuff to be done through code or the app)  
+✅ Streamlined Interface  
 
 Disclaimer
 -----
@@ -36,9 +39,8 @@ Planned Features
 -----
 - Weather Information through Phone instead of WiFi
 - Activity Tracking (like running and stuff, based on the amount of steps coming in per second)
-- Night-Mode (save battery at night or if it is not worn)
+- Configurable Night-Mode (save battery at night or if it is not worn)
 - Google Health Syncing
-- Configurable Sleep Mode at Night
 - Standarize Watchfaces
 - Replace RTC Lib with the one from GuruSR
 
@@ -48,6 +50,7 @@ Phone Companion
 App can be found here: **Link coming soon**
 
 **Restrictions:**
+- Only available for Android
 - Notifications get only synced every 15 minutes to save battery.
 - Syncing is slow and takes a few seconds
 - Only the watch can initiate a sync, so no in time notifications
@@ -58,11 +61,9 @@ Battery-Life
 | Battery  | Offline  | Wifi + Phone Connection (15 minute interval) |
 |----------|----------|----------------------------------------------|
 | 200mAh   | ~10 days | ~7 days                                      |
-| 320mAh*  | -        | -                                            |
-| 500mAh** | -        | -                                            |
+| 350mAh*  | -        | ~10 days                                     |
 
 (*) Requires a case that can hold that battery  
-(**) Requires a case that can hold that battery / Its ordered but not here yet. (also not quite sure if im getting scammed on the real capacity :D)  
   
 I use a modified version of https://github.com/yik3z/Watchy-CAD/tree/main/CAD/Cases/SlimV5 that allows for a 320mAh battery.
 

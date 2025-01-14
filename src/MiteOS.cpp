@@ -17,7 +17,7 @@ RTC_DATA_ATTR int gmtTimeOffset = 0;
 RTC_DATA_ATTR tmElements_t osBootTime;
 
 RTC_DATA_ATTR PageData pageData;
-RTC_DATA_ATTR bool AUTO_DARKMODE;
+RTC_DATA_ATTR bool AUTO_DARKMODE = true;
 RTC_DATA_ATTR bool PREF_DARKMODE;
 RTC_DATA_ATTR bool DARKMODE;
 
