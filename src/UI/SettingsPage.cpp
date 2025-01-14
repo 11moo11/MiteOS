@@ -344,9 +344,11 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 				return true;
 
 			case SETTINGS_PAGE_WAKEUP_BEHAVIOUR:
-				currentPowerMode = pageData.menuIndex;
-
-				MiteOS::updateBmaConfig();
+				if(currentPowerMode != pageData.menuIndex) {
+					currentPowerMode = pageData.menuIndex;
+					
+					MiteOS::updateBmaConfig();
+				}
 				return true;
 			
 			default: break;
