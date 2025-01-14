@@ -64,12 +64,11 @@ void MiteOS::init() {
 	switch (wakeup_reason) {
 		case ESP_SLEEP_WAKEUP_EXT0: // RTC Alarm
 			printDebug("RTC Alarm");
-			checkTime();
 			
 			//vibMotor(75, 4);
 			PageManager::refreshPage();
-	
-			PhoneConnectionManager::SyncNotifications();
+
+			checkTime();
 			break;
 		case ESP_SLEEP_WAKEUP_EXT1: // button Press or Accelerometer
 			if (esp_sleep_get_ext1_wakeup_status() & ACC_INT_MASK) { // Woken up by accelerator
@@ -77,23 +76,11 @@ void MiteOS::init() {
 				
 				accSensor.getINT(); // Seems like this needs to be done to clear the interrupt :/
 				
-				/*
-				if(accSensor.isTilt()) {
-					printDebug("Tilt");
-					// TODO: Future low power mode? (maybe only at night)
-				}else if(accSensor.isActivity()) {
-					printDebug("Activity");
-				}else if(accSensor.isAnyNoMotion()) {
-					printDebug("No Motion");
-				}else if(accSensor.isStepCounter()) {
-					printDebug("Step Counter");
-				}
-				*/
-				
 				if(accSensor.isDoubleClick()) {
 					PageManager::handleButtonPress(BTN_DOUBLE_TAP);
-				}else{
-					//PageManager::handleButtonPress(BTN_SINGLE_TAP);
+				}else if(accSensor.isTilt()) {
+					PageManager::refreshPage();
+					checkTime();
 				}
 				
 				break;
@@ -122,8 +109,8 @@ void MiteOS::init() {
 			printDebug("Reset Boot");
 			printDebug(esp_reset_reason());
 			// Initial configuration
-			_bmaConfig();
-			pageData.pageIndex = 0; // Set Page to Watchface
+			updateBmaConfig();
+			pageData.pageIndex = 0; // Set Page to Watchface Page
 			gmtTimeOffset = Configuration::getGmtOffset();
 			
 			RTC.read(osBootTime);
@@ -278,6 +265,8 @@ void MiteOS::checkTime() {
 	AlarmManager::checkTimers();
 	AlarmManager::checkAlarms();
 	
+	PhoneConnectionManager::SyncNotifications();
+	
 	PowerManager::checkCharging(); // Not really working
 	WeatherManager::getWeatherData(); // Just check the weather with mode cached = true to make sure its only getting refreshed if it needs to
 }
@@ -316,7 +305,7 @@ uint16_t MiteOS::_writeRegister(uint8_t address, uint8_t reg, uint8_t *data, uin
 	return (0 != Wire.endTransmission());
 }
 
-void MiteOS::_bmaConfig() {
+void MiteOS::updateBmaConfig() {
 	if (accSensor.begin(_readRegister, _writeRegister, delay) == false) {
 		// fail to init BMA
 		return;
@@ -407,31 +396,41 @@ void MiteOS::_bmaConfig() {
 	accSensor.setRemapAxes(&remap_data);
 	
 	
-	// Quick and Dirty fix to access the sensitivity
-	bma4_dev __devFptr;
-	__devFptr.dev_addr       = BMA4_I2C_ADDR_PRIMARY;
-	__devFptr.interface      = BMA4_I2C_INTERFACE;
-	__devFptr.bus_read       = _readRegister;
-	__devFptr.bus_write      = _writeRegister;
-	__devFptr.delay          = delay;
-	__devFptr.read_write_len = 8;
-	__devFptr.resolution     = 12;
-	__devFptr.feature_len    = BMA423_FEATURE_SIZE;
-	bma423_wakeup_set_sensitivity(7, &__devFptr);
-	bma423_tap_selection(0x00, &__devFptr);
+	// Enable BMA423 isDoubleClick feature
+	accSensor.enableFeature(BMA423_WAKEUP, doubleTapBtn != 0);
+	if(doubleTapBtn != 0) {
+		// Quick and Dirty fix to access the sensitivity
+		bma4_dev __devFptr;
+		__devFptr.dev_addr       = BMA4_I2C_ADDR_PRIMARY;
+		__devFptr.interface      = BMA4_I2C_INTERFACE;
+		__devFptr.bus_read       = _readRegister;
+		__devFptr.bus_write      = _writeRegister;
+		__devFptr.delay          = delay;
+		__devFptr.read_write_len = 8;
+		__devFptr.resolution     = 12;
+		__devFptr.feature_len    = BMA423_FEATURE_SIZE;
+		bma423_wakeup_set_sensitivity(7, &__devFptr);
+		bma423_tap_selection(0x00, &__devFptr);
+
+		accSensor.enableWakeupInterrupt();
+	}
 	
 	// Enable BMA423 isStepCounter feature
 	accSensor.enableFeature(BMA423_STEP_CNTR, true);
-	
-	// Enable BMA423 isDoubleClick feature
-	accSensor.enableFeature(BMA423_WAKEUP, true);
-	
-	// Enable BMA423 isTilt feature
-	accSensor.enableFeature(BMA423_TILT, false);
+
 	accSensor.enableFeature(BMA423_ACTIVITY, false);
 	accSensor.enableFeature(BMA423_ANY_MOTION, false);
 	accSensor.enableFeature(BMA423_NO_MOTION, false);
 	
+	// Enable BMA423 isTilt feature
+	accSensor.enableFeature(BMA423_TILT, currentPowerMode == POWER_MODE_LIFT);
+	if(currentPowerMode == POWER_MODE_LIFT) {
+    	accSensor.enableFeature(BMA423_WAKEUP, true);
+		accSensor.enableTiltInterrupt();
+		accSensor.enableWakeupInterrupt();
+		printDebug("Enable Tilt");
+	}
+
 	// Reset steps
 	//accSensor.resetStepCounter();
 	
@@ -439,7 +438,6 @@ void MiteOS::_bmaConfig() {
 	//accSensor.enableStepCountInterrupt();
 	//accSensor.enableTiltInterrupt();
 	// It corresponds to isDoubleClick interrupt
-	accSensor.enableWakeupInterrupt();
 }
 
 uint8_t MiteOS::getBoardRevision() {

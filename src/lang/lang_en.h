@@ -41,6 +41,7 @@
 #define TXT_HOUR_VIB "Hour Vib."
 #define TXT_SETUP_WIFI "Setup WiFi"
 #define TXT_COLOR_SCHEME "Color Scheme"
+#define TXT_WAKEUP_BEHAVIOUR "Wakeup"
 #define TXT_VIB_MOTOR "Vibrate Motor"
 #define TXT_SHOW_ACC "Accelerometer"
 #define TXT_REBOOT "Reboot"
@@ -50,6 +51,11 @@
 #define TXT_INTERACT_DBL_TAP "Double Tap"
 #define TXT_WATCHFACE_TOP_LEFT "Top Left"
 #define TXT_WATCHFACE_TOP_RIGHT "Top Right"
+
+#define TXT_WAKEUP_MINUTE "Minutely"
+#define TXT_WAKEUP_HOUR "Hourly"
+#define TXT_WAKEUP_TILT "Tilt"
+#define TXT_WAKEUP_NEVER "Never"
 
 #define TXT_STEPS "Steps"
 

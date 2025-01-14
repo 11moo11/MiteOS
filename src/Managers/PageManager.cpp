@@ -56,6 +56,8 @@ void PageManager::handleButtonPress(uint8_t buttonIndex) {
 	if(buttonIndex == BTN_DOUBLE_TAP) {
 		if(doubleTapBtn == 0) return;
 		buttonIndex = doubleTapBtn;
+	}else if(buttonIndex == BTN_SINGLE_TAP) {
+		return; // TODO: Implement in the future
 	}
 	
 	if(btnFeedbackVibrate) AlertManager::vibMotor(30, 2);

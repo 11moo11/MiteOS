@@ -57,13 +57,13 @@ class MiteOS {
 		explicit MiteOS() { }; // constructor
 		void init();
 		void handleButtonPress();
+		static void updateBmaConfig();
 		
 		static uint8_t getBoardRevision();
 		
 		static void initDarkmode();
 	private:
 		void checkTime();  
-		void _bmaConfig();
 		static uint16_t _readRegister(uint8_t address, uint8_t reg, uint8_t *data, uint16_t len);
 		static uint16_t _writeRegister(uint8_t address, uint8_t reg, uint8_t *data, uint16_t len);
 		void waitForAdditionalButtons();

@@ -23,6 +23,7 @@
 #define SETTINGS_PAGE_WATCHFACE_SELECT 13
 #define SETTINGS_PAGE_WATCHFACE_TOP_LEFT 14
 #define SETTINGS_PAGE_WATCHFACE_TOP_RIGHT 15
+#define SETTINGS_PAGE_WAKEUP_BEHAVIOUR 16
 
 void SettingsPage::drawPage() {
 	if(pageData.subPageIndex == SETTINGS_PAGE_OVERVIEW) {
@@ -52,10 +53,10 @@ void SettingsPage::drawPage() {
 		showMenu(menuItems, 1, true, TXT_NETWORK);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_DISPLAY) {
 		const char *menuItems[] = {
-			TXT_COLOR_SCHEME
+			TXT_COLOR_SCHEME, TXT_WAKEUP_BEHAVIOUR
 		};
 		
-		showMenu(menuItems, 1, true, TXT_DISPLAY);
+		showMenu(menuItems, 2, true, TXT_DISPLAY);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_INTERACT) {
 		const char *menuItems[] = {
 			(btnFeedbackVibrate ? TXT_CHECKBOX_ON " " TXT_INTERACT_VIBRATE_ON_BTN : TXT_CHECKBOX_OFF " " TXT_INTERACT_VIBRATE_ON_BTN),
@@ -140,6 +141,15 @@ void SettingsPage::drawPage() {
 		}
 
 		showMenu(menuItems, index, true, (pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE_TOP_LEFT ? TXT_WATCHFACE_TOP_LEFT : TXT_WATCHFACE_TOP_RIGHT));
+	}else if(pageData.subPageIndex == SETTINGS_PAGE_WAKEUP_BEHAVIOUR) {
+		const char *menuItems[] = {
+			(currentPowerMode == POWER_MODE_MINUTLY ? TXT_CHECKBOX_ON " " TXT_WAKEUP_MINUTE : TXT_CHECKBOX_OFF " " TXT_WAKEUP_MINUTE),
+			(currentPowerMode == POWER_MODE_HOURLY  ? TXT_CHECKBOX_ON " " TXT_WAKEUP_HOUR   : TXT_CHECKBOX_OFF " " TXT_WAKEUP_HOUR  ),
+			(currentPowerMode == POWER_MODE_LIFT    ? TXT_CHECKBOX_ON " " TXT_WAKEUP_TILT   : TXT_CHECKBOX_OFF " " TXT_WAKEUP_TILT  ),
+			(currentPowerMode == POWER_MODE_SLEEP   ? TXT_CHECKBOX_ON " " TXT_WAKEUP_NEVER  : TXT_CHECKBOX_OFF " " TXT_WAKEUP_NEVER ),
+		};
+		
+		showMenu(menuItems, 4, true, TXT_WAKEUP_BEHAVIOUR);
 	}
 }
 
@@ -158,6 +168,8 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 			pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE;
 		} else if(pageData.subPageIndex == SETTINGS_PAGE_WATCHFACE_TOP_RIGHT) { // Watchface
 			pageData.subPageIndex = SETTINGS_PAGE_WATCHFACE;
+		} else if(pageData.subPageIndex == SETTINGS_PAGE_WAKEUP_BEHAVIOUR) { // Watchface
+			pageData.subPageIndex = SETTINGS_PAGE_DISPLAY;
 		} else if(pageData.subPageIndex > 0) {
 			pageData.subPageIndex = 0;
 		}else{
@@ -228,6 +240,10 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 				switch(pageData.menuIndex) {
 					case 0:
 						pageData.subPageIndex = SETTINGS_PAGE_DARKMODE;
+						return true;
+					
+					case 1:
+						pageData.subPageIndex = SETTINGS_PAGE_WAKEUP_BEHAVIOUR;
 						return true;
 					
 					default: break;
@@ -325,6 +341,12 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 				}
 				
 				Configuration::saveSettings();
+				return true;
+
+			case SETTINGS_PAGE_WAKEUP_BEHAVIOUR:
+				currentPowerMode = pageData.menuIndex;
+
+				MiteOS::updateBmaConfig();
 				return true;
 			
 			default: break;

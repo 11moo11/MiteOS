@@ -6,10 +6,6 @@
 #define MIN_VOLTAGE_CHANGE_CHARGING 300 	// 0.3V
 #define MIN_VOLTAGE_CHANGE_DISCHARGING 100 	// 0.1V
 
-#define POWER_MODE_MINUTLY 0
-#define POWER_MODE_HOURLY 1
-#define POWER_MODE_SLEEP 2
-
 RTC_DATA_ATTR bool isBatteryCharging = false;
 RTC_DATA_ATTR long lastVoltage = 0;
 RTC_DATA_ATTR long currentPowerMode = POWER_MODE_MINUTLY;
@@ -36,7 +32,7 @@ void PowerManager::deepSleep() {
 		}else{
 			mRTC.atMinuteWake(0);
 		}
-	}else{
+	}else if(currentPowerMode == POWER_MODE_SLEEP || currentPowerMode == POWER_MODE_LIFT) {
 		AlarmData nextAlarm = AlarmManager::getNextAlarm();
 		if(nextAlarm.enableAlarm) {
 			mRTC.atTimeWake(nextAlarm.hour, nextAlarm.minute);
@@ -58,7 +54,7 @@ void PowerManager::deepSleep() {
 		esp_sleep_enable_ext0_wakeup((gpio_num_t) RTC_INT_PIN, 0); // enable deep sleep wake on RTC interrupt
 	
 	uint64_t mask = BTN_PIN_MASK | ACC_INT_MASK;
-	if(doubleTapBtn == 0) mask = BTN_PIN_MASK;
+	if(doubleTapBtn == 0 && currentPowerMode != POWER_MODE_LIFT) mask = BTN_PIN_MASK;
 	
 	esp_sleep_enable_ext1_wakeup(
 		mask,
