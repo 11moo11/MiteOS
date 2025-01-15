@@ -23,7 +23,11 @@ void AboutPage::drawPage() {
 	mDisplay.print("Batt: ");
 	float voltage = PowerManager::getBatteryVoltage();
 	mDisplay.print(voltage);
-	mDisplay.println("V");
+	mDisplay.print("V");
+	float percentage = PowerManager::getBatteryPercentage();
+	mDisplay.print(" (");
+	mDisplay.print((uint8_t) percentage);
+	mDisplay.println("%)");
 
 	mDisplay.print("Uptime: ");
 	mRTC.read(MiteOS::currentTime);

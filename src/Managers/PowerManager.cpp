@@ -8,7 +8,7 @@
 
 RTC_DATA_ATTR bool isBatteryCharging = false;
 RTC_DATA_ATTR long lastVoltage = 0;
-RTC_DATA_ATTR long currentPowerMode = POWER_MODE_MINUTLY;
+RTC_DATA_ATTR uint8_t currentPowerMode = POWER_MODE_MINUTLY;
 RTC_DATA_ATTR uint8_t powerMap[24];
 
 void PowerManager::deepSleep() {
@@ -77,9 +77,26 @@ float PowerManager::getBatteryVoltage() {
 }
 
 float PowerManager::getBatteryPercentage() {
-	long voltage = getBatteryVoltage() * 1000;
+	short voltage = getBatteryVoltage() * 1000;
 	
-	double percentage = map(voltage, 3600, 4200, 0, 100);
+	// Values from https://intofpv.com/t-lipo-voltage-quick-chart (Modified the 5% and 0% voltages to fit within the 3.6V cutoff voltage)
+	short voltages[] = { 4200, 4150, 4110, 4080, 4020, 3980, 3950, 3910, 3870, 3850, 3840, 3820, 3800, 3790, 3770, 3750, 3730, 3710, 3690, 3640, 3600 };
+
+	double percentage;
+	if(voltage > voltages[0]) {
+		percentage = 100;
+	}else if(voltage < voltages[20]) {
+		percentage = 0;
+	}else {
+		for(uint8_t i = 0; i <= 20; i++) {
+			if(voltages[i] > voltage) {
+				percentage = map(voltage, voltages[i + 1], voltages[i], (95.0 - i * 5), (100.0 - i * 5));
+				break;
+			}
+		}
+	}
+
+	//double percentage = map(voltage, 3600, 4200, 0, 100);
 	
 	percentage = min(100.0, percentage);
 	percentage = max(  0.0, percentage);
@@ -105,4 +122,12 @@ void PowerManager::checkCharging() {
 
 bool PowerManager::isCharging() {
 	return isBatteryCharging;
+}
+
+void PowerManager::setPowerMode(uint8_t powerMode) {
+	if(currentPowerMode != powerMode) {
+		currentPowerMode = powerMode;
+		
+		MiteOS::updateBmaConfig();
+	}
 }
