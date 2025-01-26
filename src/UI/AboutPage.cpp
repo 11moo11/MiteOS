@@ -60,5 +60,5 @@ bool AboutPage::onButtonPressed(uint8_t buttonIndex) {
 		return true;
 	}
 
-	return false;
+	return true;
 }

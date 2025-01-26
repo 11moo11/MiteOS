@@ -89,8 +89,8 @@ float PowerManager::getBatteryPercentage() {
 		percentage = 0;
 	}else {
 		for(uint8_t i = 0; i <= 20; i++) {
-			if(voltages[i] > voltage) {
-				percentage = map(voltage, voltages[i + 1], voltages[i], (95.0 - i * 5), (100.0 - i * 5));
+			if(voltages[i] >= voltage && voltages[i + 1] <= voltage) {
+				percentage = map(voltage, voltages[i + 1], voltages[i], (95.0 - i * 5.0), (100.0 - i * 5.0));
 				break;
 			}
 		}
