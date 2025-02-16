@@ -9,6 +9,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/watcher",
+            "program": "${workspaceFolder}/watcher/watchy_watcher.py",
+            "args": [
+                "false"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
@@ -39,15 +50,6 @@
             "toolchainBinDir": "C:/Users/adam/.platformio/packages/toolchain-xtensa-esp-elf/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "loadMode": "manual"
-        },
-        {
-            "name": "Python Debugger: Current File",
-            "type": "debugpy",
-            "request": "launch",
-            "cwd": "${workspaceFolder}/watcher",
-            "program": "${workspaceFolder}/watcher/watchy_watcher.py",
-            "args": [ "false" ],
-            "console": "integratedTerminal"
         }
     ]
 }
