@@ -117,7 +117,7 @@ void WifiConnectionManager::showSyncNTP() {
 
 			mDisplay.print(tmYearToCalendar(MiteOS::currentTime.Year));
 			mDisplay.print("/");
-			mDisplay.print(MiteOS::currentTime.Month);
+			mDisplay.print(MiteOS::currentTime.Month + 1);
 			mDisplay.print("/");
 			mDisplay.print(MiteOS::currentTime.Day);
 			mDisplay.print(" - ");

@@ -30,7 +30,7 @@ class cb : public BLEServerCallbacks {
 
 class ccb : public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
-		String rxValue = pCharacteristic->getValue();
+		String rxValue = String(pCharacteristic->getValue().c_str());
 		
 		if (rxValue.length() > 0) {
 			//Serial.println(rxValue.length());

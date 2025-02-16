@@ -48,9 +48,9 @@ Notification PhoneConnectionManager::GetNotification(uint8_t index) {
 	Notification n;
 
 	if(json.hasOwnProperty("appName")) {
-		((String) json["appName"]).toCharArray(n.app_name, NOTIFICATION_APP_NAME_LENGTH, 0);
-		((String) json["title"]).toCharArray(n.title, NOTIFICATION_TITLE_LENGTH, 0);
-		((String) json["text"]).toCharArray(n.message, NOTIFICATION_MESSAGE_LENGTH, 0);
+		String temp = (const char*) json["appName"]; temp.toCharArray(n.app_name, NOTIFICATION_APP_NAME_LENGTH, 0);
+		temp = (const char*) json["title"]; temp.toCharArray(n.title, NOTIFICATION_TITLE_LENGTH, 0);
+		temp = (const char*) json["text"]; temp.toCharArray(n.message, NOTIFICATION_MESSAGE_LENGTH, 0);
 	}
 
 	return n;
@@ -123,7 +123,7 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 			}
 			
 			if(json.hasOwnProperty("art")) {
-				String art = (String) json["art"];
+				String art = (const char*) json["art"];
 				
 				// Ineffiecient but works i guess
 				int size = decode_base64_length((const unsigned char*) art.c_str());
@@ -163,9 +163,9 @@ bool PhoneConnectionManager::SyncConfiguration() {
 					String entities = "";
 					for(uint8_t i = 0; i < json["entities"].length(); i++) {
 						if(i > 0) entities += ",";
-						entities += (String) json["entities"][i]["name"];
+						entities += (const char*) json["entities"][i]["name"];
 						entities += ",";
-						entities += (String) json["entities"][i]["key"];
+						entities += (const char*) json["entities"][i]["key"];
 					}
 					printDebug(entities);
 					HassManager::setEntities(entities);
@@ -179,9 +179,9 @@ bool PhoneConnectionManager::SyncConfiguration() {
 			String tokens = "";
 			for(uint8_t i = 0; i < json["totp"].length(); i++) {
 				if(i > 0) tokens += ",";
-				tokens += (String) json["totp"][i]["name"];
+				tokens += (const char*) json["totp"][i]["name"];
 				tokens += ",";
-				tokens += (String) json["totp"][i]["token"];
+				tokens += (const char*) json["totp"][i]["token"];
 			}
 			printDebug(tokens);
 			success = true;

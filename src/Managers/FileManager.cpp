@@ -54,6 +54,7 @@ bool FileManager::format() {
         }
         return true;
     }
+    return false;
 }
 bool FileManager::writeFile(String path, String message) {
     init();

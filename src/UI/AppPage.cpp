@@ -112,6 +112,7 @@ bool AppPage::onButtonPressed(uint8_t buttonIndex) {
 			}while(pageTarget[currentAppIndex + (currentAppPage * 4)] == 255);
 			return true;
 	}
+	return false;
 }
 
 void AppPage::displayPage() {

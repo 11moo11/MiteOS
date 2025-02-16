@@ -197,7 +197,7 @@ void CalendarPage::drawAppointment() {
                 if(json.hasOwnProperty("startTime")) {
                     mDisplay.setCursor(10, offset_y);
                     mDisplay.setTextWrap(false);
-                    mDisplay.println((String) json["title"]);
+                    mDisplay.println((const char*) json["title"]);
 
                     tmElements_t startTime;
                     breakTime((unsigned long) json["startTime"], startTime);

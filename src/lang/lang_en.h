@@ -161,7 +161,7 @@
 
 
 // Pokemon Watchface
-PROGMEM static char *pokemon_names[151] = {
+static const char* pokemon_names[151] = {
 	"BULBASAUR", "IVYSAUR", "VENUSAUR", "CHARMANDER", "CHARMELEON", "CHARIZARD",
 	"SQUIRTLE", "WARTORTLE", "BLASTOISE", "CATERPIE", "METAPOD", "BUTTERFREE",
 	"WEEDLE", "KAKUNA", "BEEDRILL", "PIDGEY", "PIDGEOTTO", "PIDGEOT",

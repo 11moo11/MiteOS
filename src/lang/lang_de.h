@@ -161,7 +161,7 @@
 
 
 // Pokemon Watchface
-PROGMEM static char *pokemon_names[151] = {
+const String pokemon_names[151] = {
 	"BISASAM", "BISAKNOSP", "BISAFLOR", "GLUMANDA", "GLUTEXO", "GLURAK",
 	"SCHIGGY", "SCHILLOK", "TURTOK", "RAUPEY", "SAFCON", "SAFRON",
 	"HORNLIU", "KOKUNA", "BIBOR", "TAUBSI", "TAUBOGA", "TAUBOSS",

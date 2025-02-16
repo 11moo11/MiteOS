@@ -37,7 +37,8 @@ void MiteOS::init() {
 	// This might cause a double reset, causing the esp to fully reset steps and stuff
 	// So this should only be enabled when debugging
 	// But: Thats just a theory at the moment and i will test it some more
-	Serial.begin(921600); // Max speed so we have about 2FPS (115200 results in about 1 FPS)
+	//Serial.begin(921600); // Max speed so we have about 2FPS (115200 results in about 1 FPS)
+	Serial.begin(250000); // Max speed VS Code can handle
   	if(!Serial) delay(1000);
 	printDebug("Booting up");
 	#endif
@@ -47,7 +48,7 @@ void MiteOS::init() {
 	esp_sleep_wakeup_cause_t wakeup_reason;
 	wakeup_reason = esp_sleep_get_wakeup_cause(); // get wake up reason
 	Wire.begin(SDA, SCL);                         // init i2c
-	RTC.init();
+	mRTC.init();
 	
 	printDebug(wakeup_reason);
 
