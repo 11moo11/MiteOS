@@ -25,13 +25,13 @@ While the "On Compile" Settings might not be for everyone, i tried to expose eve
 | Button Press Vibration | Short vibration when a button gets pressed | yes | ❌ | ✅ | ❌ |
 | Setup Wifi | Setup a wifi connection (requires a seperate Wifi Able Device) | none | 📋 | ✅ | 📋 |
 | Double Tap Screen | Button that gets pressed when double tapping the screen | Back | ❌ | ✅ | ❌ |
-| Wakeup Behaviour | Changes the wakeup behaviour | Minutly | ❌ | ✅ | ❌ |
+| Wakeup Behaviour | Changes the wakeup behaviour | minutely | ❌ | ✅ | ❌ |
 | Bond Bluetooth | Bonding a bluetooth device requires a interaction on the watch and in the companion app at the same time | - | ❌ | ✅ | ✅ |
 | Home Assistant Entities | Configure the Home Assistant Entities that are shown | - | 📋 | ❌ | ✅ |
 | TOTP Entries | Configure TOTP entries that are shown | - | 📋 | ❌ | ✅ |
 | Open Weather Map | API Token, City, Unit (Metric / Imperial) | - | 📋 | ❌ | ✅ |
 | Calendars to sync | Configure what calendar appointments are getting synced | - | ❌ | ❌ | ✅ |
-| Dither Album | Weather to dither the album cover art when syncing playback data | yes | ❌ | ❌ | ✅ |
+| Dither Album | Whether to dither the album cover art when syncing playback data | yes | ❌ | ❌ | ✅ |
 
 
 **Legend**  

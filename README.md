@@ -62,12 +62,18 @@ App can be found here: **Link coming soon**
 Battery-Life
 -----
 
-| Battery  | Offline  | Wifi + Phone Connection (15 minute interval) |
-|----------|----------|----------------------------------------------|
-| 200mAh   | ~10 days | ~7 days                                      |
-| 350mAh*  | -        | ~10 days                                     |
+| Battery  | Offline  | Wifi + Phone Connection |
+|----------|----------|-------------------------|
+| 200mAh   | ~10 days | ~7 days*                |
+| 350mAh** | -        | ~10 days*               |
 
-(*) Requires a case that can hold that battery  
+(*) All Tests have been performed with these settings:
+- Screen waking up every minute
+- 15 minute interval for the phone/notification connection
+- 30 minute interval for weather information
+
+
+(**) Requires a case that can hold that battery  
   
 I use a modified version of https://github.com/yik3z/Watchy-CAD/tree/main/CAD/Cases/SlimV5 that allows for a 320mAh battery.
 
