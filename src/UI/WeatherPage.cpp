@@ -53,7 +53,7 @@ void WeatherPage::drawWeather() {
 	String weatherDescription = currentWeatherData.weatherDescription;
 
 	// Check if the weather data is older than 3 hours and stop showing it
-	if(hour(NOW - currentWeatherData.timestamp) >= 3) {
+	if(hour(NOW - currentWeatherData.timestamp) + day(NOW - currentWeatherData.timestamp) * 24 >= 3) {
 		temperature = currentWeather.chip_temperature;
 		String(TXT_CHIP).toCharArray(currentWeatherData.weatherDescription, 20);
 	}
@@ -70,7 +70,7 @@ void WeatherPage::drawWeather() {
 	mDisplay.setFont(&Seven_Segment10pt7b);
 	drawCentreString(currentWeatherData.weatherDescription, 100, 90);
 	
-	if(hour(NOW - currentWeatherData.timestamp) < 3) {
+	if(hour(NOW - currentWeatherData.timestamp) + day(NOW - currentWeatherData.timestamp) * 24 < 3) {
 		if(weatherConditionCode > 0) {
 			//https://openweathermap.org/weather-conditions
 			if(weatherConditionCode > 801){ //Cloudy
@@ -94,16 +94,19 @@ void WeatherPage::drawWeather() {
 			}
 		}
 
+		mDisplay.setFont(&FreeSans6pt7b);
+		drawCentreString(String(hour(currentWeather.timestamp)) + ":" + (minute(currentWeather.timestamp) < 10 ? "0" : "") + String(minute(currentWeather.timestamp)), 100, 190);
+	}else{
+		weatherIcon = chip;
+	}
+	
+
+	if(day(NOW - currentWeatherData.timestamp) < 1) {
 		mDisplay.drawBitmap(40, 110, big_icon_sunrise, 40, 40, FOREGROUND_COLOR);
 		drawCentreString(String(currentWeather.sunrise.Hour) + ":" + (currentWeather.sunrise.Minute < 10 ? "0" : "") + String(currentWeather.sunrise.Minute), 60, 170, false);
 
 		mDisplay.drawBitmap(120, 110, big_icon_sunset, 40, 40, FOREGROUND_COLOR);
 		drawCentreString(String(currentWeather.sunset.Hour) + ":" + (currentWeather.sunset.Minute < 10 ? "0" : "") + String(currentWeather.sunset.Minute), 140, 170, false);
-
-		mDisplay.setFont(&FreeSans6pt7b);
-		drawCentreString(String(hour(currentWeather.timestamp)) + ":" + (minute(currentWeather.timestamp) < 10 ? "0" : "") + String(minute(currentWeather.timestamp)), 100, 190);
-	}else{
-		weatherIcon = chip;
 	}
 	
 	mDisplay.drawBitmap(120, 30, weatherIcon, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, FOREGROUND_COLOR);

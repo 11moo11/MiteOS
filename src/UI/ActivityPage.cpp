@@ -23,6 +23,7 @@ void ActivityPage::drawPage() {
 		drawCircle(centerX, centerY, diameter, lineThickness, percentage);
 		
 		drawText();
+		drawButtonIcon(BTN_HOME, icon_home);
 	}else if(pageData.subPageIndex == PAGE_ACTIVITY_DAYS) {
 		drawStepList();
 	}else if(pageData.subPageIndex == PAGE_ACTIVITY_TOTAL) {
@@ -31,9 +32,9 @@ void ActivityPage::drawPage() {
 		drawCentreString(String(ActivityManager::getTotalStepCount()), 100, 120, false);
 		drawCentreString(ActivityManager::getTotalWalkedDistanceStr(), 100, 150, false);
 		mDisplay.drawBitmap(90, 70, steps, 19, 23, FOREGROUND_COLOR);
+		drawButtonIcon(BTN_HOME, icon_home);
 	}
 	drawButtonIcon(BTN_CONFIRM, icon_right);
-	drawButtonIcon(BTN_HOME, icon_home);
 }
 
 
