@@ -5,9 +5,9 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 
-RTC_DATA_ATTR WeatherData currentWeatherData;
-
 RTC_DATA_ATTR long lastWeatherCheck = 0;
+
+RTC_DATA_ATTR WeatherData currentWeatherData;
 
 String WeatherManager::city;
 String WeatherManager::unit;
@@ -68,7 +68,7 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String units, String 
 				currentWeatherData.temperature = int(json["main"]["temp"]);
 				currentWeatherData.weatherConditionCode = int(json["weather"][0]["id"]);
 				String desc = json["weather"][0]["description"];
-				desc.substring(1, desc.length() - 1).toCharArray(currentWeatherData.weatherDescription, 30);
+				desc.toCharArray(currentWeatherData.weatherDescription, 30);
 				//currentWeatherData.external = true;
 				
 				gmtTimeOffset = int(json["timezone"]);
