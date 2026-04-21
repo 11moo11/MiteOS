@@ -3,7 +3,7 @@
 #include "BluetoothManager.h"
 #include "HassManager.h"
 #include "../Data/Configuration.h"
-#include <JSON.h>
+#include <ArduinoJson.h>
 #include "../Data/Base64.hpp"
 #include "../Managers/FileManager.h"
 #include "WeatherManager.h"
@@ -24,16 +24,17 @@ bool PhoneConnectionManager::SyncNotifications(bool force) {
 	if(!BluetoothManager::connected) return false;
 
 	if(BluetoothManager::lastResponse.length() > 0) {
-		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
+		JsonDocument json;
+		deserializeJson(json, BluetoothManager::lastResponse);
 		
-		if(json.hasOwnProperty("count")) {
+		if(json.containsKey("count")) {
 			uint8_t count = uint8_t(json["count"]);
 			if(count > NOTIFICATION_CNT) count = NOTIFICATION_CNT;
 			
 			FileManager::emptyDir(PATH_NOTIFICATIONS);
 
 			for(uint8_t i = 0; i < count; i++) {
-				FileManager::writeFile(PATH_NOTIFICATIONS + String(i), JSON.stringify(json["nBundleList"][i]));
+				FileManager::writeFile(PATH_NOTIFICATIONS + String(i), json["nBundleList"][i]);
 			}
 
 			return true;
@@ -43,11 +44,12 @@ bool PhoneConnectionManager::SyncNotifications(bool force) {
 }
 
 Notification PhoneConnectionManager::GetNotification(uint8_t index) {
-	JSONVar json = JSON.parse(FileManager::readFile(PATH_NOTIFICATIONS + String(index)));
+	JsonDocument json;
+	deserializeJson(json, FileManager::readFile(PATH_NOTIFICATIONS + String(index)));
 
 	Notification n;
 
-	if(json.hasOwnProperty("appName")) {
+	if(json.containsKey("appName")) {
 		String temp = (const char*) json["appName"]; temp.toCharArray(n.app_name, NOTIFICATION_APP_NAME_LENGTH, 0);
 		temp = (const char*) json["title"]; temp.toCharArray(n.title, NOTIFICATION_TITLE_LENGTH, 0);
 		temp = (const char*) json["text"]; temp.toCharArray(n.message, NOTIFICATION_MESSAGE_LENGTH, 0);
@@ -63,52 +65,54 @@ uint8_t PhoneConnectionManager::GetNotificationCount() {
 PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 	PlaybackInfo pbi;
 	
-	JSONVar json;
+	JsonDocument json;
 
 	if(cached && FileManager::exists(PATH_PLAYBACK"dat")) {
 		printDebug("Reading cached file...");
 		String str = FileManager::readFile(PATH_PLAYBACK"dat");
 		if(str.length() > 0) {
-			json = JSON.parse(str);
+			deserializeJson(json, str);
 		}
 	}else{
 		BluetoothManager::sendCommand("GET_PLAYBACK_INFO=");
 
 		if(BluetoothManager::lastResponse.length() > 0) {
-			json = JSON.parse(BluetoothManager::lastResponse);
+			printDebug("Received Data...");
+			deserializeJson(json, BluetoothManager::lastResponse);
 		}else{
 			return pbi;
 		}
 	}
 	
 	if(json != nullptr) {
-		if(json.hasOwnProperty("title")) {
-			if(json.hasOwnProperty("title")) {
+		if(json.containsKey("title")) {
+			printDebug("Parsing JSON");
+			if(json.containsKey("title")) {
 				
-				String str = JSONVar::stringify(json["title"]);
-				str.substring(1, str.length() - 1).toCharArray(pbi.title, PLAYBACK_TEXT_LENGTH, 0);
+				String str = json["title"];
+				str.toCharArray(pbi.title, PLAYBACK_TEXT_LENGTH, 0);
 			}
 			
-			if(json.hasOwnProperty("album")) {
-				String str = JSONVar::stringify(json["album"]);
-				str.substring(1, str.length() - 1).toCharArray(pbi.album, PLAYBACK_TEXT_LENGTH, 0);
+			if(json.containsKey("album")) {
+				String str = json["album"];
+				str.toCharArray(pbi.album, PLAYBACK_TEXT_LENGTH, 0);
 			}
 			
-			if(json.hasOwnProperty("artist")) {
-				String str = JSONVar::stringify(json["artist"]);
-				str.substring(1, str.length() - 1).toCharArray(pbi.artist, PLAYBACK_TEXT_LENGTH, 0);
+			if(json.containsKey("artist")) {
+				String str = json["artist"];
+				str.toCharArray(pbi.artist, PLAYBACK_TEXT_LENGTH, 0);
 			}
 			
 			
-			if(json.hasOwnProperty("position")) {
+			if(json.containsKey("position")) {
 				pbi.position = long(json["position"]);
 			}
 			
-			if(json.hasOwnProperty("duration")) {
+			if(json.containsKey("duration")) {
 				pbi.duration = long(json["duration"]);
 			}
 			
-			if(json.hasOwnProperty("timestamp") && json.hasOwnProperty("playing")) { // Check if the time should have already passed, then just get the current data
+			if(json.containsKey("timestamp") && json.containsKey("playing")) { // Check if the time should have already passed, then just get the current data
 				if(json["playing"]) {
 					pbi.playing = true;
 					long time_passed = NOW - ((unsigned long) json["timestamp"] + gmtTimeOffset);
@@ -122,7 +126,7 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 				}
 			}
 			
-			if(json.hasOwnProperty("art")) {
+			if(json.containsKey("art")) {
 				String art = (const char*) json["art"];
 				
 				// Ineffiecient but works i guess
@@ -136,6 +140,7 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 				FileManager::writeFile(PATH_PLAYBACK"dat", BluetoothManager::lastResponse);
 			}
 		}else{
+			printDebug("JSON is not valid playback");
 			FileManager::deleteFile(PATH_PLAYBACK"dat");
 		}
 	}
@@ -152,16 +157,17 @@ bool PhoneConnectionManager::SyncConfiguration() {
 
 	bool success = false;
 	if(BluetoothManager::lastResponse.length() > 0) {
-		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
+		JsonDocument json;
+		deserializeJson(json, BluetoothManager::lastResponse);
 		
-		if(json.hasOwnProperty("hassUrl")) {
-			if(json.hasOwnProperty("hassTkn")) {
+		if(json.containsKey("hassUrl")) {
+			if(json.containsKey("hassTkn")) {
 				HassManager::setURL(json["hassUrl"]);
 				HassManager::setToken(json["hassTkn"]);
 				
-				if(json.hasOwnProperty("entities")) {
+				if(json.containsKey("entities")) {
 					String entities = "";
-					for(uint8_t i = 0; i < json["entities"].length(); i++) {
+					for(uint8_t i = 0; i < json["entities"].size(); i++) {
 						if(i > 0) entities += ",";
 						entities += (const char*) json["entities"][i]["name"];
 						entities += ",";
@@ -175,9 +181,9 @@ bool PhoneConnectionManager::SyncConfiguration() {
 			}
 		}
 		
-		if(json.hasOwnProperty("totp")) {
+		if(json.containsKey("totp")) {
 			String tokens = "";
-			for(uint8_t i = 0; i < json["totp"].length(); i++) {
+			for(uint8_t i = 0; i < json["totp"].size(); i++) {
 				if(i > 0) tokens += ",";
 				tokens += (const char*) json["totp"][i]["name"];
 				tokens += ",";
@@ -188,9 +194,9 @@ bool PhoneConnectionManager::SyncConfiguration() {
 			Configuration::preferences.putString("totp", tokens);
 		}
 
-		if(json.hasOwnProperty("owmApi")) {
-			if(json.hasOwnProperty("owmUnit")) {
-				if(json.hasOwnProperty("owmCity")) {
+		if(json.containsKey("owmApi")) {
+			if(json.containsKey("owmUnit")) {
+				if(json.containsKey("owmCity")) {
 					WeatherManager::setCity(json["owmCity"]);
 					WeatherManager::setToken(json["owmApi"]);
 					WeatherManager::setUnit(json["owmUnit"]);
@@ -228,16 +234,17 @@ bool PhoneConnectionManager::SyncCalendar() {
 		}*/
 
 		// Write all the data
-		JSONVar json = JSON.parse(BluetoothManager::lastResponse);
-		if(json.hasOwnProperty("events")) {
-			printDebug(json["events"].length());
-			if(json["events"].length() > 0) {
-				for(uint16_t i = 0; i < json["events"].length(); i++) {
-					printDebug(json["events"][i]);
+		JsonDocument json;
+		deserializeJson(json, BluetoothManager::lastResponse);
+		if(json.containsKey("events")) {
+			printDebug(json["events"].size());
+			if(json["events"].size() > 0) {
+				for(uint16_t i = 0; i < json["events"].size(); i++) {
+					printDebug(String(json["events"][i]));
 
-					String id = JSON.stringify(json["events"][i]["startTime"]) + "_" + String((int) json["events"][i]["id"]);
+					String id = String(json["events"][i]["startTime"]) + "_" + String((int) json["events"][i]["id"]);
 
-					FileManager::writeFile(String(PATH_CALENDAR) + id, JSON.stringify(json["events"][i]));
+					FileManager::writeFile(String(PATH_CALENDAR) + id, json["events"][i]);
 				}
 			}
 		}

@@ -3,7 +3,7 @@
 #include "../MiteOS.h"
 #include "WifiConnectionManager.h"
 #include <HTTPClient.h>
-#include <JSON.h>
+#include <ArduinoJson.h>
 
 RTC_DATA_ATTR WeatherData currentWeatherData;
 
@@ -62,18 +62,19 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String units, String 
 			int httpResponseCode = http.GET();
 			if (httpResponseCode == 200) {
 				String payload             = http.getString();
-				
-				JSONVar responseObject     = JSON.parse(payload);
-				currentWeatherData.temperature = int(responseObject["main"]["temp"]);
-				currentWeatherData.weatherConditionCode = int(responseObject["weather"][0]["id"]);
-				String desc = JSONVar::stringify(responseObject["weather"][0]["description"]);
+
+				JsonDocument json;
+  				deserializeJson(json, payload);
+				currentWeatherData.temperature = int(json["main"]["temp"]);
+				currentWeatherData.weatherConditionCode = int(json["weather"][0]["id"]);
+				String desc = json["weather"][0]["description"];
 				desc.substring(1, desc.length() - 1).toCharArray(currentWeatherData.weatherDescription, 30);
 				//currentWeatherData.external = true;
 				
-				gmtTimeOffset = int(responseObject["timezone"]);
+				gmtTimeOffset = int(json["timezone"]);
 
-				breakTime((time_t)(int)responseObject["sys"]["sunrise"] + gmtTimeOffset, currentWeatherData.sunrise);
-				breakTime((time_t)(int)responseObject["sys"]["sunset"] + gmtTimeOffset, currentWeatherData.sunset);
+				breakTime((time_t)(int)json["sys"]["sunrise"] + gmtTimeOffset, currentWeatherData.sunrise);
+				breakTime((time_t)(int)json["sys"]["sunset"] + gmtTimeOffset, currentWeatherData.sunset);
 				
 				// sync NTP during weather API call and use timezone of lat & lon
 				WifiConnectionManager::syncNTP(gmtTimeOffset);

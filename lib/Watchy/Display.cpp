@@ -29,7 +29,11 @@ WatchyDisplay::WatchyDisplay() :
 {
   // Setup callback and SPI by default
   #ifdef ARDUINO_ESP32S3_DEV
-  SPI.begin(WATCHY_V3_SCK,WATCHY_V3_MISO,WATCHY_V3_MOSI,WATCHY_V3_SS);
+  SPI.begin(WATCHY_V3_SCK, WATCHY_V3_MISO, WATCHY_V3_MOSI, WATCHY_V3_SS);
+  #else
+  // For V1/V1.5/V2: Use default ESP32 SPI pins (18=CLK, 19=MISO, 23=MOSI)
+  // Note: We don't set CS pin here, let the display library control it as GPIO
+  SPI.begin(18, 19, 23, -1);
   #endif
   selectSPI(SPI, SPISettings(20000000, MSBFIRST, SPI_MODE0));
   setBusyCallback(busyCallback);

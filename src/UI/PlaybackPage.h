@@ -7,6 +7,7 @@
 class PlaybackPage : public Page {
 	public:
 		String pageName() override { return TXT_PLAYBACK; };
+		void initPage() override;
 		void drawPage() override;
 		bool onButtonPressed(uint8_t buttonIndex) override;
 		bool isPageable() { return false; };

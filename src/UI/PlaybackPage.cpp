@@ -13,6 +13,10 @@
 #define IMAGE_BORDER ((DISPLAY_WIDTH - (PLAYBACK_IMAGE_SIZE * IMAGE_SCALE)) / 2)
 #define FORCE_REQUERY pageData.number3
 
+void PlaybackPage::initPage() {
+	FORCE_REQUERY = 1;
+}
+
 void PlaybackPage::drawPage() {
 	if(pageData.number1 != 1) {
 		mDisplay.setFont(&FreeSansBold9pt7b);

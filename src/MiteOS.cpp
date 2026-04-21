@@ -44,19 +44,45 @@ void MiteOS::init() {
 	#endif
 	
 	instance = this;
-	
+
 	esp_sleep_wakeup_cause_t wakeup_reason;
 	wakeup_reason = esp_sleep_get_wakeup_cause(); // get wake up reason
-	Wire.begin(SDA, SCL);                         // init i2c
-	mRTC.init();
-	
+
+	// Initialize I2C BEFORE RTC init with explicit pins
+	#ifdef ARDUINO_ESP32S3_DEV
+	Wire.begin(WATCHY_V3_SDA, WATCHY_V3_SCL, 100000);   // I2C for V3 with 100kHz clock
+	#else
+	Wire.begin(WATCHY_SDA, WATCHY_SCL, 100000);         // I2C for V1/V1.5/V2 with 100kHz clock
+	#endif
+	delay(50); // Give I2C time to stabilize
+
+	mRTC.init(); // SmallRTC will auto-detect RTC type
+
+	// Debug: Check RTC detection
+	uint8_t rtcType = mRTC.getType();
+	printDebug("RTC Type: " + String(rtcType)); // 0=Unknown, 1=DS3231, 2=PCF8563, 3=ESP32
+	printDebug("RTC Operating: " + String(mRTC.isOperating()));
+
+	// Clear VoltLow bit on PCF8563 to ensure oscillator is running
+	if (rtcType == 2) {  // PCF8563
+		mRTC.rtc_pcf.clearVoltLow();
+		printDebug("Cleared PCF8563 VoltLow bit");
+	}
+
+	// Try to read RTC before anything else
+	tmElements_t testTime;
+	mRTC.read(testTime);
+	printDebug("RTC Raw Read - Year: " + String(testTime.Year) + " Month: " + String(testTime.Month) +
+		" Day: " + String(testTime.Day) + " Hour: " + String(testTime.Hour) +
+		" Min: " + String(testTime.Minute) + " Sec: " + String(testTime.Second));
+
 	printDebug(wakeup_reason);
 
 	// Init the display since is almost sure we will use it
 	mDisplay.epd2.setDarkBorder(DARKMODE); // Its too early at first start or after changes, but it fill fix it soon after, im too lazy right now to find the correct place for it, i only know it needs to be before init
 	display.epd2.initWatchy();
 	mDisplay.cp437(true);
-	RTC.read(currentTime);
+	mRTC.read(currentTime);
 	#ifdef SUNDAY_IS_ZERO
 	currentTime.Wday = (currentTime.Wday + 1) % 8;
 	currentTime.Month = (currentTime.Month + 1) % 13;

@@ -164,9 +164,52 @@ bool WifiConnectionManager::syncNTP(long gmt, String ntpServer) {
 	}
 	tmElements_t tm;
 	time_t t = timeClient.getEpochTime();
+
+	#if DEBUG == TRUE
+	Serial.print("NTP Epoch Time: ");
+	Serial.println(t);
+	#endif
+
 	mRTC.doBreakTime(t, tm);
+
+	#if DEBUG == TRUE
+	Serial.print("Before RTC.set - Year: ");
+	Serial.print(tm.Year);
+	Serial.print(" Month: ");
+	Serial.print(tm.Month);
+	Serial.print(" Day: ");
+	Serial.print(tm.Day);
+	Serial.print(" Hour: ");
+	Serial.print(tm.Hour);
+	Serial.print(" Min: ");
+	Serial.println(tm.Minute);
+	#endif
+
 	mRTC.set(tm);
-	
+
+	// Clear VoltLow bit on PCF8563 to ensure oscillator is running
+	if (mRTC.getType() == 2) {  // PCF8563
+		mRTC.rtc_pcf.clearVoltLow();
+	}
+
+	// Read back to verify
+	tmElements_t verify;
+	delay(100);
+	mRTC.read(verify);
+
+	#if DEBUG == TRUE
+	Serial.print("After RTC.set - Year: ");
+	Serial.print(verify.Year);
+	Serial.print(" Month: ");
+	Serial.print(verify.Month);
+	Serial.print(" Day: ");
+	Serial.print(verify.Day);
+	Serial.print(" Hour: ");
+	Serial.print(verify.Hour);
+	Serial.print(" Min: ");
+	Serial.println(verify.Minute);
+	#endif
+
 	return true;
 }
 

@@ -48,6 +48,9 @@
 
 #endif
 
+#define WATCHY_SDA 21
+#define WATCHY_SCL 22
+
 #define MENU_BTN_PIN 26
 #define BACK_BTN_PIN 25
 #define DOWN_BTN_PIN 4

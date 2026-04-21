@@ -6,7 +6,7 @@
 #include "../Fonts/Teko_Regular12pt7b.h"
 
 #include "../Managers/FileManager.h"
-#include <JSON.h>
+#include <ArduinoJson.h>
 
 #define MONTH_OFFSET pageData.short0
 #define PAGE_INDEX pageData.subPageIndex
@@ -193,8 +193,9 @@ void CalendarPage::drawAppointment() {
                 String line = file.readStringUntil('\n');
                 
                 // {"id":34,"title":"My Appointment","startTime":1736353800000,"endTime":1736361000000,"allDay":false,"calendarId":"13","calendarName":"calendar name"}
-                JSONVar json = JSON.parse(line);
-                if(json.hasOwnProperty("startTime")) {
+                JsonDocument json;
+  				deserializeJson(json, line);
+                if(json.containsKey("startTime")) {
                     mDisplay.setCursor(10, offset_y);
                     mDisplay.setTextWrap(false);
                     mDisplay.println((const char*) json["title"]);
