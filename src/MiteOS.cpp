@@ -48,13 +48,25 @@ void MiteOS::init() {
 	esp_sleep_wakeup_cause_t wakeup_reason;
 	wakeup_reason = esp_sleep_get_wakeup_cause(); // get wake up reason
 
-	// Initialize I2C BEFORE RTC init with explicit pins
-	#ifdef ARDUINO_ESP32S3_DEV
-	Wire.begin(WATCHY_V3_SDA, WATCHY_V3_SCL, 100000);   // I2C for V3 with 100kHz clock
-	#else
-	Wire.begin(WATCHY_SDA, WATCHY_SCL, 100000);         // I2C for V1/V1.5/V2 with 100kHz clock
-	#endif
-	delay(50); // Give I2C time to stabilize
+	// Initialize I2C BEFORE RTC init
+	Wire.begin(WATCHY_SDA, WATCHY_SCL);  // Use default frequency
+	delay(100); // Give I2C more time to stabilize
+
+	// Scan I2C bus to see what devices are responding
+	Wire.beginTransmission(BMA4_I2C_ADDR_PRIMARY);
+	uint8_t i2c_error = Wire.endTransmission();
+	if (i2c_error == 0) {
+		printDebug("BMA423 found at address 0x" + String(BMA4_I2C_ADDR_PRIMARY, HEX));
+	} else {
+		printDebug("BMA423 NOT responding at 0x" + String(BMA4_I2C_ADDR_PRIMARY, HEX) + " error: " + String(i2c_error));
+		Wire.beginTransmission(BMA4_I2C_ADDR_SECONDARY);
+		i2c_error = Wire.endTransmission();
+		if (i2c_error == 0) {
+			printDebug("BMA423 found at SECONDARY address 0x" + String(BMA4_I2C_ADDR_SECONDARY, HEX));
+		} else {
+			printDebug("BMA423 NOT responding at SECONDARY 0x" + String(BMA4_I2C_ADDR_SECONDARY, HEX) + " error: " + String(i2c_error));
+		}
+	}
 
 	mRTC.init(); // SmallRTC will auto-detect RTC type
 
@@ -91,7 +103,10 @@ void MiteOS::init() {
 	switch (wakeup_reason) {
 		case ESP_SLEEP_WAKEUP_EXT0: // RTC Alarm
 			printDebug("RTC Alarm");
-			
+
+			// Reinitialize BMA423 before checkTime() which might use it
+			// updateBmaConfig();
+
 			//vibMotor(75, 4);
 			PageManager::refreshPage();
 
@@ -100,7 +115,9 @@ void MiteOS::init() {
 		case ESP_SLEEP_WAKEUP_EXT1: // button Press or Accelerometer
 			if (esp_sleep_get_ext1_wakeup_status() & ACC_INT_MASK) { // Woken up by accelerator
 				printDebug("Accelerator");
-				
+
+				// Reinitialize BMA423 before using it
+				// updateBmaConfig();
 				accSensor.getINT(); // Seems like this needs to be done to clear the interrupt :/
 				
 				if(accSensor.isDoubleClick()) {
@@ -113,7 +130,10 @@ void MiteOS::init() {
 				break;
 			}
 			printDebug("Button Press");
-			
+
+			// Reinitialize BMA423 for button press wakeup too
+			//updateBmaConfig();
+
 			//vibMotor(75, 4);
 			handleButtonPress();
 			waitForAdditionalButtons();
@@ -316,7 +336,10 @@ void MiteOS::initDarkmode() {
 uint16_t MiteOS::_readRegister(uint8_t address, uint8_t reg, uint8_t *data, uint16_t len) {
 	Wire.beginTransmission(address);
 	Wire.write(reg);
-	Wire.endTransmission();
+	uint8_t error = Wire.endTransmission();
+	if (error != 0) {
+		printDebug("I2C read error at addr: " + String(address, HEX) + " reg: " + String(reg, HEX) + " err: " + String(error));
+	}
 	Wire.requestFrom((uint8_t)address, (uint8_t)len);
 	uint8_t i = 0;
 	while (Wire.available()) {
@@ -333,10 +356,12 @@ uint16_t MiteOS::_writeRegister(uint8_t address, uint8_t reg, uint8_t *data, uin
 }
 
 void MiteOS::updateBmaConfig() {
-	if (accSensor.begin(_readRegister, _writeRegister, delay) == false) {
+	if (accSensor.begin(_readRegister, _writeRegister, delay, BMA4_I2C_ADDR_PRIMARY) == false) {
 		// fail to init BMA
+		printDebug("BMA423 initialization FAILED");
 		return;
 	}
+	printDebug("BMA423 initialization SUCCESS");
 
 	// Accel parameter structure
 	Acfg cfg;
