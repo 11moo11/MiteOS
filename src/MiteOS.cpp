@@ -104,9 +104,6 @@ void MiteOS::init() {
 		case ESP_SLEEP_WAKEUP_EXT0: // RTC Alarm
 			printDebug("RTC Alarm");
 
-			// Reinitialize BMA423 before checkTime() which might use it
-			// updateBmaConfig();
-
 			//vibMotor(75, 4);
 			PageManager::refreshPage();
 
@@ -116,8 +113,6 @@ void MiteOS::init() {
 			if (esp_sleep_get_ext1_wakeup_status() & ACC_INT_MASK) { // Woken up by accelerator
 				printDebug("Accelerator");
 
-				// Reinitialize BMA423 before using it
-				// updateBmaConfig();
 				accSensor.getINT(); // Seems like this needs to be done to clear the interrupt :/
 				
 				if(accSensor.isDoubleClick()) {
@@ -130,9 +125,6 @@ void MiteOS::init() {
 				break;
 			}
 			printDebug("Button Press");
-
-			// Reinitialize BMA423 for button press wakeup too
-			//updateBmaConfig();
 
 			//vibMotor(75, 4);
 			handleButtonPress();
@@ -484,7 +476,7 @@ void MiteOS::updateBmaConfig() {
 	}
 
 	// Reset steps
-	//accSensor.resetStepCounter();
+	accSensor.resetStepCounter();
 	
 	// Turn on feature interrupt
 	//accSensor.enableStepCountInterrupt();
