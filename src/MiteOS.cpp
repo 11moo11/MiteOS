@@ -52,28 +52,10 @@ void MiteOS::init() {
 	Wire.begin(WATCHY_SDA, WATCHY_SCL);  // Use default frequency
 	delay(100); // Give I2C more time to stabilize
 
-	// Scan I2C bus to see what devices are responding
-	Wire.beginTransmission(BMA4_I2C_ADDR_PRIMARY);
-	uint8_t i2c_error = Wire.endTransmission();
-	if (i2c_error == 0) {
-		printDebug("BMA423 found at address 0x" + String(BMA4_I2C_ADDR_PRIMARY, HEX));
-	} else {
-		printDebug("BMA423 NOT responding at 0x" + String(BMA4_I2C_ADDR_PRIMARY, HEX) + " error: " + String(i2c_error));
-		Wire.beginTransmission(BMA4_I2C_ADDR_SECONDARY);
-		i2c_error = Wire.endTransmission();
-		if (i2c_error == 0) {
-			printDebug("BMA423 found at SECONDARY address 0x" + String(BMA4_I2C_ADDR_SECONDARY, HEX));
-		} else {
-			printDebug("BMA423 NOT responding at SECONDARY 0x" + String(BMA4_I2C_ADDR_SECONDARY, HEX) + " error: " + String(i2c_error));
-		}
-	}
-
 	mRTC.init(); // SmallRTC will auto-detect RTC type
 
 	// Debug: Check RTC detection
 	uint8_t rtcType = mRTC.getType();
-	printDebug("RTC Type: " + String(rtcType)); // 0=Unknown, 1=DS3231, 2=PCF8563, 3=ESP32
-	printDebug("RTC Operating: " + String(mRTC.isOperating()));
 
 	// Clear VoltLow bit on PCF8563 to ensure oscillator is running
 	if (rtcType == 2) {  // PCF8563
@@ -84,9 +66,6 @@ void MiteOS::init() {
 	// Try to read RTC before anything else
 	tmElements_t testTime;
 	mRTC.read(testTime);
-	printDebug("RTC Raw Read - Year: " + String(testTime.Year) + " Month: " + String(testTime.Month) +
-		" Day: " + String(testTime.Day) + " Hour: " + String(testTime.Hour) +
-		" Min: " + String(testTime.Minute) + " Sec: " + String(testTime.Second));
 
 	printDebug(wakeup_reason);
 
