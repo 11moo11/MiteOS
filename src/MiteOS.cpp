@@ -49,7 +49,7 @@ void MiteOS::init() {
 	wakeup_reason = esp_sleep_get_wakeup_cause(); // get wake up reason
 
 	// Initialize I2C BEFORE RTC init
-	Wire.begin(WATCHY_SDA, WATCHY_SCL);  // Use default frequency
+	Wire.begin(WATCHY_SDA, WATCHY_SCL, 10000);  // Use default frequency
 	delay(100); // Give I2C more time to stabilize
 
 	mRTC.init(); // SmallRTC will auto-detect RTC type
