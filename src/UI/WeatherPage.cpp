@@ -134,8 +134,8 @@ void WeatherPage::drawWeatherOverview() {
 		drawCentreString(String(Lang::dayShortStr(tm.Wday)).substring(0, 2), col_width * i + (col_width / 2), table_start_y + 13, false);
 		drawCentreString(String(tm.Day), col_width * i + (col_width / 2), table_start_y + 28, false);
 
-		drawCentreString(String(data.temperatureMin), col_width * i + (col_width / 2), table_start_y + 70, false);
-		drawCentreString(String(data.temperatureMax), col_width * i + (col_width / 2), table_start_y + 90, false);
+		drawCentreString(String(data.temperatureMin), col_width * i + (col_width / 2) - 2, table_start_y + 70, false);
+		drawCentreString(String(data.temperatureMax), col_width * i + (col_width / 2) - 2, table_start_y + 90, false);
 	}
 
 	/*
