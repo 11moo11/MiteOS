@@ -79,48 +79,7 @@ void WeatherPage::drawWeather() {
 	
 	if(NOW - currentWeatherData.timestamp < 7 * 24 * 60 * 60) {
 		if(weatherConditionCode > 0) {
-			//https://github.com/open-meteo/open-meteo/blob/743ee9b3e3b3791a13a7547dd49b4bf46d7f3530/Sources/App/Helper/WeatherCode.swift#L4
-			if(weatherConditionCode >= 90)
-				weatherIcon = thunderstorm;
-			else if(weatherConditionCode >= 80)
-				weatherIcon = rain;
-			else if(weatherConditionCode >= 70)
-				weatherIcon = snow;
-			else if(weatherConditionCode >= 60)
-				weatherIcon = rain;
-			else if(weatherConditionCode >= 50)
-				weatherIcon = drizzle;
-			else if(weatherConditionCode >= 40)
-				weatherIcon = atmosphere;
-			else if(weatherConditionCode >= 3)
-				weatherIcon = cloudy;
-			else if(weatherConditionCode >= 1)
-				weatherIcon = cloudsun;
-			else
-				weatherIcon = sunny;
-
-			//https://openweathermap.org/weather-conditions
-			/*
-			if(weatherConditionCode > 801){ //Cloudy
-				weatherIcon = cloudy;
-			}else if(weatherConditionCode == 801){ //Few Clouds
-				weatherIcon = cloudsun;
-			}else if(weatherConditionCode == 800){ //Clear
-				weatherIcon = sunny;
-			}else if(weatherConditionCode >= 700){ //Atmosphere
-				weatherIcon = atmosphere;
-			}else if(weatherConditionCode >= 600){ //Snow
-				weatherIcon = snow;
-			}else if(weatherConditionCode >= 500){ //Rain
-				weatherIcon = rain;
-			}else if(weatherConditionCode >= 300){ //Drizzle
-				weatherIcon = drizzle;
-			}else if(weatherConditionCode >= 200){ //Thunderstorm
-				weatherIcon = thunderstorm;
-			}else{
-				return;
-			}
-			*/
+			weatherIcon = WeatherManager::getWeatherIcon(weatherConditionCode);
 		}
 
 		mDisplay.setFont(&FreeSans6pt7b);
@@ -141,7 +100,7 @@ void WeatherPage::drawWeather() {
 }
 
 void WeatherPage::drawWeatherOverview() {
-	int16_t table_start_y = DISPLAY_WIDTH / 2 - DISPLAY_WIDTH / 8;
+	int16_t table_start_y = DISPLAY_WIDTH / 4;
 	int16_t col_width = DISPLAY_WIDTH / FORECAST_DAY_COUNT;
 	int16_t col_height = DISPLAY_HEIGHT / 2;
 
@@ -163,12 +122,15 @@ void WeatherPage::drawWeatherOverview() {
 		String day = String(buffer);
 
 		WeatherDataDay data = WeatherManager::getWeatherDataDay(day);
+		if(data.weatherConditionCode == -1) continue;
 
 		if(i == 0)
 			drawDitherBox(col_width * i, table_start_y, col_width, col_height);
 		else
 			mDisplay.drawRect(col_width * i, table_start_y, col_width, col_height, FOREGROUND_COLOR);
 		
+		mDisplay.drawBitmap(col_width * i + 1, table_start_y + 30, WeatherManager::getSmallWeatherIcon(data.weatherConditionCode), SMALL_WEATHER_ICON_WIDTH, SMALL_WEATHER_ICON_HEIGHT, FOREGROUND_COLOR);
+
 		drawCentreString(String(Lang::dayShortStr(tm.Wday)).substring(0, 2), col_width * i + (col_width / 2), table_start_y + 13, false);
 		drawCentreString(String(tm.Day), col_width * i + (col_width / 2), table_start_y + 28, false);
 

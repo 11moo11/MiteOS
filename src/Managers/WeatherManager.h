@@ -59,6 +59,10 @@ class WeatherManager {
 		
 		static float getMoonPhase();
 		static float getMoonPhase(uint8_t year, uint8_t month, uint8_t day, uint8_t hour = 0, uint8_t minute = 0);
+
+		static String getWeatherDescription(int code);
+		static const unsigned char* getWeatherIcon(int code);
+		static const unsigned char* getSmallWeatherIcon(int code);
 	private:
 		static WeatherData _getWeatherData(String cityID, String units, String lang, String url, String apiKey);
 		static double _Julian(int32_t year, int32_t month, const double &day);

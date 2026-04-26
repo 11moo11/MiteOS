@@ -102,6 +102,31 @@
 
 #define TXT_ERR "Err"
 
+// Weather
+#define TXT_WEATHER_CLEAR_SKY "Clear Sky"
+#define TXT_WEATHER_MAINLY_CLEAR "Mainly Sky"
+#define TXT_WEATHER_PARTLY_CLOUDY "Partly Cloudy"
+#define TXT_WEATHER_OVERCAST "Overcast"
+#define TXT_WEATHER_FOG "Fog"
+#define TXT_WEATHER_DEPOSITING_RIME_FOG "Depositing Rime Fog"
+#define TXT_WEATHER_LIGHT_DRIZZLE "Light Drizzle"
+#define TXT_WEATHER_MODERATE_DRIZZLE "Moderate Drizzle"
+#define TXT_WEATHER_DENSE_DRIZZLE "Dense Drizzle"
+#define TXT_WEATHER_LIGHT_FREEZING_DRIZZLE "Light Freezing Drizzle"
+#define TXT_WEATHER_DENSE_FREEZING_DRIZZLE "Dense Freezing Drizzle"
+#define TXT_WEATHER_LIGHT_RAIN "Light Rain"
+#define TXT_WEATHER_MODERATE_RAIN "Moderate Rain"
+#define TXT_WEATHER_HEAVY_RAIN "Heavy Rain"
+#define TXT_WEATHER_LIGHT_FREEZING_RAIN "Light Freezing Rain"
+#define TXT_WEATHER_HEAVY_FREEZING_RAIN "Heavy Freezing Rain"
+#define TXT_WEATHER_SLIGHT_SNOWFALL "Slight Snowfall"
+#define TXT_WEATHER_MODERATE_SNOWFALL "Moderate Snowfall"
+#define TXT_WEATHER_HEAVY_SNOWFALL "Heavy Snowfall"
+#define TXT_WEATHER_SNOW_GRAINS "Snow Grains"
+#define TXT_WEATHER_SLIGHT_THUNDERSTORM "Slight Thunderstorm"
+#define TXT_WEATHER_HEAVY_THUNDERSTORM "Heavy Thunderstorm"
+
+
 // Tamagotchi App
 #define TXT_WOOLY "Wooly"
 #define TXT_WARMTH "Warmth"

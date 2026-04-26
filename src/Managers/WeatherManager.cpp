@@ -5,6 +5,7 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 #include "../Managers/FileManager.h"
+#include "../Images/weather_icons.h"
 
 RTC_DATA_ATTR long lastWeatherCheck = 0;
 RTC_DATA_ATTR long lastWeatherDownload = 0;
@@ -37,9 +38,7 @@ WeatherData WeatherManager::getWeatherData(bool cached) {
 
 	Configuration::loadOwmConfig();
 
-
 	loadOpenMeteoData(WeatherManager::getUnit(), WeatherManager::getLat(), WeatherManager::getLon());
-
 	
 	// TODO: Dynamic Check
 	char buffer[11];
@@ -56,7 +55,7 @@ WeatherData WeatherManager::getWeatherData(bool cached) {
 	currentWeatherData.temperature = timeData.temperature;
 	currentWeatherData.weatherConditionCode = timeData.weatherConditionCode;
 	currentWeatherData.isMetric = timeData.isMetric;
-	String("").toCharArray(currentWeatherData.weatherDescription, 30);
+	getWeatherDescription(currentWeatherData.weatherConditionCode).toCharArray(currentWeatherData.weatherDescription, 30);
 
 	currentWeatherData.sunrise = dayData.sunrise;
 	currentWeatherData.sunset = dayData.sunset;
@@ -263,6 +262,7 @@ WeatherDataDay WeatherManager::getWeatherDataDay(String day) {
 					weatherData.temperatureMax = json["daily"]["temperature_2m_max"][index];
 				}else{
 					printDebug(day + " not found in weather data");
+					weatherData.weatherConditionCode = -1;
 				}
 			}
 		}
@@ -300,4 +300,81 @@ WeatherData WeatherManager::getWeatherDataTime(String day, String time) {
 		}
 	}
 	return weatherData;
+}
+
+String WeatherManager::getWeatherDescription(int code) {
+	switch (code) {
+		case 0: return TXT_WEATHER_CLEAR_SKY;
+		case 1: return TXT_WEATHER_MAINLY_CLEAR;
+		case 2: return TXT_WEATHER_PARTLY_CLOUDY;
+		case 3: return TXT_WEATHER_OVERCAST;
+
+		case 45: return TXT_WEATHER_FOG;
+		case 48: return TXT_WEATHER_DEPOSITING_RIME_FOG;
+
+		case 51: return TXT_WEATHER_LIGHT_DRIZZLE;
+		case 53: return TXT_WEATHER_MODERATE_DRIZZLE;
+		case 55: return TXT_WEATHER_DENSE_DRIZZLE;
+		
+		case 56: return TXT_WEATHER_LIGHT_FREEZING_DRIZZLE;
+		case 57: return TXT_WEATHER_DENSE_FREEZING_DRIZZLE;
+
+		case 61: return TXT_WEATHER_LIGHT_RAIN;
+		case 63: return TXT_WEATHER_MODERATE_RAIN;
+		case 65: return TXT_WEATHER_HEAVY_RAIN;
+
+		case 66: return TXT_WEATHER_LIGHT_FREEZING_RAIN;
+		case 67: return TXT_WEATHER_HEAVY_FREEZING_RAIN;
+
+		case 71: return TXT_WEATHER_SLIGHT_SNOWFALL;
+		case 73: return TXT_WEATHER_MODERATE_SNOWFALL;
+		case 75: return TXT_WEATHER_HEAVY_SNOWFALL;
+
+		case 77: return TXT_WEATHER_SNOW_GRAINS;
+
+		case 95: return TXT_WEATHER_SLIGHT_THUNDERSTORM;
+		case 96: return TXT_WEATHER_HEAVY_THUNDERSTORM;
+		case 99: return TXT_WEATHER_HEAVY_THUNDERSTORM;
+		
+		default:
+			return "";
+	}
+}
+
+const unsigned char* WeatherManager::getWeatherIcon(int code) {
+	if(code >= 90)
+		return thunderstorm;
+	else if(code >= 80)
+		return rain;
+	else if(code >= 70)
+		return snow;
+	else if(code >= 60)
+		return rain;
+	else if(code >= 50)
+		return drizzle;
+	else if(code >= 40)
+		return atmosphere;
+	else if(code >= 3)
+		return cloudy;
+	else if(code >= 1)
+		return cloudsun;
+	
+	return sunny;
+}
+
+const unsigned char* WeatherManager::getSmallWeatherIcon(int code) {
+	if(code >= 90)
+		return weather_small_thunderstorm;
+	else if(code >= 80)
+		return weather_small_rain_mix;
+	else if(code >= 70)
+		return weather_small_snow;
+	else if(code >= 60)
+		return weather_small_rain_mix;
+	else if(code >= 3)
+		return weather_small_cloud;
+	else if(code >= 1)
+		return weather_small_cloudy;
+
+	return weather_small_sunny;
 }
