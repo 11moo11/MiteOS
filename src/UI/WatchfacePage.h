@@ -3,7 +3,7 @@
 #include "Page.h"
 #include "Watchfaces/Watchface.h"
 
-#define WATCHFACE_COUNT 8
+#define WATCHFACE_COUNT 11
 
 class WatchfacePage : public Page {
 	public:

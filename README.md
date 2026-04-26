@@ -87,6 +87,9 @@ BuiltIn Watchfaces
 - [Hobbit Time](https://github.com/BraininaBowl/Hobbit-Time-for-Watchy) by BraininaBowl
 - [Calendar](https://github.com/uCBill/Calendar_watchy) by uCBill (Reworked by me)
 - [Train](https://github.com/uCBill/Multi_face_Watchy/blob/main/train.h) by uCBill (based on [Bahn](https://github.com/BraininaBowl/Bahn-for-Watchy) by BraininaBowl)
+- [Tetris 2.0](https://github.com/klemek/watchy/tree/master/watchfaces/tetris-2.0)
+- [BadForEye](https://github.com/mammothroar/watchy/tree/main/watchface/BadForEye)
+- [StarryHorizon](https://github.com/sqfmi/Watchy/blob/master/examples/WatchFaces/StarryHorizon/StarryHorizon.ino)
 
 All watchfaces have been modified by me to run on this OS. I also added light and darkmode to each of the watchfaces.  
 If you are the author of any of these watchfaces and don't want me to distribute them, please contact me and i'll remove them immediatly.

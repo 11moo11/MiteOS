@@ -8,6 +8,7 @@ void ActivityManager::restoreSteps() {
 	uint8_t dow = MiteOS::currentTime.Wday;
 	stepOffset = Configuration::loadSteps(false)[dow - 1];
 	if(stepOffset > 1000000) stepOffset = 0;
+	stepOffset = 0;
 	printDebug("Restored Steps: " + String(stepOffset));
 }
 

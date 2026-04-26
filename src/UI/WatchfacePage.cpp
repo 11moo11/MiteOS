@@ -10,6 +10,9 @@
 #include "Watchfaces/HobbitTimeWatchface.h"
 #include "Watchfaces/CalendarWatchface.h"
 #include "Watchfaces/TrainWatchface.h"
+#include "Watchfaces/BadForEyeWatchface.h"
+#include "Watchfaces/TetrisWatchface.h"
+#include "Watchfaces/StarryHorizonWatchface.h"
 
 RTC_DATA_ATTR uint8_t watchFaceId = 0;
 RTC_DATA_ATTR uint8_t actionTopLeft = GLOBAL_PAGE_SETTINGS;
@@ -23,6 +26,9 @@ PROGMEM AnalogWatchface analogWatchface;
 PROGMEM HobbitTimeWatchface hobbitTimeWatchface;
 PROGMEM CalendarWatchface calendarWatchface;
 PROGMEM TrainWatchface trainWatchface;
+PROGMEM BadForEyeWatchface badForEyeWatchface;
+PROGMEM TetrisWatchface tetrisWatchface;
+PROGMEM StarryHorizonWatchface starryHorizonWatchface;
 PROGMEM Watchface* watchfaces[] = {
 	&seg7Watchface,
 	&bttfWatchface,
@@ -32,6 +38,9 @@ PROGMEM Watchface* watchfaces[] = {
 	&hobbitTimeWatchface,
 	&calendarWatchface,
 	&trainWatchface,
+	&badForEyeWatchface,
+	&tetrisWatchface,
+	&starryHorizonWatchface,
 	// DONT FORGET TO INCREATE WATCHFACE_COUNT IN HEADER FILE
 };
 
