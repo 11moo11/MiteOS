@@ -10,6 +10,7 @@
 #define PATH_CALENDAR PATH_DATA"cal/"
 #define PATH_NOTIFICATIONS PATH_DATA"not/"
 #define PATH_PLAYBACK PATH_DATA"pb/"
+#define PATH_WEATHER PATH_DATA"wd/"
 
 class FileManager {
 	public:

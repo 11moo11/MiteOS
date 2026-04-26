@@ -78,7 +78,7 @@ void MiteOS::init() {
 	currentTime.Wday = (currentTime.Wday + 1) % 8;
 	currentTime.Month = (currentTime.Month + 1) % 13;
 	#endif
-
+	
 	switch (wakeup_reason) {
 		case ESP_SLEEP_WAKEUP_EXT0: // RTC Alarm
 			printDebug("RTC Alarm");

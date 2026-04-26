@@ -4,23 +4,30 @@
 #include "WifiConnectionManager.h"
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
+#include "../Managers/FileManager.h"
 
 RTC_DATA_ATTR long lastWeatherCheck = 0;
+RTC_DATA_ATTR long lastWeatherDownload = 0;
 
 RTC_DATA_ATTR WeatherData currentWeatherData;
 
 String WeatherManager::city;
 String WeatherManager::unit;
 String WeatherManager::token;
+String WeatherManager::lat;
+String WeatherManager::lon;
 
 bool WeatherManager::isDataCurrent() {
-	return currentWeatherData.timestamp > 0 && hour(NOW - currentWeatherData.timestamp) <= WEATHER_DATA_MAX_AGE;
+	return currentWeatherData.timestamp > 0 && day(NOW - currentWeatherData.timestamp) <= WEATHER_DATA_MAX_AGE;
 }
 
 
 
 WeatherData WeatherManager::getWeatherData(bool cached) {
-	if(!cached) lastWeatherCheck = 0;
+	if(!cached) {
+		lastWeatherCheck = 0;
+		lastWeatherDownload = 0;
+	}
 
 	// Check if weather data is current enough to be cached or just force an update
 	if( WeatherManager::isDataCurrent()
@@ -30,12 +37,39 @@ WeatherData WeatherManager::getWeatherData(bool cached) {
 
 	Configuration::loadOwmConfig();
 
-	return _getWeatherData( WeatherManager::getCity()
+
+	loadOpenMeteoData(WeatherManager::getUnit(), WeatherManager::getLat(), WeatherManager::getLon());
+
+	
+	// TODO: Dynamic Check
+	char buffer[11];
+	snprintf(buffer, 11, "%04d-%02d-%02d", tmYearToCalendar(MiteOS::currentTime.Year), MiteOS::currentTime.Month, MiteOS::currentTime.Day);
+	String day = String(buffer);
+
+	snprintf(buffer, 6, "%02d:%02d", MiteOS::currentTime.Hour, 0);
+	String time = String(buffer);
+
+
+	WeatherDataDay dayData = getWeatherDataDay(day);
+	WeatherData timeData = getWeatherDataTime(day, time);
+
+	currentWeatherData.temperature = timeData.temperature;
+	currentWeatherData.weatherConditionCode = timeData.weatherConditionCode;
+	currentWeatherData.isMetric = timeData.isMetric;
+	String("").toCharArray(currentWeatherData.weatherDescription, 30);
+
+	currentWeatherData.sunrise = dayData.sunrise;
+	currentWeatherData.sunset = dayData.sunset;
+	currentWeatherData.timestamp = NOW;
+	lastWeatherCheck = NOW;
+	return currentWeatherData;
+	/*return _getWeatherData( WeatherManager::getCity()
 						  , WeatherManager::getUnit()
 						  , Configuration::getWeatherLang()
 						  , Configuration::getWeatherURL()
 						  , WeatherManager::getToken()
 						  );
+	*/
 }
 
 WeatherData WeatherManager::_getWeatherData(String cityID, String units, String lang, String url, String apiKey) {
@@ -139,4 +173,131 @@ float WeatherManager::getMoonPhase(uint8_t year, uint8_t month, uint8_t day, uin
 	phase -= floor(phase);
 	
 	return phase;
+}
+
+void WeatherManager::loadOpenMeteoData(String units, String lat, String lon) {
+
+	String unit = units == String("metric") ? "celsius" : "fahrenheit";
+	currentWeatherData.isMetric = units == String("metric");
+
+	if((NOW - lastWeatherDownload) / 60 > WEATHER_DOWNLOAD_INTERVAL && lat.length() > 0 && lon.length() > 0) {
+		lastWeatherDownload = NOW;
+
+		if (WifiConnectionManager::connectWifi()) {
+			HTTPClient http; // Use Weather API for live data if WiFi is connected
+			http.setConnectTimeout(3000); // 3 second max timeout
+			String weatherQueryURL = OPENMETEO_URL;
+			
+			weatherQueryURL.replace("{lat}", lat);
+			weatherQueryURL.replace("{long}", lon);
+			weatherQueryURL.replace("{units}", unit);
+			
+			printDebug(weatherQueryURL);
+
+			http.begin(weatherQueryURL.c_str());
+
+
+			int httpResponseCode = http.GET();
+			if (httpResponseCode == 200) {
+				String payload = http.getString();
+
+				//JsonDocument json;
+  				//deserializeJson(json, payload);
+
+				FileManager::writeFile(PATH_WEATHER"data", payload);
+
+				currentWeatherData.timestamp = NOW;
+			} else {
+				// http error
+			}
+			http.end();
+			
+			// turn off radios
+			btStop();
+		}
+		
+		WifiConnectionManager::powerOff();
+	}
+}
+bool WeatherManager::parseISOToTm(const char* str, tmElements_t &tm) {
+  int year, month, day, hour, minute;
+  
+  // sscanf gibt die Anzahl der erfolgreich gematchten Werte zurück
+  // 't' im Format-String fängt das Trennzeichen ab
+  if (sscanf(str, "%d-%d-%dT%d:%d", &year, &month, &day, &hour, &minute) == 5) {
+    tm.Year = CalendarYrToTm(year); // Konvertiert z.B. 2026 in den Offset seit 1970
+    tm.Month = month;
+    tm.Day = day;
+    tm.Hour = hour;
+    tm.Minute = minute;
+    tm.Second = 0; // Nicht im String enthalten, daher auf 0 setzen
+    return true;
+  }
+  return false;
+}
+
+WeatherDataDay WeatherManager::getWeatherDataDay(String day) {
+	WeatherDataDay weatherData;
+
+	if(FileManager::exists(PATH_WEATHER"data")) {
+		String file = FileManager::readFile(PATH_WEATHER"data");
+		
+		JsonDocument json;
+		deserializeJson(json, file);
+
+		if(json.containsKey("daily")) {
+			if(json["daily"].containsKey("time")) {
+				JsonArray arr = json["daily"]["time"].as<JsonArray>();
+				int index = -1;
+				for(int i = 0;i < arr.size(); i++) {
+					if(day.equalsIgnoreCase(arr[i].as<String>())) {
+						index = i;
+						break;
+					}
+				}
+				if(index >= 0) {
+					WeatherManager::parseISOToTm(json["daily"]["sunrise"][index], weatherData.sunrise);
+					WeatherManager::parseISOToTm(json["daily"]["sunset"][index], weatherData.sunset);
+					weatherData.weatherConditionCode = json["daily"]["weather_code"][index];
+					weatherData.temperatureMin = json["daily"]["temperature_2m_min"][index];
+					weatherData.temperatureMax = json["daily"]["temperature_2m_max"][index];
+				}else{
+					printDebug(day + " not found in weather data");
+				}
+			}
+		}
+	}
+	return weatherData;
+}
+WeatherData WeatherManager::getWeatherDataTime(String day, String time) {
+	WeatherData weatherData;
+	if(FileManager::exists(PATH_WEATHER"data")) {
+		String file = FileManager::readFile(PATH_WEATHER"data");
+		
+		JsonDocument json;
+		deserializeJson(json, file);
+
+		String key = day + "T" + time;
+
+		if(json.containsKey("hourly")) {
+			if(json["hourly"].containsKey("time")) {
+				JsonArray arr = json["hourly"]["time"].as<JsonArray>();
+				int index = -1;
+				for(int i = 0;i < arr.size(); i++) {
+					if(key.equalsIgnoreCase(arr[i].as<String>())) {
+						index = i;
+						break;
+					}
+				}
+				if(index >= 0) {
+					weatherData.weatherConditionCode = json["hourly"]["weather_code"][index];
+					weatherData.temperature = json["hourly"]["temperature_2m"][index];
+					weatherData.isMetric = String("°C").equalsIgnoreCase(json["hourly_units"]["temperature_2m"]);
+				}else{
+					printDebug(key + " not found in weather data");
+				}
+			}
+		}
+	}
+	return weatherData;
 }

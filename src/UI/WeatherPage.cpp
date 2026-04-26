@@ -6,25 +6,34 @@
 #include "../Fonts/Seven_Seg18pt7b.h"
 #include "../Fonts/Seven_Segment10pt7b.h"
 #include "../Fonts/FreeSans6pt7b.h"
+#include "../Fonts/FreeMonoBold10pt7b.h"
 #include "../Managers/WeatherManager.h"
 #include "../Images/moon_icons.h"
 #include "../Images/menu_icons.h"
 #include "../Images/big_icons.h"
 #include "../Images/weather_icons.h"
 
-#define WEATHER_PAGE_SITES 2
+#define FORECAST_DAY_COUNT 7
+
+#define WEATHER_PAGE_SITES 3
+
+#define PAGE_CURRENT 0
+#define PAGE_OVERVIEW 1
+#define PAGE_MOON 2
 
 void WeatherPage::drawPage() {
 	//mDisplay.fillScreen(GxEPD_BLACK);
 	
 	drawButtonIcon(BTN_HOME, icon_home);
-	if(pageData.subPageIndex == 0) {
+	if(pageData.subPageIndex != PAGE_MOON) {
 		drawButtonIcon(BTN_UP, icon_refresh);
 	}
 	drawButtonIcon(BTN_CONFIRM, icon_right);
 
-	if(pageData.subPageIndex == 0)
+	if(pageData.subPageIndex == PAGE_CURRENT)
 		drawWeather();
+	else if(pageData.subPageIndex == PAGE_OVERVIEW)
+		drawWeatherOverview();
 	else
 		drawMoonPhase();
 }
@@ -45,15 +54,13 @@ bool WeatherPage::onButtonPressed(uint8_t buttonIndex) {
 void WeatherPage::drawWeather() {
 	WeatherData currentWeather = WeatherManager::getWeatherData();
 
-	if(currentWeather.weatherConditionCode <= 100) return;
-	
 	// Set the values to last weather data
 	int8_t temperature = currentWeather.temperature;
 	int16_t weatherConditionCode = currentWeather.weatherConditionCode;
 	String weatherDescription = currentWeatherData.weatherDescription;
 
 	// Check if the weather data is older than 3 hours and stop showing it
-	if(NOW - currentWeatherData.timestamp >= 3 * 60 * 60) {
+	if(NOW - currentWeatherData.timestamp >= 7 * 24 * 60 * 60) {
 		temperature = currentWeather.chip_temperature;
 		String(TXT_CHIP).toCharArray(currentWeatherData.weatherDescription, 20);
 	}
@@ -65,14 +72,35 @@ void WeatherPage::drawWeather() {
 	
 	mDisplay.drawBitmap(25 + String(temperature).length() * 35, 25, currentWeather.isMetric ? celsius : fahrenheit, 26, 20, FOREGROUND_COLOR);
 	
-	const unsigned char* weatherIcon;
+	const unsigned char* weatherIcon = sunny;
 	
 	mDisplay.setFont(&Seven_Segment10pt7b);
 	drawCentreString(currentWeatherData.weatherDescription, 100, 90);
 	
-	if(NOW - currentWeatherData.timestamp < 3 * 60 * 60) {
+	if(NOW - currentWeatherData.timestamp < 7 * 24 * 60 * 60) {
 		if(weatherConditionCode > 0) {
+			//https://github.com/open-meteo/open-meteo/blob/743ee9b3e3b3791a13a7547dd49b4bf46d7f3530/Sources/App/Helper/WeatherCode.swift#L4
+			if(weatherConditionCode >= 90)
+				weatherIcon = thunderstorm;
+			else if(weatherConditionCode >= 80)
+				weatherIcon = rain;
+			else if(weatherConditionCode >= 70)
+				weatherIcon = snow;
+			else if(weatherConditionCode >= 60)
+				weatherIcon = rain;
+			else if(weatherConditionCode >= 50)
+				weatherIcon = drizzle;
+			else if(weatherConditionCode >= 40)
+				weatherIcon = atmosphere;
+			else if(weatherConditionCode >= 3)
+				weatherIcon = cloudy;
+			else if(weatherConditionCode >= 1)
+				weatherIcon = cloudsun;
+			else
+				weatherIcon = sunny;
+
 			//https://openweathermap.org/weather-conditions
+			/*
 			if(weatherConditionCode > 801){ //Cloudy
 				weatherIcon = cloudy;
 			}else if(weatherConditionCode == 801){ //Few Clouds
@@ -92,6 +120,7 @@ void WeatherPage::drawWeather() {
 			}else{
 				return;
 			}
+			*/
 		}
 
 		mDisplay.setFont(&FreeSans6pt7b);
@@ -100,7 +129,6 @@ void WeatherPage::drawWeather() {
 		weatherIcon = chip;
 	}
 	
-
 	if(NOW - currentWeatherData.timestamp < 24 * 60 * 60) {
 		mDisplay.drawBitmap(40, 110, big_icon_sunrise, 40, 40, FOREGROUND_COLOR);
 		drawCentreString(String(currentWeather.sunrise.Hour) + ":" + (currentWeather.sunrise.Minute < 10 ? "0" : "") + String(currentWeather.sunrise.Minute), 60, 170, false);
@@ -110,6 +138,51 @@ void WeatherPage::drawWeather() {
 	}
 	
 	mDisplay.drawBitmap(120, 30, weatherIcon, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, FOREGROUND_COLOR);
+}
+
+void WeatherPage::drawWeatherOverview() {
+	int16_t table_start_y = DISPLAY_WIDTH / 2 - DISPLAY_WIDTH / 8;
+	int16_t col_width = DISPLAY_WIDTH / FORECAST_DAY_COUNT;
+	int16_t col_height = DISPLAY_HEIGHT / 2;
+
+	mDisplay.setFont(&FreeMonoBold10pt7b);
+
+	mDisplay.drawLine(0, table_start_y + 30, DISPLAY_WIDTH, table_start_y + 30, FOREGROUND_COLOR);
+
+	for (int i = 0; i < FORECAST_DAY_COUNT; i++) {
+		// 2. Add 'i' days in seconds (SECS_PER_DAY is a constant in TimeLib)
+		time_t futureTime = NOW + (i * SECS_PER_DAY);
+
+		// 3. Create a new tmElements_t and populate it from the timestamp
+		tmElements_t tm;
+		breakTime(futureTime, tm);
+
+		// TODO: Dynamic Check
+		char buffer[11];
+		snprintf(buffer, 11, "%04d-%02d-%02d", tmYearToCalendar(tm.Year), tm.Month, tm.Day);
+		String day = String(buffer);
+
+		WeatherDataDay data = WeatherManager::getWeatherDataDay(day);
+
+		if(i == 0)
+			drawDitherBox(col_width * i, table_start_y, col_width, col_height);
+		else
+			mDisplay.drawRect(col_width * i, table_start_y, col_width, col_height, FOREGROUND_COLOR);
+		
+		drawCentreString(String(Lang::dayShortStr(tm.Wday)).substring(0, 2), col_width * i + (col_width / 2), table_start_y + 13, false);
+		drawCentreString(String(tm.Day), col_width * i + (col_width / 2), table_start_y + 28, false);
+
+		drawCentreString(String(data.temperatureMin), col_width * i + (col_width / 2), table_start_y + 70, false);
+		drawCentreString(String(data.temperatureMax), col_width * i + (col_width / 2), table_start_y + 90, false);
+	}
+
+	/*
+	mDisplay.drawBitmap(40, 110, big_icon_sunrise, 40, 40, FOREGROUND_COLOR);
+	drawCentreString(String(data.sunrise.Hour) + ":" + (data.sunrise.Minute < 10 ? "0" : "") + String(data.sunrise.Minute), 60, 170, false);
+
+	mDisplay.drawBitmap(120, 110, big_icon_sunset, 40, 40, FOREGROUND_COLOR);
+	drawCentreString(String(data.sunset.Hour) + ":" + (data.sunset.Minute < 10 ? "0" : "") + String(data.sunset.Minute), 140, 170, false);
+	*/
 }
 
 void drawPartialBitmap(int16_t x, int16_t y, const uint8_t* bitmap, int16_t w, int16_t h, int16_t start_w, int16_t end_w, uint16_t color) {

@@ -207,6 +207,8 @@ void Configuration::saveOwmConfig() {
 	Configuration::preferences.putString("owmCity", WeatherManager:: getCity());
 	Configuration::preferences.putString("owmUnit", WeatherManager:: getUnit());
 	Configuration::preferences.putString("owmApi",  WeatherManager::getToken());
+	Configuration::preferences.putString("owmLat",  WeatherManager::  getLat());
+	Configuration::preferences.putString("owmLon",  WeatherManager::  getLon());
 	
 	printDebug("Saved OWM Config");
 }
@@ -216,6 +218,8 @@ void Configuration::loadOwmConfig() {
 	WeatherManager:: setCity(Configuration::preferences.getString("owmCity"));
 	WeatherManager:: setUnit(Configuration::preferences.getString("owmUnit"));
 	WeatherManager::setToken(Configuration::preferences.getString("owmApi"));
+	WeatherManager::  setLat(Configuration::preferences.getString("owmLat"));
+	WeatherManager::  setLon(Configuration::preferences.getString("owmLon"));
 }
 
 

@@ -17,23 +17,45 @@ typedef struct WeatherData {
 	ulong timestamp;
 } WeatherData;
 
+typedef struct WeatherDataDay {
+	int8_t temperatureMin;
+	int8_t temperatureMax;
+	int16_t weatherConditionCode;
+	bool isMetric;
+
+	tmElements_t sunrise;
+	tmElements_t sunset;
+	//ulong timestamp;
+} WeatherDataDay;
+
 class WeatherManager {
 	private:
 		static String city;
+		static String lat;
+		static String lon;
 		static String unit;
 		static String token;
 	
 	public:
-		static void setCity(String city)   { WeatherManager::city  = city; }
-		static void setUnit(String unit)   { WeatherManager::unit  = unit; }
+		static void setCity(String city)   { WeatherManager::city  = city;  }
+		static void setUnit(String unit)   { WeatherManager::unit  = unit;  }
 		static void setToken(String token) { WeatherManager::token = token; }
-		static String getCity()  { return WeatherManager::city; }
-		static String getUnit()  { return WeatherManager::unit; }
+		static void setLat(String lat)     { WeatherManager::lat   = lat;   }
+		static void setLon(String lon)     { WeatherManager::lon   = lon;   }
+		static String getCity()  { return WeatherManager::city;  }
+		static String getLat()   { return WeatherManager::lat;   }
+		static String getLon()   { return WeatherManager::lon;   }
+		static String getUnit()  { return WeatherManager::unit;  }
 		static String getToken() { return WeatherManager::token; }
 		
 		static WeatherData getWeatherData(bool cached = true);
+		
+		static void loadOpenMeteoData(String units, String lat, String lon);
+		static WeatherDataDay getWeatherDataDay(String day);
+		static WeatherData getWeatherDataTime(String day, String time);
 
 		static bool isDataCurrent();
+		static bool parseISOToTm(const char* str, tmElements_t &tm);
 		
 		static float getMoonPhase();
 		static float getMoonPhase(uint8_t year, uint8_t month, uint8_t day, uint8_t hour = 0, uint8_t minute = 0);

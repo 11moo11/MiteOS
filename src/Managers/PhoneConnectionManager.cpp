@@ -200,6 +200,8 @@ bool PhoneConnectionManager::SyncConfiguration() {
 					WeatherManager::setCity(json["owmCity"]);
 					WeatherManager::setToken(json["owmApi"]);
 					WeatherManager::setUnit(json["owmUnit"]);
+					WeatherManager::setLat(json["owmLat"]);
+					WeatherManager::setLon(json["owmLon"]);
 					Configuration::saveOwmConfig();
 				}
 			}
