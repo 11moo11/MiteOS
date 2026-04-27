@@ -12,6 +12,8 @@
 #include "../Images/menu_icons.h"
 #include "../Images/big_icons.h"
 #include "../Images/weather_icons.h"
+#include "../Managers/FileManager.h"
+#include <ArduinoJson.h>
 
 #define FORECAST_DAY_COUNT 7
 
@@ -22,20 +24,24 @@
 #define PAGE_MOON 2
 
 void WeatherPage::drawPage() {
-	//mDisplay.fillScreen(GxEPD_BLACK);
-	
 	drawButtonIcon(BTN_HOME, icon_home);
 	if(pageData.subPageIndex != PAGE_MOON) {
 		drawButtonIcon(BTN_UP, icon_refresh);
 	}
 	drawButtonIcon(BTN_CONFIRM, icon_right);
 
-	if(pageData.subPageIndex == PAGE_CURRENT)
-		drawWeather();
-	else if(pageData.subPageIndex == PAGE_OVERVIEW)
-		drawWeatherOverview();
-	else
-		drawMoonPhase();
+	switch(pageData.subPageIndex) {
+		case PAGE_CURRENT:
+			drawWeather();
+			break;
+		case PAGE_OVERVIEW:
+			drawWeatherDayLine();
+			drawWeatherOverview();
+			break;
+		default:
+			drawMoonPhase();
+			break;
+	}
 }
 
 bool WeatherPage::onButtonPressed(uint8_t buttonIndex) {
@@ -99,10 +105,72 @@ void WeatherPage::drawWeather() {
 	mDisplay.drawBitmap(120, 30, weatherIcon, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, FOREGROUND_COLOR);
 }
 
+void WeatherPage::drawWeatherDayLine() {
+	mDisplay.setFont(&FreeSans6pt7b);
+
+	drawCentreString(TXT_TEMPERATURE, DISPLAY_WIDTH / 2, 15, false);
+
+	uint8_t x_offset = 20;
+	uint8_t col_width = (DISPLAY_WIDTH - x_offset * 2) / 23;
+	uint8_t y_offset = 30;
+	uint8_t col_heigth = DISPLAY_HEIGHT / 2 - (y_offset * 2);
+
+	if(FileManager::exists(PATH_WEATHER"data")) {
+		String file = FileManager::readFile(PATH_WEATHER"data");
+		
+		JsonDocument json;
+		deserializeJson(json, file);
+		char buffer[11];
+		snprintf(buffer, 11, "%04d-%02d-%02d", tmYearToCalendar(MiteOS::currentTime.Year), MiteOS::currentTime.Month, MiteOS::currentTime.Day);
+		String day = String(buffer);
+
+		if(json.containsKey("hourly")) {
+			if(json["hourly"].containsKey("time")) {
+				float temps[24];
+				float lowest = INT8_MAX;
+				float hightest = INT8_MIN;
+
+				JsonArray arr = json["hourly"]["time"].as<JsonArray>();
+				uint8_t index = 0;
+				for(int i = 0; i < arr.size(); i++) {
+					if(arr[i].as<String>().startsWith(day)) {
+						temps[index] = json["hourly"]["temperature_2m"][i];
+
+						if(lowest > temps[index]) lowest = temps[index];
+						if(hightest < temps[index]) hightest = temps[index];
+						index++;
+						if(index >= 24) break;
+					}
+				}
+
+				for(int i = 0; i < 5; i++) {
+					int8_t val = (((hightest - lowest) / 4) * (4 - i)) + lowest;
+					drawCentreString(String(val), 10, y_offset + (((col_heigth) / 4) * i) + 4);
+				}
+
+				for(int i = 0; i <= 24; i++) {
+					if(i % 4 == 0) drawCentreString(String(i), x_offset + col_width * i + col_width, col_heigth + y_offset + 15);
+					
+					if(i >= 24) continue;
+
+					float val = (1 - ((temps[i] - lowest) / (hightest - lowest))) * col_heigth;
+					mDisplay.fillCircle(x_offset + (i + 1) * col_width + (col_width / 2), val + y_offset, 2, FOREGROUND_COLOR);
+					
+					if(i == 0) continue;
+
+					float prev_val = (1 - ((temps[i - 1] - lowest) / (hightest - lowest))) * col_heigth;
+
+					mDisplay.drawLine(x_offset + i * col_width + (col_width / 2), prev_val + y_offset, x_offset + (i + 1) * col_width + (col_width / 2), val + y_offset, FOREGROUND_COLOR);
+				}
+			}
+		}
+	}
+}
+
 void WeatherPage::drawWeatherOverview() {
-	int16_t table_start_y = DISPLAY_WIDTH / 4;
+	int16_t table_start_y = DISPLAY_WIDTH / 2 - 8;
 	int16_t col_width = DISPLAY_WIDTH / FORECAST_DAY_COUNT;
-	int16_t col_height = DISPLAY_HEIGHT / 2;
+	int16_t col_height = DISPLAY_HEIGHT / 16 * 7;
 
 	mDisplay.setFont(&FreeMonoBold10pt7b);
 
@@ -125,7 +193,7 @@ void WeatherPage::drawWeatherOverview() {
 		if(data.weatherConditionCode == -1) continue;
 
 		if(i == 0)
-			drawDitherBox(col_width * i, table_start_y, col_width, col_height);
+			drawDitherBox(col_width * i, table_start_y, col_width, col_height, 1, 2);
 		else
 			mDisplay.drawRect(col_width * i, table_start_y, col_width, col_height, FOREGROUND_COLOR);
 		
@@ -134,8 +202,8 @@ void WeatherPage::drawWeatherOverview() {
 		drawCentreString(String(Lang::dayShortStr(tm.Wday)).substring(0, 2), col_width * i + (col_width / 2), table_start_y + 13, false);
 		drawCentreString(String(tm.Day), col_width * i + (col_width / 2), table_start_y + 28, false);
 
-		drawCentreString(String(data.temperatureMin), col_width * i + (col_width / 2) - 2, table_start_y + 70, false);
-		drawCentreString(String(data.temperatureMax), col_width * i + (col_width / 2) - 2, table_start_y + 90, false);
+		drawCentreString(String(data.temperatureMin), col_width * i + (col_width / 2) - 2, table_start_y + 65, false);
+		drawCentreString(String(data.temperatureMax), col_width * i + (col_width / 2) - 2, table_start_y + 80, false);
 	}
 
 	/*

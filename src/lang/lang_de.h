@@ -72,6 +72,7 @@
 
 #define TEMP_LANG "de"
 #define TXT_CHIP "Chip"
+#define TXT_TEMPERATURE "Temperatur"
 
 #define TXT_BOND "Handy verb."
 #define TXT_UNBOND "Verb. aufheben"

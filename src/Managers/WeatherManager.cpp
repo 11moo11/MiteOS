@@ -40,7 +40,6 @@ WeatherData WeatherManager::getWeatherData(bool cached) {
 
 	loadOpenMeteoData(WeatherManager::getUnit(), WeatherManager::getLat(), WeatherManager::getLon());
 	
-	// TODO: Dynamic Check
 	char buffer[11];
 	snprintf(buffer, 11, "%04d-%02d-%02d", tmYearToCalendar(MiteOS::currentTime.Year), MiteOS::currentTime.Month, MiteOS::currentTime.Day);
 	String day = String(buffer);
@@ -59,8 +58,9 @@ WeatherData WeatherManager::getWeatherData(bool cached) {
 
 	currentWeatherData.sunrise = dayData.sunrise;
 	currentWeatherData.sunset = dayData.sunset;
-	currentWeatherData.timestamp = NOW;
+	currentWeatherData.timestamp = Configuration::preferences.getULong64("wts", NOW);;
 	lastWeatherCheck = NOW;
+
 	return currentWeatherData;
 	/*return _getWeatherData( WeatherManager::getCity()
 						  , WeatherManager::getUnit()
@@ -204,8 +204,8 @@ void WeatherManager::loadOpenMeteoData(String units, String lat, String lon) {
   				//deserializeJson(json, payload);
 
 				FileManager::writeFile(PATH_WEATHER"data", payload);
-
-				currentWeatherData.timestamp = NOW;
+				
+				Configuration::preferences.putULong64("wts", NOW);
 			} else {
 				// http error
 			}

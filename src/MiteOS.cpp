@@ -60,7 +60,6 @@ void MiteOS::init() {
 	// Clear VoltLow bit on PCF8563 to ensure oscillator is running
 	if (rtcType == 2) {  // PCF8563
 		mRTC.rtc_pcf.clearVoltLow();
-		printDebug("Cleared PCF8563 VoltLow bit");
 	}
 
 	// Try to read RTC before anything else
