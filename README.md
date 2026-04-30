@@ -51,13 +51,16 @@ Docs
 
 Phone Companion
 -----
-App can be found here: **Link coming soon**
+App can be found here: [MiteOS-CompanionApp](https://github.com/Adammantium/MiteOS-CompanionApp)
 
 **Restrictions:**
 - Only available for Android
 - Notifications get only synced every 15 minutes to save battery.
 - Syncing is slow and takes a few seconds
-- Only the watch can initiate a sync, so no in time notifications
+- Only the watch can initiate a sync, so no in time notifications  
+
+**On the bright side:**
+- Battery Life is still acceptable
 
 Battery-Life
 -----
