@@ -29,6 +29,10 @@ Features
 ✅ Settings Menu on the watch (Still requires some stuff to be done through code or the app) [Check here](docs/Settings.md)  
 ✅ [Streamlined Interface](docs/Controls.md)  
 
+How to get Started?
+-----
+Check out the [First Steps](docs/FirstSteps.md)! I hope that helps :)
+
 Disclaimer
 -----
 I have no idea what im doing, i never really did any micro controller development. Also, I don't have any experience in C++.  
