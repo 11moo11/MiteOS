@@ -76,6 +76,7 @@ extern RTC_DATA_ATTR BMA423 accSensor;
 extern RTC_DATA_ATTR PageData pageData;
 
 extern RTC_DATA_ATTR int gmtTimeOffset;
+extern RTC_DATA_ATTR bool force_ntp_resync;
 
 extern RTC_DATA_ATTR tmElements_t osBootTime;
 

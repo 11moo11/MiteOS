@@ -13,6 +13,7 @@ RTC_DATA_ATTR BMA423 accSensor;
 //RTC_DATA_ATTR WeatherData currentWeather;
 //RTC_DATA_ATTR int weatherIntervalCounter = -1;
 RTC_DATA_ATTR int gmtTimeOffset = 0;
+RTC_DATA_ATTR bool force_ntp_resync = false;
 
 RTC_DATA_ATTR tmElements_t osBootTime;
 
@@ -129,6 +130,9 @@ void MiteOS::init() {
 			updateBmaConfig();
 			pageData.pageIndex = 0; // Set Page to Watchface Page
 			gmtTimeOffset = Configuration::getTimeZone() * 60;
+			if(gmtTimeOffset != 0) {
+				force_ntp_resync = true;  // Force a NTP resync the next time the watch wakes up
+			}
 			
 			RTC.read(osBootTime);
 			
@@ -271,7 +275,8 @@ void MiteOS::checkTime() {
 		ActivityManager::saveSteps();
 	}
 
-	if(currentTime.Hour == 2 && currentTime.Minute == 0) {
+	if(force_ntp_resync || (currentTime.Hour == 2 && currentTime.Minute == 0)) {
+		force_ntp_resync = false;
 		if(WifiConnectionManager::connectWifi()) {
 			WifiConnectionManager::syncNTP();
 		}
