@@ -10,7 +10,7 @@
 
 //NTP Settings
 #define NTP_SERVER "pool.ntp.org"
-#define GMT_OFFSET_SEC 3600 * 0 //New York is UTC -5 EST, -4 EDT, will be overwritten by weather data
+#define GMT_OFFSET_MIN 0
 
 // Darkmode Settings // TODO Put as in System Settings
 #define INVERSE_DARKMODE false // Defines whether the timespan will make it darkmode or lightmode
@@ -91,7 +91,8 @@ class Configuration : Preferences {
         static uint8_t getWeatherUpdateInterval() { return WEATHER_UPDATE_INTERVAL; };
         
         static String getNtpServer() { return NTP_SERVER; };
-        static int getGmtOffset() { return GMT_OFFSET_SEC; };
+        static short getTimeZone();
+		static void setTimeZone(short timezone);
 
         static bool getInverseDarkMode() { return INVERSE_DARKMODE; };
         static uint8_t getDarkmodeStartH() { return DARKMODE_START_H; };

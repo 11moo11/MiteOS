@@ -8,7 +8,7 @@ While the "On Compile" Settings might not be for everyone, i tried to expose eve
 | Setting | Description  | Default |  On Compile (Configuration.h)  | On Watch | In Companion App  |
 |---|---|---|---|---|---|
 | NTP_SERVER  | Configures the server that is used for syncing the network time  | pool.ntp.org | ✅ | ❌ | ❌ |
-| GMT_OFFSET_SEC | Configures the GMT Offset  | 0 (gets changed by the weather location ) | ✅ | ❌ | ✅ |
+| GMT_OFFSET_MIN | Configures the GMT Offset  | 0 (gets changed by the phone app) | ✅ | ❌ | ✅ |
 | Darkmode | Toggles darkmode or sets it to the below times | timed | ❌ | ✅ | 📋 |
 | INVERSE_DARKMODE  | Defines whether the timespan will make it darkmode or lightmode | no  | ✅  | ❌ | 📋 |
 | DARKMODE_START_H  | Darkmode Start Time (Hour)  | 23  | ✅  | ❌ | 📋 |

@@ -206,6 +206,9 @@ bool PhoneConnectionManager::SyncConfiguration() {
 				}
 			}
 		}
+		if(json.containsKey("tz")) {
+			Configuration::setTimeZone(json["tz"]);
+		}
 	}
 	return success;
 }

@@ -246,3 +246,12 @@ int Configuration::usedSpace() {
 int Configuration::freeSpace() {
 	return getSize() - usedSpace();
 }
+
+void Configuration::setTimeZone(short timeZone) {
+	Configuration::preferences.putShort("tz", timeZone);
+	gmtTimeOffset = timeZone * 60;
+}
+
+short Configuration::getTimeZone() {
+	return Configuration::preferences.getShort("tz", GMT_OFFSET_MIN);
+}

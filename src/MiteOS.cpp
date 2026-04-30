@@ -37,8 +37,8 @@ void MiteOS::init() {
 	// This might cause a double reset, causing the esp to fully reset steps and stuff
 	// So this should only be enabled when debugging
 	// But: Thats just a theory at the moment and i will test it some more
-	//Serial.begin(921600); // Max speed so we have about 2FPS (115200 results in about 1 FPS)
-	Serial.begin(250000); // Max speed VS Code can handle
+	Serial.begin(921600); // Max speed so we have about 2FPS (115200 results in about 1 FPS)
+	//Serial.begin(250000); // Max speed VS Code can handle
   	if(!Serial) delay(1000);
 	printDebug("Booting up");
 	#endif
@@ -128,7 +128,7 @@ void MiteOS::init() {
 			// Initial configuration
 			updateBmaConfig();
 			pageData.pageIndex = 0; // Set Page to Watchface Page
-			gmtTimeOffset = Configuration::getGmtOffset();
+			gmtTimeOffset = Configuration::getTimeZone() * 60;
 			
 			RTC.read(osBootTime);
 			

@@ -104,7 +104,7 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String units, String 
 				desc.toCharArray(currentWeatherData.weatherDescription, 30);
 				//currentWeatherData.external = true;
 				
-				gmtTimeOffset = int(json["timezone"]);
+				//gmtTimeOffset = int(json["timezone"]);
 
 				breakTime((time_t)(int)json["sys"]["sunrise"] + gmtTimeOffset, currentWeatherData.sunrise);
 				breakTime((time_t)(int)json["sys"]["sunset"] + gmtTimeOffset, currentWeatherData.sunset);
