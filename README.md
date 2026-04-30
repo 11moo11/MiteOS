@@ -86,17 +86,19 @@ I use a modified version of https://github.com/yik3z/Watchy-CAD/tree/main/CAD/Ca
 
 BuiltIn Watchfaces
 -----
-- [7_SEG](https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/7_SEG) by SQFMI
-- [BTTF](https://github.com/peerdavid/wos) by peerdavid
-- [Pokemon 2.0](https://github.com/Klemek/watchy/tree/master/watchfaces/pokemon-2.0) by Klemek
-- [MacPaint](https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/MacPaint) by SQFMI
-- [Analog](https://github.com/BenjaminGabel/AnalogWatchFace) by BenjaminGabel
-- [Hobbit Time](https://github.com/BraininaBowl/Hobbit-Time-for-Watchy) by BraininaBowl
-- [Calendar](https://github.com/uCBill/Calendar_watchy) by uCBill (Reworked by me)
-- [Train](https://github.com/uCBill/Multi_face_Watchy/blob/main/train.h) by uCBill (based on [Bahn](https://github.com/BraininaBowl/Bahn-for-Watchy) by BraininaBowl)
-- [Tetris 2.0](https://github.com/klemek/watchy/tree/master/watchfaces/tetris-2.0)
-- [BadForEye](https://github.com/mammothroar/watchy/tree/main/watchface/BadForEye)
-- [StarryHorizon](https://github.com/sqfmi/Watchy/blob/master/examples/WatchFaces/StarryHorizon/StarryHorizon.ino)
+| Watchface | Creator | Based on |
+|-----------|---------|----------|
+| [**7_SEG**](https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/7_SEG) | [SQFMI](https://github.com/sqfmi) |
+| [**BTTF**](https://github.com/peerdavid/wos) | [peerdavid](https://github.com/peerdavid) |
+| [**Pokemon 2.0**](https://github.com/Klemek/watchy/tree/master/watchfaces/pokemon-2.0) | [Klemek](https://github.com/klemek) |
+| [**MacPaint**](https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/MacPaint) | [SQFMI](https://github.com/sqfmi) |
+| [**Analog**](https://github.com/BenjaminGabel/AnalogWatchFace) | [BenjaminGabel](https://github.com/BenjaminGabel) |
+| [**Hobbit Time**](https://github.com/BraininaBowl/Hobbit-Time-for-Watchy) | [BraininaBowl](https://github.com/BraininaBowl) |
+| [**Calendar**](https://github.com/uCBill/Calendar_watchy) | [uCBill](https://github.com/uCBill) |
+| [**Train**](https://github.com/uCBill/Multi_face_Watchy/blob/main/train.h) | [uCBill](https://github.com/uCBill) | [Bahn](https://github.com/BraininaBowl/Bahn-for-Watchy) by [BraininaBowl](https://github.com/BraininaBowl) |
+| [**Tetris 2.0**](https://github.com/klemek/watchy/tree/master/watchfaces/tetris-2.0) | [Klemek](https://github.com/klemek) |
+| [**BadForEye**](https://github.com/mammothroar/watchy/tree/main/watchface/BadForEye) | [mammothroar](https://github.com/mammothroar) |
+| [**StarryHorizon**](https://github.com/sqfmi/Watchy/blob/master/examples/WatchFaces/StarryHorizon/StarryHorizon.ino) | [SQFMI](https://github.com/sqfmi) |
 
 All watchfaces have been modified by me to run on this OS. I also added light and darkmode to each of the watchfaces.  
 If you are the author of any of these watchfaces and don't want me to distribute them, please contact me and i'll remove them immediatly.
