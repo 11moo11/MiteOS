@@ -6,6 +6,7 @@
 #include <ArduinoJson.h>
 #include "../Managers/FileManager.h"
 #include "../Images/weather_icons.h"
+#include "../WebRequest/WebRequest.h"
 
 RTC_DATA_ATTR long lastWeatherCheck = 0;
 RTC_DATA_ATTR long lastWeatherDownload = 0;
@@ -78,45 +79,33 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String units, String 
 	if((NOW - lastWeatherCheck) / 60 > WEATHER_UPDATE_INTERVAL && apiKey.length() > 0 && cityID.length() > 0 && units.length() > 0) {
 		lastWeatherCheck = NOW;
 
-		if (WifiConnectionManager::connectWifi()) {
-			HTTPClient http; // Use Weather API for live data if WiFi is connected
-			http.setConnectTimeout(3000); // 3 second max timeout
-			String weatherQueryURL = url;
+		String weatherQueryURL = url;
+		weatherQueryURL.replace("{cityID}", cityID);
+		weatherQueryURL.replace("{units}", units);
+		weatherQueryURL.replace("{lang}", lang);
+		weatherQueryURL.replace("{apiKey}", apiKey);
+		
+		WebRequestData data = WebRequest::GET(url);
+		if (data.httpResponseCode == 200) {
+			String payload             = data.getString();
+
+			JsonDocument json;
+			deserializeJson(json, payload);
+			currentWeatherData.temperature = int(json["main"]["temp"]);
+			currentWeatherData.weatherConditionCode = int(json["weather"][0]["id"]);
+			String desc = json["weather"][0]["description"];
+			desc.toCharArray(currentWeatherData.weatherDescription, 30);
+			//currentWeatherData.external = true;
 			
-			weatherQueryURL.replace("{cityID}", cityID);
-			weatherQueryURL.replace("{units}", units);
-			weatherQueryURL.replace("{lang}", lang);
-			weatherQueryURL.replace("{apiKey}", apiKey);
+			//gmtTimeOffset = int(json["timezone"]);
+
+			breakTime((time_t)(int)json["sys"]["sunrise"] + gmtTimeOffset, currentWeatherData.sunrise);
+			breakTime((time_t)(int)json["sys"]["sunset"] + gmtTimeOffset, currentWeatherData.sunset);
 			
-			printDebug(weatherQueryURL);
+			// sync NTP during weather API call and use timezone of lat & lon
+			WifiConnectionManager::syncNTP(gmtTimeOffset);
 
-			http.begin(weatherQueryURL.c_str());
-			
-			int httpResponseCode = http.GET();
-			if (httpResponseCode == 200) {
-				String payload             = http.getString();
-
-				JsonDocument json;
-  				deserializeJson(json, payload);
-				currentWeatherData.temperature = int(json["main"]["temp"]);
-				currentWeatherData.weatherConditionCode = int(json["weather"][0]["id"]);
-				String desc = json["weather"][0]["description"];
-				desc.toCharArray(currentWeatherData.weatherDescription, 30);
-				//currentWeatherData.external = true;
-				
-				//gmtTimeOffset = int(json["timezone"]);
-
-				breakTime((time_t)(int)json["sys"]["sunrise"] + gmtTimeOffset, currentWeatherData.sunrise);
-				breakTime((time_t)(int)json["sys"]["sunset"] + gmtTimeOffset, currentWeatherData.sunset);
-				
-				// sync NTP during weather API call and use timezone of lat & lon
-				WifiConnectionManager::syncNTP(gmtTimeOffset);
-
-				currentWeatherData.timestamp = NOW;
-			} else {
-				// http error
-			}
-			http.end();
+			currentWeatherData.timestamp = NOW;
 		}
 		
 		// turn off radios
@@ -180,40 +169,25 @@ void WeatherManager::loadOpenMeteoData(String units, String lat, String lon) {
 	if((NOW - lastWeatherDownload) / 60 > WEATHER_DOWNLOAD_INTERVAL && lat.length() > 0 && lon.length() > 0) {
 		lastWeatherDownload = NOW;
 
-		if (WifiConnectionManager::connectWifi()) {
-			HTTPClient http; // Use Weather API for live data if WiFi is connected
-			http.setConnectTimeout(3000); // 3 second max timeout
-			String weatherQueryURL = OPENMETEO_URL;
+		String weatherQueryURL = OPENMETEO_URL;
+		weatherQueryURL.replace("{lat}", lat);
+		weatherQueryURL.replace("{long}", lon);
+		weatherQueryURL.replace("{units}", unit);
+		
+		WebRequestData data = WebRequest::GET(weatherQueryURL);
+		if(data.isSuccess()) {
+			String payload = data.getString();
+
+			//JsonDocument json;
+			//deserializeJson(json, payload);
+
+			FileManager::writeFile(PATH_WEATHER"data", payload);
 			
-			weatherQueryURL.replace("{lat}", lat);
-			weatherQueryURL.replace("{long}", lon);
-			weatherQueryURL.replace("{units}", unit);
-			
-			printDebug(weatherQueryURL);
-
-			http.begin(weatherQueryURL.c_str());
-
-
-			int httpResponseCode = http.GET();
-			if (httpResponseCode == 200) {
-				String payload = http.getString();
-
-				//JsonDocument json;
-  				//deserializeJson(json, payload);
-
-				FileManager::writeFile(PATH_WEATHER"data", payload);
-				
-				Configuration::preferences.putULong64("wts", NOW);
-			} else {
-				// http error
-			}
-			http.end();
-			
-			// turn off radios
-			btStop();
+			Configuration::preferences.putULong64("wts", NOW);
 		}
 		
 		WifiConnectionManager::powerOff();
+		btStop();
 	}
 }
 bool WeatherManager::parseISOToTm(const char* str, tmElements_t &tm) {

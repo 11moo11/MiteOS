@@ -12,7 +12,7 @@ bool BluetoothManager::initialized = false;
 bool BluetoothManager::waitingForResponse = false;
 
 String BluetoothManager::lastResponse;
-char BluetoothManager::tmp_buffer[128];
+char BluetoothManager::tmp_buffer[500];
 
 RTC_DATA_ATTR bool btDeviceRegistered(false);
 RTC_DATA_ATTR BLEAddress btLastDevice("0");
@@ -244,6 +244,7 @@ void BluetoothManager::sendCommand(String str) {
 	
 	commandCharacteristic->setValue("");
 	delay(10);
+	printDebug(str);
 	notificationUpdateCharacteristic->setValue(str.c_str());
 	notificationUpdateCharacteristic->notify();
 	
@@ -269,6 +270,32 @@ void BluetoothManager::waitForResponse() {
 	printDebug(BluetoothManager::lastResponse);
 	
 	waitingForResponse = false;
+}
+
+WebRequestData BluetoothManager::awaitWebRequestData() {
+	WebRequestData data = WebRequestData();
+	if(BluetoothManager::lastResponse.length() == 0 || BluetoothManager::lastResponse == "ERR") {
+		data.httpResponseCode = -1;
+	}else{
+		data.httpResponseCode = 200;
+		data.responseData = BluetoothManager::lastResponse;
+	}
+	return data;
+}
+
+WebRequestData BluetoothManager::proxyGetWebRequest(String url) {
+	sprintf(tmp_buffer, "WR_GET=%s", url.c_str());
+	sendCommand(tmp_buffer);
+
+	return BluetoothManager::awaitWebRequestData();
+}
+
+WebRequestData BluetoothManager::proxyPostWebRequest(String url, String payload, String authorization, String content_type) {
+	String full = url + ";" + payload + ";" + authorization + ";" + content_type;
+	sprintf(tmp_buffer, "WR_POST=%s", full.c_str());
+	sendCommand(tmp_buffer);
+
+	return BluetoothManager::awaitWebRequestData();
 }
 
 void BluetoothManager::powerOff() {
