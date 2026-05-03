@@ -10,7 +10,7 @@
 #define NOTIFICATION_MESSAGE_LENGTH 150
 
 #define PLAYBACK_TEXT_LENGTH 30
-#define PLAYBACK_IMAGE_SIZE 96
+#define MAX_PLAYBACK_IMAGE_SIZE 100 // cant really increase it that much, as we dont have much ram left with bluetooth active :(
 
 extern RTC_DATA_ATTR long lastNotificationCheck;
 
@@ -24,10 +24,11 @@ struct PlaybackInfo {
 	char title[PLAYBACK_TEXT_LENGTH] = "";
 	char album[PLAYBACK_TEXT_LENGTH] = "";
 	char artist[PLAYBACK_TEXT_LENGTH] = "";
-	unsigned char image[PLAYBACK_IMAGE_SIZE * PLAYBACK_IMAGE_SIZE / 8 + 1];
+	unsigned char image[MAX_PLAYBACK_IMAGE_SIZE * MAX_PLAYBACK_IMAGE_SIZE / 8 + 1];
 	long position = 0;
 	long duration = 0;
 	bool playing = false;
+	uint8_t size = MAX_PLAYBACK_IMAGE_SIZE;
 };
 
 class PhoneConnectionManager {

@@ -46,7 +46,6 @@ Planned Features
 - Configurable Night-Mode (save battery at night or if it is not worn)
 - Google Health Syncing
 - Standarize Watchfaces
-- Replace RTC Lib with the one from GuruSR
 
 Docs
 ----
@@ -90,13 +89,13 @@ BuiltIn Watchfaces
 |-----------|---------|----------|
 | [**7_SEG**](https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/7_SEG) | [SQFMI](https://github.com/sqfmi) |
 | [**BTTF**](https://github.com/peerdavid/wos) | [peerdavid](https://github.com/peerdavid) |
-| [**Pokemon 2.0**](https://github.com/Klemek/watchy/tree/master/watchfaces/pokemon-2.0) | [Klemek](https://github.com/klemek) |
+| [**Pokemon 2.0**](https://git.klemek.fr/klemek/watchy/src/branch/master/watchfaces/pokemon-2.0) | [Klemek](https://git.klemek.fr/klemek/) |
 | [**MacPaint**](https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/MacPaint) | [SQFMI](https://github.com/sqfmi) |
 | [**Analog**](https://github.com/BenjaminGabel/AnalogWatchFace) | [BenjaminGabel](https://github.com/BenjaminGabel) |
 | [**Hobbit Time**](https://github.com/BraininaBowl/Hobbit-Time-for-Watchy) | [BraininaBowl](https://github.com/BraininaBowl) |
 | [**Calendar**](https://github.com/uCBill/Calendar_watchy) | [uCBill](https://github.com/uCBill) |
 | [**Train**](https://github.com/uCBill/Multi_face_Watchy/blob/main/train.h) | [uCBill](https://github.com/uCBill) | [Bahn](https://github.com/BraininaBowl/Bahn-for-Watchy) by [BraininaBowl](https://github.com/BraininaBowl) |
-| [**Tetris 2.0**](https://github.com/klemek/watchy/tree/master/watchfaces/tetris-2.0) | [Klemek](https://github.com/klemek) |
+| [**Tetris 2.0**](https://git.klemek.fr/klemek/watchy/src/branch/master/watchfaces/tetris-2.0) | [Klemek](https://git.klemek.fr/klemek/) |
 | [**BadForEye**](https://github.com/mammothroar/watchy/tree/main/watchface/BadForEye) | [mammothroar](https://github.com/mammothroar) |
 | [**StarryHorizon**](https://github.com/sqfmi/Watchy/blob/master/examples/WatchFaces/StarryHorizon/StarryHorizon.ino) | [SQFMI](https://github.com/sqfmi) |
 

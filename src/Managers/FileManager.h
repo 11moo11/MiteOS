@@ -26,6 +26,7 @@ class FileManager {
 		static bool exists(String path);
 		static String readFile(String path);
 		static void printFolder(String path, uint8_t layer = 0);
+		static void clearCache();
 };
 
 #endif

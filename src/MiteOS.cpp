@@ -153,6 +153,8 @@ void MiteOS::init() {
 			Serial.println("==============================");
 			#endif
 
+			FileManager::clearCache();
+
 			// For some reason, seems to be enabled on first boot
 			esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
 			break;

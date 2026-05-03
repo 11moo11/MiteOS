@@ -140,3 +140,9 @@ String FileManager::readFile(String path) {
     }
     return str;
 }
+
+void FileManager::clearCache() {
+	init();
+	
+	FileManager::deleteFile(PATH_PLAYBACK"dat");
+}

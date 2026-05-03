@@ -12,7 +12,7 @@ bool BluetoothManager::initialized = false;
 bool BluetoothManager::waitingForResponse = false;
 
 String BluetoothManager::lastResponse;
-char BluetoothManager::tmp_buffer[256];
+char BluetoothManager::tmp_buffer[128];
 
 RTC_DATA_ATTR bool btDeviceRegistered(false);
 RTC_DATA_ATTR BLEAddress btLastDevice("0");

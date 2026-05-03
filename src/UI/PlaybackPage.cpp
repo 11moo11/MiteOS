@@ -10,7 +10,6 @@
 #include "../Images/menu_icons.h"
 
 #define IMAGE_SCALE 1
-#define IMAGE_BORDER ((DISPLAY_WIDTH - (PLAYBACK_IMAGE_SIZE * IMAGE_SCALE)) / 2)
 #define FORCE_REQUERY pageData.number3
 
 void PlaybackPage::initPage() {
@@ -31,21 +30,22 @@ void PlaybackPage::drawPage() {
 	
 	if(strlen(pbi.title) > 2) {
 		pageData.number1 = 1;
-		int16_t byteWidth = (PLAYBACK_IMAGE_SIZE + 7) / 8; // Bitmap scanline pad = whole byte
+		int16_t byteWidth = (pbi.size + 7) / 8; // Bitmap scanline pad = whole byte
+		int16_t imageBorder = ((DISPLAY_WIDTH - (pbi.size  * IMAGE_SCALE)) / 2);
 		uint8_t b = 0;
 		
 		mDisplay.startWrite();
-		for (int16_t j = 0; j < PLAYBACK_IMAGE_SIZE; j++) {
-			for (int16_t i = 0; i < PLAYBACK_IMAGE_SIZE; i++) {
+		for (int16_t j = 0; j < pbi.size; j++) {
+			for (int16_t i = 0; i < pbi.size; i++) {
 				if (i & 7)
 					b <<= 1;
 				else
 					b = pbi.image[j * byteWidth + i / 8];
 				
 				if((b & 0x80)) {
-					mDisplay.fillRect(IMAGE_BORDER + (i * IMAGE_SCALE), 5 + (j * IMAGE_SCALE), IMAGE_SCALE, IMAGE_SCALE, GxEPD_WHITE);
+					mDisplay.fillRect(imageBorder + (i * IMAGE_SCALE), 20 + (j * IMAGE_SCALE), IMAGE_SCALE, IMAGE_SCALE, GxEPD_WHITE);
 				}else{
-					mDisplay.fillRect(IMAGE_BORDER + (i * IMAGE_SCALE), 5 + (j * IMAGE_SCALE), IMAGE_SCALE, IMAGE_SCALE, GxEPD_BLACK);
+					mDisplay.fillRect(imageBorder + (i * IMAGE_SCALE), 20 + (j * IMAGE_SCALE), IMAGE_SCALE, IMAGE_SCALE, GxEPD_BLACK);
 				}
 			}
 		}
@@ -53,11 +53,16 @@ void PlaybackPage::drawPage() {
 		
 		// Progress Bar
 		float percentage = ((float) pbi.position) / pbi.duration;
-		drawProgressBar(50, 105, 100, 12, percentage, FOREGROUND_COLOR);
+		drawProgressBar(30, 180, 140, 12, percentage, FOREGROUND_COLOR);
 		
 		// Progress Texts
 		mDisplay.setFont(&FreeSans8pt7b);
 		
+		if(pbi.position > pbi.duration) {
+			pbi.position = pbi.duration;
+			FORCE_REQUERY = 1;
+		}
+
 		String curPos = "";
 		curPos += String(pbi.position / 60);
 		curPos += ":";
@@ -71,18 +76,14 @@ void PlaybackPage::drawPage() {
 		if(pbi.duration % 60 < 10) durationStr += "0";
 		durationStr += String(pbi.duration % 60);
 		
-		mDisplay.setTextWrap(false);
-		mDisplay.setCursor(3, 117);
-		mDisplay.print(curPos);
-		
-		mDisplay.setCursor(153, 117);
-		mDisplay.print(durationStr);
+		drawCentreString(curPos, 25, 170);
+		drawCentreString(durationStr, 175, 170);
 		
 		// Song Info
-		drawCentreString(pbi.title, 100, 140, true);
+		drawCentreString(pbi.title, 100, 150, true);
 		mDisplay.setFont(&FreeSans6pt7b);
-		drawCentreString(pbi.album, 100, 155, true);
-		drawCentreString(pbi.artist, 100, 170, true);
+		//drawCentreString(pbi.album, 100, 155, true);
+		drawCentreString(pbi.artist, 100, 169, true);
 	}else{
 		pageData.number1 = 0;
 		mDisplay.setFont(&FreeSansBold9pt7b);

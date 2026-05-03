@@ -63,8 +63,6 @@ uint8_t PhoneConnectionManager::GetNotificationCount() {
 }
 
 PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
-	PlaybackInfo pbi;
-	
 	JsonDocument json;
 
 	if(cached && FileManager::exists(PATH_PLAYBACK"dat")) {
@@ -80,10 +78,11 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 			printDebug("Received Data...");
 			deserializeJson(json, BluetoothManager::lastResponse);
 		}else{
-			return pbi;
+			return PlaybackInfo();
 		}
+		BluetoothManager::powerOff();
 	}
-	
+	PlaybackInfo pbi;	
 	if(json != nullptr) {
 		if(json.containsKey("title")) {
 			printDebug("Parsing JSON");
@@ -131,9 +130,12 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 				
 				// Ineffiecient but works i guess
 				int size = decode_base64_length((const unsigned char*) art.c_str());
-				if(size <= PLAYBACK_IMAGE_SIZE * PLAYBACK_IMAGE_SIZE / 8 + 1) {
+				printDebug(size);
+				if(size <= MAX_PLAYBACK_IMAGE_SIZE * MAX_PLAYBACK_IMAGE_SIZE / 8 + 1) {
 					int binary_length = decode_base64((const unsigned char*) art.c_str(), pbi.image);
 				}
+				pbi.size = sqrt(size * 8);
+				printDebug(pbi.size);
 			}
 
 			if(!cached) {

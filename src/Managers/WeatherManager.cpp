@@ -117,13 +117,11 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String units, String 
 				// http error
 			}
 			http.end();
-			
-			// turn off radios
-			WiFi.mode(WIFI_OFF);
-			btStop();
 		}
-	
+		
+		// turn off radios
 		WifiConnectionManager::powerOff();
+		btStop();
 	}
 
 	uint8_t chip_temperature = accSensor.readTemperature(); // celsius
