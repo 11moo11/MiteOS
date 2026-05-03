@@ -16,8 +16,9 @@ Features
 ✅ Media-Playback Info*  
 ✅ Home Assistant Integration (Lights / Switches) \*/\*\*  
 ✅ Dark-/Lightmode (Static or Timed)  
-✅ Configure Settings through Companion App*  
+✅ Configure Settings through Companion App \*  
 ✅ 2 configurable Shortcut-Buttons on the Watchface (Top Left and Top Right)  
+✅ You can connect to the internet via a cell phone proxy, giving you internet access anywhere \*
 
 \(*) Requires the Phone Companion App (see [Phone Companion](#phone-companion) for Restrictions)  
 \(**) Requires a WiFi Connection
@@ -41,7 +42,6 @@ It still works as it should, so at least that counts i guess.
 
 Planned Features
 -----
-- Weather Information through Phone instead of WiFi
 - Activity Tracking (like running and stuff, based on the amount of steps coming in per second)
 - Configurable Night-Mode (save battery at night or if it is not worn)
 - Google Health Syncing
