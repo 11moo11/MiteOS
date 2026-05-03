@@ -1,9 +1,9 @@
 //Network Settings
-#define PROXY_WEB_REQUESTS_THROUGH_PHONE false
+#define PROXY_WEB_REQUESTS_THROUGH_PHONE true
 
 //Weather Settings
 #define OPENWEATHERMAP_URL "http://api.openweathermap.org/data/2.5/weather?id={cityID}&lang={lang}&units={units}&appid={apiKey}" //open weather api using city ID
-#define OPENMETEO_URL "https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={long}&daily=weather_code,sunrise,sunset,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&past_days=0&forecast_days=7&timezone=Europe%2FBerlin&temperature_unit={units}"
+#define OPENMETEO_URL "https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={long}&daily=weather_code,sunrise,sunset,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&past_days=0&forecast_days=7&temperature_unit={units}"
 #define WEATHER_UPDATE_INTERVAL 10 //must be greater than 5, smaller than 255, measured in minutes
 #define WEATHER_DOWNLOAD_INTERVAL 90 //must be greater than 5, smaller than 255, measured in minutes
 #define WEATHER_DATA_MAX_AGE 7 // in days

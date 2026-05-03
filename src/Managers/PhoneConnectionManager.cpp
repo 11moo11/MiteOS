@@ -215,6 +215,7 @@ bool PhoneConnectionManager::SyncConfiguration() {
 			tmElements_t tm;
 			time_t time = json["time"];
 			time /= 1000; // Convert from millisecond to seconds
+			time += Configuration::getTimeZone() * 60;
 			mRTC.doBreakTime(time, tm);
 			mRTC.set(tm);
 

@@ -252,7 +252,6 @@ void Configuration::setTimeZone(short timeZone) {
 	
 	Configuration::preferences.putShort("tz", timeZone);
 	gmtTimeOffset = timeZone * 60;
-	force_ntp_resync = true; // Force a NTP resync the next time the watch wakes up
 }
 
 short Configuration::getTimeZone() {
