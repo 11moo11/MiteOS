@@ -38,6 +38,7 @@
 #define TXT_DEBUG "Debug"
 #define TXT_SYNC "Sync"
 #define TXT_SYNC_NTP TXT_SYNC" NTP"
+#define TXT_SYNC_PHONE_TIME TXT_SYNC" Phone"
 #define TXT_HOUR_VIB "Hour Vib."
 #define TXT_SETUP_WIFI "Setup WiFi"
 #define TXT_COLOR_SCHEME "Color Scheme"

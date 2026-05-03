@@ -280,7 +280,11 @@ void MiteOS::checkTime() {
 	if(force_ntp_resync || (currentTime.Hour == 2 && currentTime.Minute == 0)) {
 		force_ntp_resync = false;
 		if(WifiConnectionManager::connectWifi()) {
+			#if PROXY_WEB_REQUESTS_THROUGH_PHONE
+			PhoneConnectionManager::SyncConfiguration();
+			#else
 			WifiConnectionManager::syncNTP();
+			#endif
 		}
 	}
 	

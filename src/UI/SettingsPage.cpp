@@ -40,11 +40,11 @@ void SettingsPage::drawPage() {
 		showMenu(menuItems, 3, true, TXT_WATCHFACE);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_TIME) {
 		const char *menuItems[] = {
-			TXT_SET_TIME, TXT_SYNC_NTP, 
+			TXT_SET_TIME, TXT_SYNC_NTP, TXT_SYNC_PHONE_TIME,
 			(hourVibrate ? TXT_CHECKBOX_ON " " TXT_HOUR_VIB : TXT_CHECKBOX_OFF " " TXT_HOUR_VIB)
 		};
 		
-		showMenu(menuItems, 3, true, TXT_TIME);
+		showMenu(menuItems, 4, true, TXT_TIME);
 	}else if(pageData.subPageIndex == SETTINGS_PAGE_NETWORK) {
 		const char *menuItems[] = {
 			TXT_SETUP_WIFI
@@ -214,6 +214,10 @@ bool SettingsPage::onButtonPressed(uint8_t buttonIndex) {
 						return true;
 
 					case 2:
+						PhoneConnectionManager::SyncConfiguration();
+						return true;
+
+					case 3:
 						hourVibrate = !hourVibrate;
 						Configuration::saveSettings();
 						return true;

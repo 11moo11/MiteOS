@@ -211,6 +211,26 @@ bool PhoneConnectionManager::SyncConfiguration() {
 		if(json.containsKey("tz")) {
 			Configuration::setTimeZone(json["tz"]);
 		}
+		if(json.containsKey("time")) {
+			tmElements_t tm;
+			time_t time = json["time"];
+			time /= 1000; // Convert from millisecond to seconds
+			mRTC.doBreakTime(time, tm);
+			mRTC.set(tm);
+
+			#if DEBUG == TRUE
+			Serial.print("After RTC.set - Year: ");
+			Serial.print(tm.Year);
+			Serial.print(" Month: ");
+			Serial.print(tm.Month);
+			Serial.print(" Day: ");
+			Serial.print(tm.Day);
+			Serial.print(" Hour: ");
+			Serial.print(tm.Hour);
+			Serial.print(" Min: ");
+			Serial.println(tm.Minute);
+			#endif
+		}
 	}
 	return success;
 }

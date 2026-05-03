@@ -172,19 +172,6 @@ bool WifiConnectionManager::syncNTP(long gmt, String ntpServer) {
 
 	mRTC.doBreakTime(t, tm);
 
-	#if DEBUG == TRUE
-	Serial.print("Before RTC.set - Year: ");
-	Serial.print(tm.Year);
-	Serial.print(" Month: ");
-	Serial.print(tm.Month);
-	Serial.print(" Day: ");
-	Serial.print(tm.Day);
-	Serial.print(" Hour: ");
-	Serial.print(tm.Hour);
-	Serial.print(" Min: ");
-	Serial.println(tm.Minute);
-	#endif
-
 	mRTC.set(tm);
 
 	// Clear VoltLow bit on PCF8563 to ensure oscillator is running
@@ -209,7 +196,6 @@ bool WifiConnectionManager::syncNTP(long gmt, String ntpServer) {
 	Serial.print(" Min: ");
 	Serial.println(verify.Minute);
 	#endif
-
 	return true;
 }
 
