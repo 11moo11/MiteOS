@@ -33,21 +33,7 @@ void SEG7Watchface::draw() {
 void SEG7Watchface::drawTime() {
 	mDisplay.setFont(&DSEG7_Classic_Bold_53);
 	mDisplay.setCursor(5, 53+5);
-	int mDisplayHour;
-	if(HOUR_12_24==12){
-		mDisplayHour = ((MiteOS::currentTime.Hour+11)%12)+1;
-	} else {
-		mDisplayHour = MiteOS::currentTime.Hour;
-	}
-	if(mDisplayHour < 10){
-		mDisplay.print("0");
-	}
-	mDisplay.print(mDisplayHour);
-	mDisplay.print(":");
-	if(MiteOS::currentTime.Minute < 10){
-		mDisplay.print("0");
-	}
-	mDisplay.println(MiteOS::currentTime.Minute);
+	mDisplay.println(getTimeStr());
 }
 
 void SEG7Watchface::drawDate() {
