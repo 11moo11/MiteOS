@@ -33,9 +33,9 @@ void MiteoWatchface::drawBackground() {
 	mDisplay.setCursor(130, 28);
 	mDisplay.println("CHRONO");
 
-	mDisplay.drawBitmap(40, DISPLAY_HEIGHT - 30, icon_left, 20, 20, BACKGROUND_COLOR);
-	mDisplay.drawBitmap(DISPLAY_WIDTH - 60, DISPLAY_HEIGHT - 30, icon_right, 20, 20, BACKGROUND_COLOR);
-	Page::drawCentreString("ILLUMINATOR", 100, DISPLAY_HEIGHT - 30);
+	mDisplay.drawBitmap(30, DISPLAY_HEIGHT - 40, icon_left, 20, 20, FOREGROUND_COLOR);
+	mDisplay.drawBitmap(DISPLAY_WIDTH - 50, DISPLAY_HEIGHT - 40, icon_right, 20, 20, FOREGROUND_COLOR);
+	Page::drawCentreString("ILLUMINATOR", 100, DISPLAY_HEIGHT - 27);
 }
 
 void MiteoWatchface::drawForeground() {
