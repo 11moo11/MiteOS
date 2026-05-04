@@ -25,6 +25,7 @@ void PlaybackPage::drawPage() {
 	}
 	
 	PlaybackInfo pbi = PhoneConnectionManager::RequestPlaybackInfo(FORCE_REQUERY == 0);
+	printDebug("meep1");
 	FORCE_REQUERY = 0;
 	mDisplay.fillScreen(BACKGROUND_COLOR);
 	
@@ -34,31 +35,35 @@ void PlaybackPage::drawPage() {
 		int16_t imageBorder = ((DISPLAY_WIDTH - (pbi.size  * IMAGE_SCALE)) / 2);
 		uint8_t b = 0;
 		
-		mDisplay.startWrite();
-		for (int16_t j = 0; j < pbi.size; j++) {
-			for (int16_t i = 0; i < pbi.size; i++) {
-				if (i & 7)
-					b <<= 1;
-				else
-					b = pbi.image[j * byteWidth + i / 8];
-				
-				if((b & 0x80)) {
-					mDisplay.fillRect(imageBorder + (i * IMAGE_SCALE), 20 + (j * IMAGE_SCALE), IMAGE_SCALE, IMAGE_SCALE, GxEPD_WHITE);
-				}else{
-					mDisplay.fillRect(imageBorder + (i * IMAGE_SCALE), 20 + (j * IMAGE_SCALE), IMAGE_SCALE, IMAGE_SCALE, GxEPD_BLACK);
+		if(pbi.size > 0) {
+			mDisplay.startWrite();
+			for (int16_t j = 0; j < pbi.size; j++) {
+				for (int16_t i = 0; i < pbi.size; i++) {
+					if (i & 7)
+						b <<= 1;
+					else
+						b = pbi.image[j * byteWidth + i / 8];
+					
+					if((b & 0x80)) {
+						mDisplay.fillRect(imageBorder + (i * IMAGE_SCALE), 20 + (j * IMAGE_SCALE), IMAGE_SCALE, IMAGE_SCALE, GxEPD_WHITE);
+					}else{
+						mDisplay.fillRect(imageBorder + (i * IMAGE_SCALE), 20 + (j * IMAGE_SCALE), IMAGE_SCALE, IMAGE_SCALE, GxEPD_BLACK);
+					}
 				}
 			}
+			mDisplay.endWrite();
 		}
-		mDisplay.endWrite();
 		
 		// Progress Bar
-		float percentage = ((float) pbi.position) / pbi.duration;
+		float percentage = 0;
+		if(pbi.duration > 0)
+			percentage = ((float) pbi.position) / pbi.duration;
 		drawProgressBar(30, 180, 140, 12, percentage, FOREGROUND_COLOR);
 		
 		// Progress Texts
 		mDisplay.setFont(&FreeSans8pt7b);
 		
-		if(pbi.position > pbi.duration) {
+		if(pbi.duration > 0 && pbi.position > pbi.duration) {
 			pbi.position = pbi.duration;
 			FORCE_REQUERY = 1;
 		}
