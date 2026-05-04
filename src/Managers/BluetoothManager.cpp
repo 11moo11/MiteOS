@@ -283,15 +283,20 @@ WebRequestData BluetoothManager::awaitWebRequestData() {
 	return data;
 }
 
-WebRequestData BluetoothManager::proxyGetWebRequest(String url) {
-	sprintf(tmp_buffer, "WR_GET=%s", url.c_str());
+WebRequestData BluetoothManager::proxyGetWebRequest(String url, String authorization) {
+	String full = url;
+	if(!authorization.isEmpty()) full += ";" + authorization;
+
+	sprintf(tmp_buffer, "WR_GET=%s", full.c_str());
 	sendCommand(tmp_buffer);
 
 	return BluetoothManager::awaitWebRequestData();
 }
 
 WebRequestData BluetoothManager::proxyPostWebRequest(String url, String payload, String authorization, String content_type) {
-	String full = url + ";" + payload + ";" + authorization + ";" + content_type;
+	String full = url + ";" + payload;
+	if(!authorization.isEmpty()) full += ";" + authorization + ";" + content_type;
+	
 	sprintf(tmp_buffer, "WR_POST=%s", full.c_str());
 	sendCommand(tmp_buffer);
 

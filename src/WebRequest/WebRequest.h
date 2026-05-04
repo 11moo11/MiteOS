@@ -8,7 +8,7 @@
 
 class WebRequest {
 	public:
-		static WebRequestData GET(String url);
+		static WebRequestData GET(String url, String authorization = "");
 		static WebRequestData POST(String url, String payload, String authorization = "", String content_type = "application/json");
 };
 

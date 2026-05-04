@@ -2,10 +2,10 @@
 
 #include "../Managers/BluetoothManager.h"
 
-WebRequestData WebRequest::GET(String url) {
+WebRequestData WebRequest::GET(String url, String authorization) {
 	printDebug("GET " + url);
 	#if PROXY_WEB_REQUESTS_THROUGH_PHONE
-	return BluetoothManager::proxyGetWebRequest(url);
+	return BluetoothManager::proxyGetWebRequest(url, authorization);
 	#else
 	WebRequestData data = WebRequestData();
 	if (WifiConnectionManager::connectWifi()) {

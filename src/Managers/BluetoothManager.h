@@ -35,8 +35,8 @@ class BluetoothManager {
 		static void requestNotifications();
 		static void sendCommand(String str);
 
-		static WebRequestData proxyGetWebRequest(String url);
-		static WebRequestData proxyPostWebRequest(String url, String payload, String authorization, String content_type);
+		static WebRequestData proxyGetWebRequest(String url, String authorization = "");
+		static WebRequestData proxyPostWebRequest(String url, String payload, String authorization = "", String content_type = "");
 		
 		static void powerOff();
 	private:
