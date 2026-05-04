@@ -69,6 +69,7 @@ void WeatherPage::drawWeather() {
 	if(NOW - currentWeatherData.timestamp >= 7 * 24 * 60 * 60) {
 		temperature = currentWeather.chip_temperature;
 		String(TXT_CHIP).toCharArray(currentWeatherData.weatherDescription, 20);
+		String("").toCharArray(currentWeatherData.cityName, 30);
 	}
 
 	mDisplay.setFont(&DSEG7_Classic_Regular_39);
@@ -90,6 +91,7 @@ void WeatherPage::drawWeather() {
 
 		mDisplay.setFont(&FreeSans6pt7b);
 		drawCentreString(String(hour(currentWeather.timestamp)) + ":" + (minute(currentWeather.timestamp) < 10 ? "0" : "") + String(minute(currentWeather.timestamp)), 100, 190);
+		drawCentreString(currentWeatherData.cityName, 100, 10);
 	}else{
 		weatherIcon = chip;
 	}

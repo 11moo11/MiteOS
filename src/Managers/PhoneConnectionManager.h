@@ -38,6 +38,8 @@ class PhoneConnectionManager {
 		static uint8_t GetNotificationCount();
 		
 		static PlaybackInfo RequestPlaybackInfo(bool cached = true);
+
+		static bool GetGPSPosition();
 		
 		static bool SyncConfiguration();
 		static bool SyncCalendar();

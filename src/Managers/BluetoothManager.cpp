@@ -242,6 +242,7 @@ void BluetoothManager::sendCommand(String str) {
 	if(!connected) connectDevice();
 	if(!connected) return;
 	
+	BluetoothManager::lastResponse = "";
 	commandCharacteristic->setValue("");
 	delay(10);
 	printDebug(str);

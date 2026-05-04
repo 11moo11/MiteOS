@@ -150,6 +150,24 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 	return pbi;
 }
 
+bool PhoneConnectionManager::GetGPSPosition() {
+	BluetoothManager::sendCommand("GET_POS=");
+	
+	if(BluetoothManager::lastResponse.length() > 0) {
+		JsonDocument json;
+		deserializeJson(json, BluetoothManager::lastResponse);
+		
+		if(json.containsKey("lat") && json.containsKey("lon") && json.containsKey("city")) {
+			WeatherManager::setLat(json["lat"]);
+			WeatherManager::setLon(json["lon"]);
+			WeatherManager::setCity(json["city"]);
+			Configuration::saveOwmConfig();
+		}
+		return true;
+	}
+	return false;
+}
+
 bool PhoneConnectionManager::SyncConfiguration() {
 	printDebug("Requesting Configuration...");
 
@@ -196,17 +214,9 @@ bool PhoneConnectionManager::SyncConfiguration() {
 			Configuration::preferences.putString("totp", tokens);
 		}
 
-		if(json.containsKey("owmApi")) {
-			if(json.containsKey("owmUnit")) {
-				if(json.containsKey("owmCity")) {
-					WeatherManager::setCity(json["owmCity"]);
-					WeatherManager::setToken(json["owmApi"]);
-					WeatherManager::setUnit(json["owmUnit"]);
-					WeatherManager::setLat(json["owmLat"]);
-					WeatherManager::setLon(json["owmLon"]);
-					Configuration::saveOwmConfig();
-				}
-			}
+		if(json.containsKey("owmUnit")) {
+			WeatherManager::setUnit(json["owmUnit"]);
+			Configuration::saveOwmConfig();
 		}
 		if(json.containsKey("tz")) {
 			Configuration::setTimeZone(json["tz"]);

@@ -9,6 +9,7 @@ typedef struct WeatherData {
 	int16_t weatherConditionCode;
 	bool isMetric;
 	char weatherDescription[30];
+	char cityName[30];
 	
 	int8_t chip_temperature;
 

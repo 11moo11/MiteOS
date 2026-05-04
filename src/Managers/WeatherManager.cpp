@@ -56,6 +56,7 @@ WeatherData WeatherManager::getWeatherData(bool cached) {
 	currentWeatherData.weatherConditionCode = timeData.weatherConditionCode;
 	currentWeatherData.isMetric = timeData.isMetric;
 	getWeatherDescription(currentWeatherData.weatherConditionCode).toCharArray(currentWeatherData.weatherDescription, 30);
+	getCity().toCharArray(currentWeatherData.cityName, 30);
 
 	currentWeatherData.sunrise = dayData.sunrise;
 	currentWeatherData.sunset = dayData.sunset;
@@ -95,6 +96,7 @@ WeatherData WeatherManager::_getWeatherData(String cityID, String units, String 
 			currentWeatherData.weatherConditionCode = int(json["weather"][0]["id"]);
 			String desc = json["weather"][0]["description"];
 			desc.toCharArray(currentWeatherData.weatherDescription, 30);
+			getCity().toCharArray(currentWeatherData.cityName, 30);
 			//currentWeatherData.external = true;
 			
 			//gmtTimeOffset = int(json["timezone"]);
@@ -168,6 +170,9 @@ void WeatherManager::loadOpenMeteoData(String units, String lat, String lon) {
 
 	if((NOW - lastWeatherDownload) / 60 > WEATHER_DOWNLOAD_INTERVAL && lat.length() > 0 && lon.length() > 0) {
 		lastWeatherDownload = NOW;
+
+		if(!PhoneConnectionManager::GetGPSPosition())
+			return;
 
 		String weatherQueryURL = OPENMETEO_URL;
 		weatherQueryURL.replace("{lat}", lat);
