@@ -28,13 +28,13 @@ bool PhoneConnectionManager::SyncNotifications(bool force) {
 		deserializeJson(json, BluetoothManager::lastResponse);
 		
 		if(json.containsKey("count")) {
-			uint8_t count = uint8_t(json["count"]);
+			uint8_t count = json["count"].as<uint8_t>();
 			if(count > NOTIFICATION_CNT) count = NOTIFICATION_CNT;
 			
 			FileManager::emptyDir(PATH_NOTIFICATIONS);
 
 			for(uint8_t i = 0; i < count; i++) {
-				FileManager::writeFile(PATH_NOTIFICATIONS + String(i), json["nBundleList"][i]);
+				FileManager::writeFile(PATH_NOTIFICATIONS + String(i), json["nBundleList"][i].as<String>());
 			}
 
 			return true;
@@ -104,17 +104,17 @@ PlaybackInfo PhoneConnectionManager::RequestPlaybackInfo(bool cached) {
 			
 			
 			if(json.containsKey("position")) {
-				pbi.position = long(json["position"]);
+				pbi.position = json["position"].as<long>();
 			}
 			
 			if(json.containsKey("duration")) {
-				pbi.duration = long(json["duration"]);
+				pbi.duration = json["duration"].as<long>();
 			}
 			
 			if(json.containsKey("timestamp") && json.containsKey("playing")) { // Check if the time should have already passed, then just get the current data
-				if(json["playing"]) {
+				if(json["playing"].as<bool>()) {
 					pbi.playing = true;
-					long time_passed = NOW - ((unsigned long) json["timestamp"] + gmtTimeOffset);
+					long time_passed = NOW - ((unsigned long) json["timestamp"].as<unsigned long>() + gmtTimeOffset);
 					if(time_passed < 0) time_passed = 0;
 					if(pbi.position + time_passed >= pbi.duration) {
 						if(cached) {
@@ -223,7 +223,7 @@ bool PhoneConnectionManager::SyncConfiguration() {
 		}
 		if(json.containsKey("time")) {
 			tmElements_t tm;
-			time_t time = json["time"];
+			time_t time = json["time"].as<time_t>();
 			time /= 1000; // Convert from millisecond to seconds
 			time += Configuration::getTimeZone() * 60;
 			mRTC.doBreakTime(time, tm);
@@ -278,11 +278,11 @@ bool PhoneConnectionManager::SyncCalendar() {
 			printDebug(json["events"].size());
 			if(json["events"].size() > 0) {
 				for(uint16_t i = 0; i < json["events"].size(); i++) {
-					printDebug(String(json["events"][i]));
+					printDebug(json["events"][i].as<String>());
 
-					String id = String(json["events"][i]["startTime"]) + "_" + String((int) json["events"][i]["id"]);
+					String id = json["events"][i]["startTime"].as<String>() + "_" + String((int) json["events"][i]["id"]);
 
-					FileManager::writeFile(String(PATH_CALENDAR) + id, json["events"][i]);
+					FileManager::writeFile(String(PATH_CALENDAR) + id, json["events"][i].as<String>());
 				}
 			}
 		}
